@@ -1,0 +1,35 @@
+<html><body>
+	
+<div id="test"></div>
+	
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  var socket = io.connect('http://localhost');
+  
+  socket.emit('openurl', 'rft.genre=journal&rft.title=A%20Tale%20Of%20Two%20Cities&rft.aulast=Dickens');
+  
+  socket.on('citation', function (data) {
+    update_div(data);
+  });
+  
+  socket.on('resource', function (data) {
+    update_div(data);
+  });
+  
+  socket.on('error', function (data) {
+    update_div('<span style="color: red;">' + data + '</span>');
+  });
+  
+  socket.on('complete', function (data) {
+		update_div(data);
+		socket.disconnect();
+  });
+  
+  function update_div(data){
+    var div = document.getElementById("test");
+  	div.innerHTML = div.innerHTML + '<br /><br />' + data;
+  }
+</script>
+</body>
+</html>

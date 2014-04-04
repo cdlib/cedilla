@@ -1,0 +1,4 @@
+node_modules/**/*
+
+config/application.yaml
+config/services.yaml

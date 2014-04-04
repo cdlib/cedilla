@@ -1,0 +1,46 @@
+# General
+bad_url: 'Invalid URL!'
+bad_boolean: 'Must be a boolean value!'
+
+# -------------------------------------------------------------------
+# Citation Object Specific
+bad_genre: 'Invalid genre!'
+bad_content_type: 'Invalid content type!'
+
+# -------------------------------------------------------------------
+# Resource Object Specific
+bad_format: 'Format must be a ResourceFormat!'
+
+# -------------------------------------------------------------------
+# Citation Augmentation Specific
+#    will replace the question mark with: method
+augmentation: 'Unable to augment the citation for ?!'
+#    will replace the question mark with: author.to_s 
+author_augmentation: "Unable to attach ? to the citation!"
+#    will replace the question mark with: resource.to_s 
+resource_augmentation: 'Unable to attach ? to the citation!'
+
+
+# -------------------------------------------------------------------
+# Core object errors
+incomplete_citation: 'Your citation does not contain a genre and/or content type!'
+#    will replace the question mark with: service.name 
+generic_broker_error: 'An error occurred while sending your request to ?.'
+
+# -------------------------------------------------------------------
+# Service errors
+#    will replace the question mark with: service.name
+generic_http_error: "? encountered an error!"
+#    will replace the question mark with: service.name
+http_bad_uri: "Invalid URI in request to ?!"
+#    will replace the question mark with: service.name
+http_timeout: 'Request sent to ? timed out!'
+#    will replace the question mark with: http status code
+http_status: '? responded with an invalid HTTP code: ?'
+#    will replace the question marks with: service.name
+http_no_response: '? never responded!'
+#    will replace the question mark with: service.name
+missing_service_config: 'No configuration file could be found for ?!'
+#    will replace the question mark with: service.name
+missing_base_url: 'No Url was defined for ?!'
+missing_name: 'No name was provided for the service!'

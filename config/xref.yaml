@@ -1,0 +1,34 @@
+# These cross reference libraries are used in various parts of the system
+
+# -----------------------------------------------------------------------------------------------
+# Rules engine
+
+## Unknown genre mapping:
+unknown_genres:
+  theses: dissertation
+  newspaper: document
+  wire: document
+  transcript: document
+
+# -----------------------------------------------------------------------------------------------
+# Resource Object 
+
+# All abbreviation values should be lowercase!
+# Make sure you include the fully spelled out language as well since this is checked for every value received 
+languages:
+  English: 
+    - en 
+    - eng
+    - english
+  French: 
+    - fr
+    - french
+
+formats:
+  electronic: 
+    - texts
+    - electronic
+  audio: 
+    - audio
+  video: 
+    - video
