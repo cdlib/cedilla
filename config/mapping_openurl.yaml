@@ -1,0 +1,64 @@
+# Mapping of citation object properties to their openurl arguments
+#
+# values on the left are what they will be stored as within the citation/author object
+# values on the right are the possible names of the arguments passed in the openurl query string
+
+# Citation
+genre: ['rft.genre', 'rfe.genre', 'genre']
+content_type: ['rft.content', 'rfe.content', 'content', 'content_type']
+
+issn: ['rft.issn', 'rfe.issn', 'issn']
+eissn: ['rft.eissn', 'rfe.eissn', 'eissn']
+
+isbn_10: ['rft.isbn', 'rfe.isbn', 'isbn']
+eisbn_10: ['rft.eisbn', 'rfe.eisbn', 'eisbn']
+isbn_13: ['rft.isbn_13', 'rfe.isbn_13', 'rft.isbn_additional', 'rfe.isbn_additional', 'isbn_13', 'isbn_additional']
+eisbn_13: ['rft.eisbn_additional', 'rfe.eisbn_additional', 'eisbn_additional']
+
+oclc: ['rft.oclcnum', 'rfe.oclcnum', 'oclc', 'oclcnum']
+lccn: ['rft.lccn', 'rfe.lccn', 'lccn']
+doi: ['rft.doi', 'rfe.doi', 'doi']
+coden: ['rft.coden', 'rfe.coden', 'coden']
+sici: ['rft.sici', 'rfe.sici', 'sici']
+bici: ['rft.bici', 'rfe.bici', 'bici']
+
+title: ['rft.title', 'rfe.title', 'title']
+article_title: ['rft.atitle', 'rfe.atitle', 'atitle']
+journal_title: ['rft.jtitle', 'rfe.jtitle', 'jtitle']
+book_title: ['rft.btitle', 'rfe.btitle', 'btitle']
+short_titles: ['rft.stitle', 'rfe.stitle', 'stitle']
+
+publisher: ['rft.pub', 'rfe.pub', 'rft.publisher', 'rfe.publisher', 'publisher', 'pub']
+publication_date: ['rft.date', 'rfe.date', 'rft.pubdate', 'rfe.pubdate', 'pubdate', 'date']
+publication_place: ['rft.place', 'rfe.place', 'place']
+year: ['rft.year', 'rfe.year', 'rft.pubyear', 'rfe.pubyear', 'year', 'pubyear']
+month: ['rft.month', 'rfe.month', 'rft.pubmonth', 'rfe.pubmonth', 'month', 'pubmonth']
+day: ['rft.day', 'rfe.day', 'rft.pubday', 'rfe.pubday', 'day', 'pubday']
+
+volume: ['rft.volume', 'rfe.volume', 'volume']
+issue: ['rft.issue', 'rfe.issue', 'issue']
+article_number: ['rft.artnum', 'rfe.artnum', 'artnum']
+enumeration: ['rft.chron', 'rfe.chron', 'chron']
+part: ['rft.part', 'rfe.part', 'part']
+season: ['rft.ssn', 'rfe.ssn', 'rft.season', 'rfe.season', 'ssn', 'season']
+quarter: ['rft.quarter', 'rfe.quarter', 'quarter']
+series: ['rft.series', 'rfe.series', 'series']
+institute: ['rft.inst', 'rfe.inst', 'inst']
+subject: ['rft.subject', 'rfe.subject', 'subject']
+text_language: ['rft.dcLanguage', 'rfe.dcLanguage', 'dcLanguage']
+
+start_page: ['rft.spage', 'rfe.spage', 'spage']
+end_page: ['rft.epage', 'rfe.epage', 'epage']
+pages: ['rft.pages', 'rfe.pages', 'pages']
+
+
+
+# Author
+author_full_name: ['rft.au', 'rfe.au', 'rft.inventor', 'rfe.inventor', 'rft.creator', 'rfe.creator', 'rft.contributor', 'rfe.contributor', 'au', 'inventor', 'creator', 'contributor']
+author_last_name: ['rft.aulast', 'rfe.aulast', 'rft.invlast', 'rfe.invlast', 'aulast', 'invlast']
+author_first_name: ['rft.aufirst', 'rfe.aufirst', 'rft.invfirst', 'rfe.invfirst', 'aufirst', 'invfirst']
+author_corporate_author: ['rft.aucorp', 'rfe.aucorp', 'aucorp']
+author_initials: ['rft.auinit', 'rfe.auinit', 'auinit']
+author_first_initial: ['rft.auinit1', 'rfe.auinit1', 'auinit1']
+author_middle_initial: ['rft.auinitm', 'rfe.auinitm', 'auinitm']
+author_suffix: ['rft.ausuffix', 'rfe.ausuffix', 'ausuffix']

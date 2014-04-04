@@ -1,11 +1,14 @@
 var server = require('http').createServer(onRequest),
 		io = require('socket.io').listen(server),
 		fs = require('fs'),
-		url = require('url');
+		url = require('url'),
+		_ = require('underscore'),
+		helper = require('./lib/helper.js');
 
 server.listen(3005);
 
 var ConfigurationManager = require('./config/config.js'),
+		Translator = require('./lib/translator.js'),
 		Broker = require('./lib/broker.js');
 
 var broker = new Broker();
@@ -18,7 +21,7 @@ function onRequest (request, response) {
 	var pathname = url.parse(request.url).pathname;
 	var query = url.parse(request.url).query;
 	
-	console.log('received request for: ' + query);
+	console.log('received request for index.html');
 	
 	// This is a default page that opens up a socket.io connection with this server, so requests
 	// originating from clients without the socket socket.io library get passed through properly
@@ -43,9 +46,11 @@ io.sockets.on('connection', function (socket) {
 		console.log('dispatching services for: ' + data);
 		
 		try{
-			// Send the socket, current rule set, current service set, and the request over to the broker
-			// The broker will determine which services to dispatch and in what order
-			broker.negotiate(socket, data, configManager);
+			var translator = new Translator(configManager.getConfig('mapping_openurl'));
+			var citation = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
+			
+			// Send the socket, configuration manager, and the citation to the broker for processing
+			broker.negotiate(socket, configManager, citation);
 			
 		}catch(e){
 			console.log(e);
@@ -60,4 +65,30 @@ io.sockets.on('connection', function (socket) {
   });
 	
 });
+
+
+/* -------------------------------------------------------------------------------------------
+ * Build the initial Citation and Author object based on the Map of attributes
+ * ------------------------------------------------------------------------------------------- */
+function buildInitialCitation(translator, map){
+	var citation = translator.mapToCitation(map);
+	var author = translator.mapToAuthor(map);
+
+	console.log(citation.isValid());
+
+	// If either the genre or content_type was not supplied get the default
+	if(citation.getGenre() == undefined){
+		citation.addAttribute('genre', configManager.getConfig('application')['default_genre']); 
+	}
+	if(citation.getContentType() == undefined){
+		citation.addAttribute('content_type', configManager.getConfig('application')['default_content_type']); 
+	}
+	
+	// Add the author if 
+	if(author.isValid()){
+		citation.addAuthor(author);
+	}
+	
+	return citation;
+}
 
