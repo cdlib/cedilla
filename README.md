@@ -18,7 +18,7 @@ To install:
 
 * > npm install js-yaml
 
-* > npm install async
+* > npm install collections
 
 * > node cedilla.js
 
