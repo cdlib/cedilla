@@ -5,20 +5,11 @@ var server = require('http').createServer(onRequest),
 
 server.listen(3005);
 
-/* -------------------------------------------------------------------------------------------
- * Load up the configuration files
- * 
- * This includes a listener that will reload the config files as they change, so no need to
- * restart this application when a config change is made :)
- * ------------------------------------------------------------------------------------------- */
-var configManager = require('./config/config.js');
-
-/* -------------------------------------------------------------------------------------------
- * Load other modules
- * ------------------------------------------------------------------------------------------- */
-var Broker = require('./lib/broker.js');
+var ConfigurationManager = require('./config/config.js'),
+		Broker = require('./lib/broker.js');
 
 var broker = new Broker();
+var configManager = new ConfigurationManager();
 
 /* -------------------------------------------------------------------------------------------
  * Default route
@@ -52,13 +43,9 @@ io.sockets.on('connection', function (socket) {
 		console.log('dispatching services for: ' + data);
 		
 		try{
-			var appConfig = configManager.getConfig('application');
-			var rulesConfig = configManager.getConfig('rules');
-			var serviceConfig = configManager.getConfig('services');
-			
 			// Send the socket, current rule set, current service set, and the request over to the broker
 			// The broker will determine which services to dispatch and in what order
-			broker.negotiate(socket, data, appConfig, serviceConfig, rulesConfig);
+			broker.negotiate(socket, data, configManager);
 			
 		}catch(e){
 			console.log(e);

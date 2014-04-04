@@ -23,6 +23,9 @@ languages:
   French: 
     - fr
     - french
+  Spanish:
+    - es
+    - spanish
 
 formats:
   electronic: 
