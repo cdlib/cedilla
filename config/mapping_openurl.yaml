@@ -22,10 +22,8 @@ coden: ['rft.coden', 'rfe.coden', 'coden']
 sici: ['rft.sici', 'rfe.sici', 'sici']
 bici: ['rft.bici', 'rfe.bici', 'bici']
 
-title: ['rft.title', 'rfe.title', 'title']
+title: ['rft.title', 'rfe.title', 'title', 'rft.jtitle', 'rfe.jtitle', 'jtitle', 'rft.btitle', 'rfe.btitle', 'btitle']
 article_title: ['rft.atitle', 'rfe.atitle', 'atitle']
-journal_title: ['rft.jtitle', 'rfe.jtitle', 'jtitle']
-book_title: ['rft.btitle', 'rfe.btitle', 'btitle']
 short_titles: ['rft.stitle', 'rfe.stitle', 'stitle']
 
 publisher: ['rft.pub', 'rfe.pub', 'rft.publisher', 'rfe.publisher', 'publisher', 'pub']

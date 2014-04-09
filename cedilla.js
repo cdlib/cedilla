@@ -9,7 +9,8 @@ server.listen(3005);
 
 var ConfigurationManager = require('./config/config.js'),
 		Translator = require('./lib/translator.js'),
-		Broker = require('./lib/broker.js');
+		Broker = require('./lib/broker.js'),
+		Item = require('./lib/item.js');
 
 var broker = new Broker();
 var configManager = new ConfigurationManager();
@@ -46,11 +47,22 @@ io.sockets.on('connection', function (socket) {
 		console.log('dispatching services for: ' + data);
 		
 		try{
-			var translator = new Translator(configManager.getConfig('mapping_openurl'));
-			var citation = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
+			var translator = new Translator(configManager, 'mapping_openurl');
+			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
+			var item = buildInitialItems(configManager.getConfig('application')['objects'], translator, 
+																																		helper.queryStringToMap(data.toString()));
 			
-			// Send the socket, configuration manager, and the citation to the broker for processing
-			broker.negotiate(socket, configManager, citation);
+			if(typeof item != undefined){
+				console.log('translated openurl into: ' + item.toString());
+				
+				// Send the socket, configuration manager, and the item to the broker for processing
+				broker.negotiate(socket, configManager, item);
+				
+			}else{
+				// Warn about invalid item
+				console.log('unable to build initial item from the openurl passed!');
+				socket.emit('error', configManager.getConfig('error')['broker_bad_item_message']);
+			}
 			
 		}catch(e){
 			console.log(e);
@@ -68,27 +80,30 @@ io.sockets.on('connection', function (socket) {
 
 
 /* -------------------------------------------------------------------------------------------
- * Build the initial Citation and Author object based on the Map of attributes
+ * Build the initial Items
  * ------------------------------------------------------------------------------------------- */
-function buildInitialCitation(translator, map){
-	var citation = translator.mapToCitation(map);
-	var author = translator.mapToAuthor(map);
-
-	console.log(citation.isValid());
-
-	// If either the genre or content_type was not supplied get the default
-	if(citation.getGenre() == undefined){
-		citation.addAttribute('genre', configManager.getConfig('application')['default_genre']); 
-	}
-	if(citation.getContentType() == undefined){
-		citation.addAttribute('content_type', configManager.getConfig('application')['default_content_type']); 
-	}
+function buildInitialItems(item_definitions, translator, map){
+	var item = undefined;
 	
-	// Add the author if 
-	if(author.isValid()){
-		citation.addAuthor(author);
-	}
+	_.forEach(item_definitions, function(value, key){
+		// If we haven't already defined the item
+		if(typeof item == 'undefined'){
+			item = translator.mapToItem(key, true, map);
+			
+			// Try to load any children if there are any defined
+			_.forEach(value['children'], function(name){
+				var child = translator.mapToItem(name, true, map);
+				
+				// If the child passes the validation check add it to the item
+				if(child.isValid()){
+					item.addAttribute(name + 's', new Array([child]));
+				}
+			});
+			
+		}
+		
+	});
 	
-	return citation;
+	return item;
 }
 

@@ -1,83 +1,86 @@
-# Group services into the genres they can search
-# When a citation comes in from a client the rules engine will use this list to determine what
-# services the broker will dispatch. For example the cover_open_library service can only provide
-# results for books so it should only appear in the book and bookitem genre types
-genres:
-  journal:
-    - sfx
-    - cover_elsevier
-    - cover_open_library
-  book:
-    - sfx
-    - internet_archive
-    - cover_thing
-    - cover_open_library
-  issue:
-    - sfx
-    - cover_elsevier
-    - cover_open_library
-  article:
-    - sfx
-    - cover_elsevier
-    - cover_open_library
-  series:
-    - sfx
-    - cover_elsevier
-    - cover_open_library
-  bookitem:
-    - sfx
-    - cover_thing
-    - cover_open_library
-  report:
-    - sfx
-  conference:
-    - sfx
-  document:
-    - sfx
-    - cover_elsevier
-    - cover_open_library
-  dissertation:
-    - sfx
-  patent:
-    - sfx
-  preprint:
-    - sfx
-  proceeding:
-    - sfx
 
-# Group services into the type of content they can provide
-# When a citation comes in from a client the rules engine will use this list to determine what
-# services the broker will dispatch. For example the internet_archive service can only provide
-# results for electronic and audio copies of an item so it should NOT be found in the holdings
-# category!
-content_types:
-  electronic:
-    - sfx
-    - internet_archive
-    - cover_thing
-    - cover_elsevier
-    - cover_open_library
-  full_text:
-    - sfx
-    - internet_archive
-    - cover_thing
-    - cover_elsevier
-    - cover_open_library
-  holdings:
-    - sfx
-    - cover_thing
-    - cover_elsevier
-    - cover_open_library
-  audio:
-    - internet_archive
-    - cover_thing
-    - cover_open_library
-  video:
-    - internet_archive
-    - cover_thing
-    - cover_open_library
-  purchase:
-    - sfx
+objects:
+  citation:
+    # Group services into the genres they can search
+    # When a citation comes in from a client the rules engine will use this list to determine what
+    # services the broker will dispatch. For example the cover_open_library service can only provide
+    # results for books so it should only appear in the book and bookitem genre types
+    genre:
+      journal:
+        - sfx
+        - cover_elsevier
+        - cover_open_library
+      book:
+        - sfx
+        - internet_archive
+        - cover_thing
+        - cover_open_library
+      issue:
+        - sfx
+        - cover_elsevier
+        - cover_open_library
+      article:
+        - sfx
+        - cover_elsevier
+        - cover_open_library
+      series:
+        - sfx
+        - cover_elsevier
+        - cover_open_library
+      bookitem:
+        - sfx
+        - cover_thing
+        - cover_open_library
+      report:
+        - sfx
+      conference:
+        - sfx
+      document:
+        - sfx
+        - cover_elsevier
+        - cover_open_library
+      dissertation:
+        - sfx
+      patent:
+        - sfx
+      preprint:
+        - sfx
+      proceeding:
+        - sfx
+
+    # Group services into the type of content they can provide
+    # When a citation comes in from a client the rules engine will use this list to determine what
+    # services the broker will dispatch. For example the internet_archive service can only provide
+    # results for electronic and audio copies of an item so it should NOT be found in the holdings
+    # category!
+    content_type:
+      electronic:
+        - sfx
+        - internet_archive
+        - cover_thing
+        - cover_elsevier
+        - cover_open_library
+      full_text:
+        - sfx
+        - internet_archive
+        - cover_thing
+        - cover_elsevier
+        - cover_open_library
+      holdings:
+        - sfx
+        - cover_thing
+        - cover_elsevier
+        - cover_open_library
+      audio:
+        - internet_archive
+        - cover_thing
+        - cover_open_library
+      video:
+        - internet_archive
+        - cover_thing
+        - cover_open_library
+      purchase:
+        - sfx
 
 # Define the minimum amount of citation information required to process a service. The options MUST match attributes on the Citation object!
 # Items within an array indicate an OR relationship and items on different lines indicate an AND relationship so:
@@ -88,25 +91,22 @@ content_types:
 #
 #   Translates to:  citation includes -> an Article Title AND (a Title OR a Journal Title)
 #
-#   You may use the keyword IDENTIFIER as a shortcut for (issn or eissn or isbn or eisbn or doi or lccn or oclc or one of the 3 service specific ids)
-#   For example:
-#
-#   You may also use the AUTHOR keyword to indicate that the citation must have at least one author
+# You may also use the AUTHOR keyword to indicate that the citation must have at least one author
 #
 #    book:
-#      - ['title', 'IDENTIFIER']
+#      - ['title', 'article_title']
 #      - ['AUTHOR']
 #
 # ==============================================================================================================================================
 # WARNING!!!
 #   Changes to this section will impact: test_citation.test_dispatchable, test_rules.test_has_minimum_citation_requirements
 # ==============================================================================================================================================
-minimum_citation_groups:
+minimum_item_groups:
   internet_archive:
     - ['title', 'book_title']
     - ['AUTHOR']
   sfx:
-    - ['title', 'journal_title', 'book_title', 'article_title', 'series_title', 'IDENTIFIER']
+    - ['title', 'journal_title', 'book_title', 'article_title', 'series_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'pmid', 'coden', 'sici', 'bici', 'document_id']
   cover_thing:
     - ['isbn', 'eisbn']
   cover_elsevier:
