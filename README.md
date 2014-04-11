@@ -6,35 +6,43 @@ The Cedilla Delivery Aggregator system is a component of the larger Cedilla proj
 
 The Aggregator is written in node.js and makes use of the socket.io module to handle open-ended connections with clients (web sockets, long polling, etc.). It also takes advantage of node's asynchronous nature to translate incoming client requests and call out to multiple services simultaneously.
 
+#### How does the Aggregator fit into the larger Cedilla project?
+
+- The client web application makes a call to the Cedilla Aggregator via the Cedilla JS library. 
+- The JS library establishes a socket.io connection with the Aggregator and passes along the client's request. Socket.io determines whether it will be using websockets, long polling, flash, etc. based on the client's browser's capabilities. 
+- When the Aggregator receives the request it checks its local rules and policies to determine which services can possibly fullfill the request. 
+- The Aggregator then makes asynchronous calls to each of the services and sends results back to the client application as the services begin to respond. 
+
+Note that the Cedilla Services can be written in any language and can communicate with any endpoint whether its a remote website like the Internet Archive, a local database, or a spreadsheet.
 
 ```
- -------------       ----------------------                                ----------------------
-|             |     |                      |   HTTP    -------------      |                      |
-|   client    |<--->|  Cedilla JS library  |<-------->|  socket.io  |<--->|  Cedilla Aggregator  |
-|             |     |                      |           -------------      |                      |
- -------------       ----------------------                                ----------------------
-                                                                                     ^
-                                                                                     |
-                                                                                HTTP | 
-																					 |
-                                                                                     |
-                                                                           -----------------------
-                                                                          |                       |
-																		  |                       |
-																		  V                       V
-																	---------------	      ----------------
-																   |               |     |                |
-																   |    Service    |     |     Service    |
-																   |               |     |                |
-																    ---------------       ----------------
-																	      ^                       ^
-																	      |                       |
-																		  | HTTP                  |  IO
-																		  |                       |
-																		  V                       V
-																     ---------------      ----------------
-																	|    endpoint   |    |    endpoint    |
-																	 ---------------      ----------------
+ -------------       ---------------                                ----------------------
+|             |     |               |   HTTP    -------------      |                      |
+|   client    |<--->|  Cedilla JS   |<-------->|  socket.io  |<--->|  Cedilla Aggregator  |
+|             |     |               |           -------------      |                      |
+ -------------       ---------------                                ----------------------
+                                                                              ^
+                                                                              |
+                                                                         HTTP | 
+			            													  |
+                                                                              |
+                                                                    -----------------------
+                                                                   |                       |
+												 			       |                       |
+																   V                       V
+															 ---------------	   ----------------
+														    |               |     |                |
+															|    Service    |     |     Service    |
+															|               |     |                |
+															 ---------------       ----------------
+																   ^                       ^
+																   |                       |
+																   | HTTP                  |  IO
+																   |                       |
+																   V                       V
+															 ---------------        ----------------
+															|    endpoint   |      |    endpoint    |
+															 ---------------        ----------------
 ```
  
 
