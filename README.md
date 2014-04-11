@@ -7,13 +7,13 @@ The Cedilla Delivery Aggregator system is a component of the larger Cedilla proj
 The Aggregator is written in node.js and makes use of the socket.io module to handle open-ended connections with clients (web sockets, long polling, etc.). It also takes advantage of node's asynchronous nature to translate incoming client requests and call out to multiple services simultaneously.
 
 
-
+```
  -------------       ----------------------                                ----------------------
 |             |     |                      |   HTTP    -------------      |                      |
 |   client    |<--->|  Cedilla JS library  |<-------->|  socket.io  |<--->|  Cedilla Aggregator  |
 |             |     |                      |           -------------      |                      |
  -------------       ----------------------                                ----------------------
-
+```
  
 
 ### Installation:
