@@ -13,6 +13,28 @@ The Aggregator is written in node.js and makes use of the socket.io module to ha
 |   client    |<--->|  Cedilla JS library  |<-------->|  socket.io  |<--->|  Cedilla Aggregator  |
 |             |     |                      |           -------------      |                      |
  -------------       ----------------------                                ----------------------
+                                                                                     ^
+                                                                                     |
+                                                                                HTTP | 
+																					 |
+                                                                                     |
+                                                                           -----------------------
+                                                                          |                       |
+																		  |                       |
+																		  V                       V
+																	---------------	      ----------------
+																   |               |     |                |
+																   |    Service    |     |     Service    |
+																   |               |     |                |
+																    ---------------       ----------------
+																	      ^                       ^
+																	      |                       |
+																		  | HTTP                  |  IO
+																		  |                       |
+																		  V                       V
+																     ---------------      ----------------
+																	|    endpoint   |    |    endpoint    |
+																	 ---------------      ----------------
 ```
  
 
