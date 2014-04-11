@@ -2,44 +2,16 @@
 # General settings
 # ---------------------------------------------------------------------------------
 organization_name: 'Your Organization'
-application_name: 'Cedilla Aggregator'
+application_name: 'Cedilla Delivery Aggregator'
 application_description: 'Delivery aggregation service for library resources'
-
-# ---------------------------------------------------------------------------------
-# Webserver settings - If you're using Phusion Passenger or a similar product to
-#                      run this application in apache or nginx, then these values
-#                      are irrelevant. The host and port are defined in the apache
-#                      or nginx configuration files.
-# ---------------------------------------------------------------------------------
-server_type: 'thin'
-server_host: 'localhost'
-server_port: 3000
-
-# ---------------------------------------------------------------------------------
-# Session settings
-# ---------------------------------------------------------------------------------
-session_secret: '[your unique id]'
-session_expires: 900
-
-# ---------------------------------------------------------------------------------
-# Log settings
-# ---------------------------------------------------------------------------------
-log_dir: '[path to your installation]/log'
-log_level: 'info'
-
-# ---------------------------------------------------------------------------------
-# The default genre and content_type to use for client requests that are missing one.
-# Comment these lines out if you want the system to force a genre and content_type to be defined
-# ---------------------------------------------------------------------------------
-default_genre: 'journal'
-default_content_type: 'full_text'
 
 # ---------------------------------------------------------------------------------
 # Broker settings
 # ---------------------------------------------------------------------------------
-broker_timeout: 120000 # 2 minutes
-broker_heartbeat_interval: 5000 # 5 seconds - interval for how often the socket will check to see if the broker has finished
-broker_bad_citation_message: 'Invalid citation genre and/or content_type'
+broker_timeout: 120000 # 2 minutes before a 'complete' message is automatically set to the client
+broker_heartbeat_interval: 5000 # 5 seconds between checks to see if all services have finished
+broker_no_services_available: 'No services could fulfill your request.'
+broker_bad_item_message: 'Invalid citation genre and/or content_type'
 broker_response_holding_remain: 'Not enough citation information to process remaining services.'
 broker_response_errored: 'Unable to complete request.'
 broker_response_success: 'All services have responded.'

@@ -1,37 +1,25 @@
-# These cross reference libraries are used in various parts of the system
+# -------------------------------------------------------------------------------------------------------------------------
+# These cross reference fields allow you to translate values that come in from the client or the services.
+#
+# You specify which data object, which data element, and the values (value coming in on the left and the translation 
+# on the right)
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# -------------------------------------------------------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------------------------
-# Rules engine
+citation:
+  genre:
+    theses: dissertation
+    newspaper: document
+    wire: document
+    transcript: document
 
-## Unknown genre mapping:
-unknown_genres:
-  theses: dissertation
-  newspaper: document
-  wire: document
-  transcript: document
-
-# -----------------------------------------------------------------------------------------------
-# Resource Object 
-
-# All abbreviation values should be lowercase!
-# Make sure you include the fully spelled out language as well since this is checked for every value received 
-languages:
-  English: 
-    - en 
-    - eng
-    - english
-  French: 
-    - fr
-    - french
-  Spanish:
-    - es
-    - spanish
-
-formats:
-  electronic: 
-    - texts
-    - electronic
-  audio: 
-    - audio
-  video: 
-    - video
+resource:
+  format:
+    texts: electronic
+    

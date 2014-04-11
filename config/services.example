@@ -1,174 +1,100 @@
-# Service specific configurations
+# ------------------------------------------------------------------------------------------------------------------------- 
+# This file contains registration information for all of your services.
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# 
+# ------------------------------------------------------------------------------------------------------------------------- 
+# Explanation of the tiers hierarchy
+# ------------------------------------------------------------------------------------------------------------------------- 
+#    tiers: 
+#      [name]:                           <-- The processing tier that the service belongs to. Services are grouped into tiers 
+#                                            so that the broker can prioritize services. The lower the tier number, the sooner
+#                                            the service processes. Services in tier_one are all processed first. Any service in tier_two
+#                                            must wait for all tier_one services to either be dispatched or placed in the holding queue
+#
+#                                            The system organizes your tiers based on their name, so tier_z will process after tier_b.
+#
+#                                            Your first tier should contain services that can provide important information about the
+#                                            citation such as ISBN, DOI, or other ids that may make it possible to call additional
+#                                            services. It also typically contains services that respond quickly and provide links
+#                                            to online copies of the item.
+#
+#                                            All of the services within a tier are dispatched simultaneously (unless they have been
+#                                            placed in the holding queue).
+#
+#                                            Any services left in the holding queue are passed on to the next tier.
+#
+# ------------------------------------------------------------------------------------------------------------------------- 
+# Explanation of the values in a service definition
+# -------------------------------------------------------------------------------------------------------------------------
+# 
+# [name]:                                <-- The name of the service (see below for naming convention rules)
+#    enabled: [true/false]               <-- Default is 'false' if this is omitted
+#    max_attempts: [number]              <-- The number of times the endpoint will be called in the event of an HTTP error. default is 1
+#    timeout: [seconds]                  <-- The number of seconds after which the HTTP call to the service should timeout. default is 5
+#    display_name: [string]              <-- A user friendly name for the service. This name will be sent back to the client app. default is [name]
+#
+#    target: [string]                    <-- The HTTP address of the service. This value should include the http:// or https:// prefix!
+# -------------------------------------------------------------------------------------------------------------------------
 
 services:
   
-  # Explanation of the values in a service definition
-  # -------------------------------------------------------------------------------------------------------------------------
-  # 
-  # [name]:                                <-- The name of the service (see below for naming convention rules)
-  #    disabled: [true/false]              <-- Default is 'true' if this is omitted
-  #    tier: [number]                      <-- The processing tier that the service belongs to. Services are grouped into tiers 
-  #                                            so that the broker can prioritize services. The lower the tier number, the sooner
-  #                                            the service processes. Services in tier 1 are all processed first. Any service in tier 2
-  #                                            must wait for all tier 1 services to either be dispatched or placed in the holding queue
-  #
-  #                                            Tier one typically contains services that can provide important information about the
-  #                                            citation such as ISBN, DOI, or other ids that may make it possible to call additional
-  #                                            services. It also typically contains services that respond quickly and provide links
-  #                                            to online copies of the item.
-  #
-  #    display_name: [name]                <-- The name as it will appear when sent back to the client, default is the name above
-  #    max_attempts: [number]              <-- The number of times the endpoint will be called in the event of an HTTP error. default is 1
-  #
-  #    http_method: '[get/post/patch/put]' <-- The HTTP method used to call the endpoint (See below for HTTP method notes). default is 'get'
-  #    http_timeout: [seconds]             <-- The number of seconds after which the HTTP call to the ednpoint should timeout. default is 5
-  #    http_max_redirects: [number]        <-- The maximum number of HTTP 3xx codes the service will follow before quitting. default is 8
-  #    http_error_on_non_200: [true/false] <-- Whether or not a non HTTP 2xx code will be treated as an error (see below for notes on HTTP errors)
-  #    http_cookies: {hash of cookies}     <-- A hash of any pre-defined cookies you may need to send the endpoint
-  #
-  #    translator_for_request: '[name]'    <-- The translator to use to build the query string and/or form data sent to the endpoint (see translator notes)
-  #    translator_for_response: '[name]'   <-- The translator to use when converting the response from the endpoint (see translator notes)
-  #
-  #    base_url: '[http://the.service.endpoint/path]' <-- The root URL for the service's endpoint
-  #    url_query:
-  #        [param]: '[value]'              <-- A hash of all the query string parameters that should be sent to the endpoint every time
-  #        [param]: '[value]'              <-- Every value should be a string here! Even if its 'true', 'false', '3', '4.56', etc.
-  #
-  #
-  #    [key]: 'value'                      <-- If you are writing your own service implementation, you can provide as much additional
-  #    [key]: number                       <-- information as you would like here. It will stored in the @config instance variable
-  #    [key]: {[hash]}                     <-- and made available to yoou in your code
-  #
-  # -------------------------------------------------------------------------------------------------------------------------
-  # ** If you are writing your own service implementation, you can reference MOST of the above values by simply adding the ruby
-  #    instance variable notation to the front of the name (e.g. @max_attempts, @http_cookies, etc.). The few exceptions are:
-  #           translator_for_request --> @request_translator
-  #           translator_for_response --> @response_translator
-  #           your addiitonal entries --> @config['[key']
-  #
-  # ** naming convention rules - all service and translator names should use underscores to separate individual words
-  #                              the system will translate the name you enter here into a matching class object by
-  #                              converting the name to camel-case and adding 'Service' or 'Translator' to the end
-  #                              for example a service called 'open_url' would be matched to 'OpenUrlService'
-  #
-  # ** HTTP method notes - The HTTP method determines how the service will contact the endpoint. If you use 'get', the
-  #                        service will append citation and author information into the query string by default. All other methods 
-  #                        pass the citation and author information as form data. You can override this behavior in your own
-  #                        service implementation by overriding the add_citation_to_target or build_form_data methods.
-  #
-  # ** HTTP error notes - The system will use the http_error_on_non_200 status code to determine if a non-2xx HTTP status code
-  #                       should be treated as an error. If it should, the service will then use the max_attempts value to re-call
-  #                       the endpoint until it gets a 2xx status code or reaches that maximum number of attempts. 
-  #
-  #                       HTTP 3xx redirects occur BEFORE this error handling occurs, so if you specify that there are 8 redirect
-  #                       attempts allowed, the system will follow the redirects until it reaches a non 3xx status code or the final
-  #                       redirect attempt and will then hand that final status code over to the http_error_on_non_200 status
-  #                       code check.
-  #
-  # ** Translator notes - Translators are used to convert Citation, Author, and Resource objects into something else (e.g. JSON,
-  #                       XML, URI, HTML, or a Hash) and vice versa. They work in conjunction with mapping files located in 
-  #                       /translators/config to determine which fields map to which object attributes in the Citation, Author,
-  #                       or Resource object. The name of the translator provided in this file should match the name of the
-  #                       mapping file (excluding the '.yaml' file extension) and should follow the naming convention outlined
-  #                       in 'naming convention rules' above.
-  #
-  #                       In rare cases there may also be a specific Translator implementation located in /translators. The 
-  #                       mapping files themselves indicate which Translator implementation to use. This means that the name 
-  #                       of the implementation does NOT need to match the name of the mapping file.
-  # -------------------------------------------------------------------------------------------------------------------------
-  
-  sfx:
-    disabled: false                    
-    tier: 1
-    max_attempts: 1                    
-    base_url: '[base url for your SFX]'
+  # See bottom of this file for an explanation of these values!
+  tiers:
+    1:
+      service_test:
+        enabled: true
+        max_attempts: 1
+        timeout: 10
 
-    translator_for_request: 'open_url'
-    translator_for_response: 'sfx'    
+        target: 'http://localhost:3101/service_test'
 
-    
-    http_method: 'get'
-    http_timeout: 10
-    http_error_on_non_200: true
-    http_max_redirects: 5
+      sfx:
+        enabled: true
+        max_attempts: 1
+        timeout: 10
 
-    url_query:
-      sid: 'EBSCO:a9h'
-      sfx.response_type: 'simplexml'
-      sfx.show_availability: '1'
-      sfx.ignore_date_threshold: '1'
+        target: 'http://localhost:3102/worker1?name=sfx'
  
 # -------------------------------------------------------------------------------
-  internet_archive:
-    disabled: false
-    tier: 2
-    max_attempts: 1
-    display_name: 'The Internet Archive'
+    2:
+      internet_archive:
+        enabled: true
+        max_attempts: 1
+        timeout: 5
+        display_name: 'The Internet Archive'
 
-    base_url: 'http://www.archive.org/advancedsearch.php?'
-
-    http_method: 'get'
-    http_timeout: 5
-    http_error_on_non_200: true
-    http_max_redirects: 2
-
-    url_query:
-      keep_apostrophes: 'true'
-      fl[]: '*'
-      fmt: 'json'
-      xmlsearch: 'Search'
-      rows: '999'
-
-    default_media_type: 'electronic'
-    default_rating: 1
-
-    citation_uri: 'q=title:?+AND+creator:?+AND+(mediatype:texts+OR+mediatype:audio+OR+mediatype:video)'
-
-    resource_status: 'public domain'
-    resource_availability: true
-    resource_target_prefix: 'http://www.archive.org/stream/'
+        target: 'http://localhost:3103/worker1?name=internet_archive'
 
 # -------------------------------------------------------------------------------
-  cover_thing:
-    disabled: false
-    tier: 3
-    max_attempts: 1
-    display_name: 'LibraryThing'
+    3:
+      cover_thing:
+        enabled: true
+        max_attempts: 3
+        timeout: 5
+        display_name: 'LibraryThing'
 
-    base_url: 'http://covers.librarything.com/devkey/[your API key]'
+        target: 'http://localhost:3104/worker1?name=library_thing'
     
-    http_method: 'get'
-    http_timeout: 5
-    http_error_on_non_200: true
-    http_max_redirects: 5
+     # -------------------------------------------------------------------------------
+      cover_elsevier:
+        enabled: true
+        max_attempts: 1
+        timeout: 5
+        display_name: 'Elsevier Cover'
 
-# -------------------------------------------------------------------------------
-  cover_elsevier:
-    disable: false
-    tier: 3
-    max_attempts: 1
-    display_name: 'Elsevier Cover'
+        target: 'http://localhost:3105/worker1?name=elsevier_cover'
 
-    base_url: 'http://www.extranet.elsevier.com/inca_covers_store/issn/'
+    # -------------------------------------------------------------------------------
+      cover_open_library:
+        enabled: true
+        max_attempts: 1
+        timeout: 5
+        display_name: 'Open Library Cover'
 
-    http_method: 'get'
-    http_timeout: 5
-    http_error_on_non_200: false
-    http_max_redirects: 5
-
-# -------------------------------------------------------------------------------
-  cover_open_library:
-    disabled: false
-    tier: 3
-    max_attempts: 1
-    display_name: 'Open Library Cover'
-
-    base_url: 'http://covers.openlibrary.org/b/'
-
-    http_method: 'get'
-    http_timeout: 5
-    http_error_on_non_200: false
-    http_max_redirects: 5
-
-    url_query:
-      default: 'false'
+        target: 'http://localhost:3106/worker1?name=open_library_cover'

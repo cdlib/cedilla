@@ -1,8 +1,19 @@
-# Mapping of citation object properties to their openurl arguments
+# ---------------------------------------------------------------------------------
+# OpenURL --> Aggregator Data Model conversion definition
+#
+# This mapping file is used by ./lib/translator.js to turn incoming OpenURLs from the client request into 
+# Citation and Author data objects.
 #
 # values on the left are what they will be stored as within the citation/author object
 # values on the right are the possible names of the arguments passed in the openurl query string
-
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# ---------------------------------------------------------------------------------
 # Citation
 genre: ['rft.genre', 'rfe.genre', 'genre']
 content_type: ['rft.content', 'rfe.content', 'content', 'content_type']
@@ -50,7 +61,7 @@ end_page: ['rft.epage', 'rfe.epage', 'epage']
 pages: ['rft.pages', 'rfe.pages', 'pages']
 
 
-
+# ---------------------------------------------------------------------------------
 # Author
 author_full_name: ['rft.au', 'rfe.au', 'rft.inventor', 'rfe.inventor', 'rft.creator', 'rfe.creator', 'rft.contributor', 'rfe.contributor', 'au', 'inventor', 'creator', 'contributor']
 author_last_name: ['rft.aulast', 'rfe.aulast', 'rft.invlast', 'rfe.invlast', 'aulast', 'invlast']

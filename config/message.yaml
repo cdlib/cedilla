@@ -1,3 +1,14 @@
+# ------------------------------------------------------------------------------
+# This file contains all of the error messages the system can send to the client
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# ------------------------------------------------------------------------------
+
 # General
 bad_url: 'Invalid URL!'
 bad_boolean: 'Must be a boolean value!'

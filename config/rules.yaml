@@ -1,4 +1,56 @@
+# -------------------------------------------------------------------------------------------------------------------------
+# This file allows you to define the business rules the aggregator will use when determining which services are called for
+# the request.
+#
+# You specify which data object, which data element, and the values (value coming in on the left and the translation 
+# on the right)
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# -------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you define services that should be called every time a request is received. 
+#
+# These services will skip the logic check in the next section but will adhere to the minimum_item_groups in the last section. 
+# For example if you place the cover_thing service into this section it will be dispatched regardless of the genre and 
+# content_type of the citation but if the citation has no isbn it will still be placed in the holding queue.
+#
+# -------------------------------------------------------------------------------------------------------------------------
+dispatch_always:
+  - sfx
+
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you categorize services into groups that are then tied to specific data elements values.
+#
+# For example:
+#    given the following configuration:
+#
+#        objects:
+#          citation:
+#            genre:
+#              journal:
+#                - sfx
+#                - pubmed
+#                - cover_open_library
+#              book:
+#                - sfx
+#                - cover_thing
+#            content_type:
+#              full_text:
+#                - sfx
+#                - cover_open_library
+#                - cover_thing
+#
+#     Then if an openUrl request came in with the following ?rft.genre=journal&rft.content=full_text the system would
+#     dispatch sfx and cover_open_library. It would not call pubmed because pubmed does not support full_text (in this example!)
+#     and it would not call cover_thing because that service does not support the journal genre.
+# -------------------------------------------------------------------------------------------------------------------------
 objects:
   citation:
     # Group services into the genres they can search
@@ -7,47 +59,24 @@ objects:
     # results for books so it should only appear in the book and bookitem genre types
     genre:
       journal:
-        - service_test
-        - sfx
         - cover_elsevier
         - cover_open_library
       book:
-        - sfx
         - internet_archive
         - cover_thing
         - cover_open_library
       issue:
-        - sfx
         - cover_elsevier
         - cover_open_library
       article:
-        - sfx
         - cover_elsevier
         - cover_open_library
       series:
-        - sfx
         - cover_elsevier
         - cover_open_library
       bookitem:
-        - sfx
         - cover_thing
         - cover_open_library
-      report:
-        - sfx
-      conference:
-        - sfx
-      document:
-        - sfx
-        - cover_elsevier
-        - cover_open_library
-      dissertation:
-        - sfx
-      patent:
-        - sfx
-      preprint:
-        - sfx
-      proceeding:
-        - sfx
 
     # Group services into the type of content they can provide
     # When a citation comes in from a client the rules engine will use this list to determine what
@@ -56,20 +85,16 @@ objects:
     # category!
     content_type:
       electronic:
-        - sfx
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       full_text:
-        - service_test
-        - sfx
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       holdings:
-        - sfx
         - cover_thing
         - cover_elsevier
         - cover_open_library
@@ -81,9 +106,10 @@ objects:
         - internet_archive
         - cover_thing
         - cover_open_library
-      purchase:
-        - sfx
 
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you categorize services into groups that are then tied to specific data elements values.
+#
 # Define the minimum amount of citation information required to process a service. The options MUST match attributes on the Citation object!
 # Items within an array indicate an OR relationship and items on different lines indicate an AND relationship so:
 #
@@ -98,11 +124,7 @@ objects:
 #    book:
 #      - ['title', 'article_title']
 #      - ['AUTHOR']
-#
-# ==============================================================================================================================================
-# WARNING!!!
-#   Changes to this section will impact: test_citation.test_dispatchable, test_rules.test_has_minimum_citation_requirements
-# ==============================================================================================================================================
+# -------------------------------------------------------------------------------------------------------------------------
 minimum_item_groups:
   service_test:
     - ['isbn', 'eisbn']

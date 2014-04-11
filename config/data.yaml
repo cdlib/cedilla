@@ -1,0 +1,62 @@
+# ---------------------------------------------------------------------------------
+# Object relationships and validation
+#
+# The cedilla agregator is not tied to any specific data model!
+#
+# You define your rudimentary data model below. It is assumed that the individual service
+# targets and the clients making requests to this system will curate their own data.
+#
+# With that said, you must define some very rudimentary information about your implementation's
+# data model below. This information is used in conjunction with the rules.yaml file to 
+# determine when and if any individual service is called.
+#
+# Your primary object should appear first! All incoming requests from the client will
+# attempt to be translated into the first object defined!
+#
+# The ./config/rules.yaml defintion works against the primary object
+# 
+# objects:
+#   object_a:
+#     default:
+#       parameter_1: 'foo'
+#       item_2: 'bar'
+#
+#     validation:
+#       - ['item_2', 'item_3'
+#       - parameter_3
+#
+#     children:
+#       - object_b
+#
+#   object_b:
+#     validation:
+#       - parameter_Z
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# ---------------------------------------------------------------------------------
+objects:
+  citation:
+    default:             # Default values
+      content_type: 'full_text'
+
+    validation:          # Fields required for a citation to be valid
+      - genre
+      - content_type     
+
+    children:            # Establish the relationship between the objects
+      - author
+      - resource
+
+  author:                
+    validation:          # One of these fields is required for the author to be valid
+      - ['last_name', 'full_name', 'corporate_name']
+
+  resource:
+    validation:          # Either a source AND a local_id OR a target are required for the resource to be valid
+      - ['source', 'local_id']
+      - target

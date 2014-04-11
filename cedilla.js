@@ -49,7 +49,7 @@ io.sockets.on('connection', function (socket) {
 		try{
 			var translator = new Translator(configManager, 'mapping_openurl');
 			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
-			var item = buildInitialItems(configManager.getConfig('application')['objects'], translator, 
+			var item = buildInitialItems(configManager.getConfig('data')['objects'], translator, 
 																																		helper.queryStringToMap(data.toString()));
 			
 			if(typeof item != undefined){
