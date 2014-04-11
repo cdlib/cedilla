@@ -1,4 +1,22 @@
-To install:
+## Cedilla Delivery Aggregator
+
+### Overview
+
+The Cedilla Delivery Aggregator system is a component of the larger Cedilla project. It acts as a middleman between the (Cedilla JS Library)[https://github.com/cdlib/cedilla_web] and various (Cedilla Service)[https://github.com/cdlib/cedilla_services] implementations.
+
+The Aggregator is written in node.js and makes use of the socket.io module to handle open-ended connections with clients (web sockets, long polling, etc.). It also takes advantage of node's asynchronous nature to translate incoming client requests and call out to multiple services simultaneously.
+
+
+
+ -------------       ----------------------                                ----------------------
+|             |     |                      |   HTTP    -------------      |                      |
+|   client    |<--->|  Cedilla JS library  |<-------->|  socket.io  |<--->|  Cedilla Aggregator  |
+|             |     |                      |           -------------      |                      |
+ -------------       ----------------------                                ----------------------
+
+ 
+
+### Installation:
 
 * install the latest version of node from: http://nodejs.org/
 

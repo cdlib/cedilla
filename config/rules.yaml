@@ -7,6 +7,7 @@ objects:
     # results for books so it should only appear in the book and bookitem genre types
     genre:
       journal:
+        - service_test
         - sfx
         - cover_elsevier
         - cover_open_library
@@ -61,6 +62,7 @@ objects:
         - cover_elsevier
         - cover_open_library
       full_text:
+        - service_test
         - sfx
         - internet_archive
         - cover_thing
@@ -102,6 +104,8 @@ objects:
 #   Changes to this section will impact: test_citation.test_dispatchable, test_rules.test_has_minimum_citation_requirements
 # ==============================================================================================================================================
 minimum_item_groups:
+  service_test:
+    - ['isbn', 'eisbn']
   internet_archive:
     - ['title', 'book_title']
     - ['AUTHOR']
