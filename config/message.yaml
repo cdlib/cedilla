@@ -9,6 +9,21 @@
 # break the YAML parser and will cause the Aggregator to shutdown!
 # ------------------------------------------------------------------------------
 
+# Item
+undefined_item_type: '? is either an unknown data type or you did not supply the ./config/data.yaml configuration file!'
+
+# Translator
+missing_translator_mapping_file: 'The translator mapping file specified, ?, could not be found in ./config/'
+
+#Broker
+broker_no_services_available: 'No services could fulfill your request.'
+broker_bad_item_message: 'Invalid citation genre and/or content_type'
+broker_response_holding_remain: 'Not enough citation information to process remaining services.'
+broker_response_errored: 'Unable to complete request.'
+broker_response_success: 'All services have responded.'
+
+
+
 # General
 bad_url: 'Invalid URL!'
 bad_boolean: 'Must be a boolean value!'

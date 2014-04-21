@@ -3,17 +3,23 @@ var server = require('http').createServer(onRequest),
 		fs = require('fs'),
 		url = require('url'),
 		_ = require('underscore'),
-		helper = require('./lib/helper.js');
+		helper = require('./lib/helper.js'),
+		configManager = require('./config/config.js');
 
 server.listen(3005);
 
-var ConfigurationManager = require('./config/config.js'),
-		Translator = require('./lib/translator.js'),
+var Translator = require('./lib/translator.js'),
 		Broker = require('./lib/broker.js'),
 		Item = require('./lib/item.js');
 
+var messages = undefined;
+
+console.log('loading main');
+configManager.getConfig('message', function(config){
+	messages = config;
+});
+
 var broker = new Broker();
-var configManager = new ConfigurationManager();
 
 /* -------------------------------------------------------------------------------------------
  * Default route
@@ -47,26 +53,25 @@ io.sockets.on('connection', function (socket) {
 		console.log('dispatching services for: ' + data);
 		
 		try{
-			var translator = new Translator(configManager, 'mapping_openurl');
+			var translator = new Translator('mapping_openurl');
 			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
-			var item = buildInitialItems(configManager.getConfig('data')['objects'], translator, 
-																																		helper.queryStringToMap(data.toString()));
+			var item = buildInitialItems(translator, helper.queryStringToMap(data.toString()));
 			
 			if(typeof item != undefined){
 				console.log('translated openurl into: ' + item.toString());
 				
 				// Send the socket, configuration manager, and the item to the broker for processing
-				broker.negotiate(socket, configManager, item);
+				broker.negotiate(socket, item);
 				
 			}else{
 				// Warn about invalid item
 				console.log('unable to build initial item from the openurl passed!');
-				socket.emit('error', configManager.getConfig('error')['broker_bad_item_message']);
+				socket.emit('error', messages['broker_bad_item_message']);
 			}
 			
 		}catch(e){
 			console.log(e);
-			socket.emit('error', configManager.getConfig('error')['generic_http_error']);
+			socket.emit('error', messages['generic_http_error']);
 		}
 		
 		console.log('broker finished intializing ... waiting for responses');
@@ -82,28 +87,39 @@ io.sockets.on('connection', function (socket) {
 /* -------------------------------------------------------------------------------------------
  * Build the initial Items
  * ------------------------------------------------------------------------------------------- */
-function buildInitialItems(item_definitions, translator, map){
-	var item = undefined;
+function buildInitialItems(translator, map){
+	var ret = undefined,
+			itemDefinitions = undefined,
+			openurl = undefined;
 	
-	_.forEach(item_definitions, function(value, key){
-		// If we haven't already defined the item
-		if(typeof item == 'undefined'){
-			item = translator.mapToItem(key, true, map);
-			
-			// Try to load any children if there are any defined
-			_.forEach(value['children'], function(name){
-				var child = translator.mapToItem(name, true, map);
-				
-				// If the child passes the validation check add it to the item
-				if(child.isValid()){
-					item.addAttribute(name + 's', new Array([child]));
+	configManager.getConfig('data', function(config){
+		itemDefinitions = config['objects'];
+	});
+	configManager.getConfig('mapping_openurl', function(config){
+		openurl = config;
+	});
+	
+	// loop through the item types in the OpenURL mapping file definition
+	_.forEach(openurl, function(mapping, type){
+		var item = undefined;
+		
+		item = translator.mapToItem(type, true, map, true);
+		
+		// If this is the first item to be translated, make it the root
+		if(typeof ret == 'undefined'){
+			ret = item;
+		
+		}else{
+			// If not, add it to the root item if its an appropriate child type
+			if(typeof itemDefinitions[ret.getType()]['children'] != 'undefined'){
+				if(_.contains(itemDefinitions[ret.getType()]['children'], item.getType())){
+					ret.addAttribute(type + 's', [item]);
 				}
-			});
-			
+			}
 		}
 		
 	});
 	
-	return item;
+	return ret;
 }
 

@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------------
+# OpenURL --> For OPAC Service
+#
+# Based on a subset of the mapping_openurl.yaml defintiion
+# ---------------------------------------------------------------------------------
+# Citation
+citation:
+  genre: 'rft.genre'
+  content_type: 'rft.content'
+
+  issn: 'rft.issn'
+  eissn: 'rft.eissn'
+
+  isbn_10: 'rft.isbn'
+  eisbn_10: 'rft.eisbn'
+  isbn_13: 'rft.isbn_13'
+  eisbn_13: 'rft.eisbn_additional'
+
+  oclc: 'rft.oclcnum'
+  lccn: 'rft.lccn'
+  doi: 'rft.doi'
+  coden: 'rft.coden'
+  sici: 'rft.sici'
+  bici: 'rft.bici'
+
+  title: 'rft.title'
+  book_title: 'rft.btitle'
+  journal_title: 'rft.jtitle'
+  article_title: 'rft.atitle'
+  short_title: 'rft.stitle'
+
+  publisher: 'rft.pub'
+  publication_date: 'rft.date'
+  publication_place: 'rft.place'
+  year: 'rft.year'
+  month: 'rft.month'
+  day: 'rft.day'
+
+  volume: 'rft.volume'
+  issue: 'rft.issue'
+  article_number: 'rft.artnum'
+  enumeration: 'rft.chron'
+  part: 'rft.part'
+  season: 'rft.ssn'
+  quarter: 'rft.quarter'
+  series: 'rft.series'
+  institute: 'rft.inst'
+  subject: 'rft.subject'
+  text_language: 'rft.dcLanguage'
+
+  start_page: 'rft.spage'
+  end_page: 'rft.epage'
+  pages: 'rft.pages'
+
+
+# ---------------------------------------------------------------------------------
+# Author
+author:
+  full_name: 'rft.au'
+  last_name: 'rft.aulast'
+  first_name: 'rft.aufirst'
+  corporate_author: 'rft.aucorp'
+  initials: 'rft.auinit'
+  first_initial: 'rft.auinit1'
+  middle_initial: 'rft.auinitm'
+  suffix: 'rft.ausuffix'

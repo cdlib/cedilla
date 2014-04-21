@@ -80,6 +80,12 @@ The Cedilla Project was influenced by the Umlaut project: https://github.com/tea
 
 * > npm install collections
 
+* > npm install node-html-encoder
+
+* > npm install underscore
+
+* > npm install mocha (needs to be installed globally as well)
+
 * > node cedilla.js
 
 * cd out of the repo
