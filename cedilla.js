@@ -1,25 +1,16 @@
+var CONFIGS = require('./lib/config.js');
+
 var server = require('http').createServer(onRequest),
 		io = require('socket.io').listen(server),
 		fs = require('fs'),
 		url = require('url'),
 		_ = require('underscore'),
 		helper = require('./lib/helper.js'),
-		configManager = require('./config/config.js');
-
-server.listen(3005);
-
-var Translator = require('./lib/translator.js'),
+		Translator = require('./lib/translator.js'),
 		Broker = require('./lib/broker.js'),
 		Item = require('./lib/item.js');
 
-var messages = undefined;
-
-console.log('loading main');
-configManager.getConfig('message', function(config){
-	messages = config;
-});
-
-var broker = new Broker();
+server.listen(3005);
 
 /* -------------------------------------------------------------------------------------------
  * Default route
@@ -52,7 +43,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('openurl', function (data) {
 		console.log('dispatching services for: ' + data);
 		
-		try{
+		//try{
+			
 			var translator = new Translator('openurl');
 			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
 			var item = buildInitialItems(translator, helper.queryStringToMap(data.toString()));
@@ -61,18 +53,21 @@ io.sockets.on('connection', function (socket) {
 				console.log('translated openurl into: ' + item.toString());
 				
 				// Send the socket, configuration manager, and the item to the broker for processing
-				broker.negotiate(socket, item);
+				
+				// TODO: Make the Broker an evented object so that we don't have to pass the socket
+				//       object around. Just let this listen for messages posted from the Broker
+				var broker = new Broker(socket, item);
 				
 			}else{
 				// Warn about invalid item
 				console.log('unable to build initial item from the openurl passed!');
-				socket.emit('error', messages['broker_bad_item_message']);
+				socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
 			}
 			
-		}catch(e){
+		/*}catch(e){
 			console.log(e);
-			socket.emit('error', messages['generic_http_error']);
-		}
+			socket.emit('error', CONFIGS['message']['generic_http_error']);
+		}*/
 		
 		console.log('broker finished intializing ... waiting for responses');
   });
@@ -88,19 +83,10 @@ io.sockets.on('connection', function (socket) {
  * Build the initial Items
  * ------------------------------------------------------------------------------------------- */
 function buildInitialItems(translator, map){
-	var ret = undefined,
-			itemDefinitions = undefined,
-			openurl = undefined;
-	
-	configManager.getConfig('data', function(config){
-		itemDefinitions = config['objects'];
-	});
-	configManager.getConfig('openurl', function(config){
-		openurl = config;
-	});
+	var ret = undefined;
 	
 	// loop through the item types in the OpenURL mapping file definition
-	_.forEach(openurl, function(mapping, type){
+	_.forEach(CONFIGS['openurl'], function(mapping, type){
 		var item = undefined;
 		
 		item = translator.mapToItem(type, true, map, true);
@@ -111,9 +97,13 @@ function buildInitialItems(translator, map){
 		
 		}else{
 			// If not, add it to the root item if its an appropriate child type
-			if(typeof itemDefinitions[ret.getType()]['children'] != 'undefined'){
-				if(_.contains(itemDefinitions[ret.getType()]['children'], item.getType())){
-					ret.addAttribute(type + 's', [item]);
+			if(typeof CONFIGS['data']['objects'][ret.getType()] != 'undefined'){
+				if(typeof CONFIGS['data']['objects'][ret.getType()]['children'] != 'undefined'){
+				
+					if(_.contains(CONFIGS['data']['objects'][ret.getType()]['children'], item.getType())){
+						ret.addAttribute(type + 's', [item]);
+					}
+				
 				}
 			}
 		}
