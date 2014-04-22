@@ -22,36 +22,44 @@ module.exports.getConfig = function(name, callback){
 
 function initialize(callback){
 	fs.readdir(__dirname, function(err, files){
-
 		console.log('searching ' + __dirname + ' for configuration files.');
+		registerFiles(__dirname, files);
 
-		var i = 0;
-		files.forEach(function(file){
-			// If the file is a YAML file load it
-			if(file.indexOf('.yaml') > 0 || file.indexOf('.yml') > 0){
-				var fileName = file.replace('.yaml', '').replace('.yml', '').toLowerCase().trim();
-
-				_configs[i] = new Array(fileName, yaml.load(fs.readFileSync(__dirname + '/' + file, 'utf8')));
-
-				console.log('loading configuration file --> ' + file)
-
-				// Tell node to watch this file for changes
-				fs.watchFile(__dirname + '/' + file, function (curr, prev) {
-					// If the file was updated reload it
-					if(curr.mtime > prev.mtime){
-						console.log('change detected, reloading configuration file --> ' + file);
-						_configs[i] = new Array(fileName, yaml.load(fs.readFileSync(__dirname + '/' + file, 'utf8')));
-					}
-				});
-
-				i++;
-			}
+		fs.readdir(__dirname + '/translation', function(err, files){
+			console.log('searching ' + __dirname + '/translation for mapping files.');
+			registerFiles(__dirname + '/translation', files);
+			
+			callback();
 		});
-
-		callback();
-
+		
 	});
 }
+
+function registerFiles(dir, files){
+	var i = _.size(_configs);
+	files.forEach(function(file){
+		// If the file is a YAML file load it
+		if(file.indexOf('.yaml') > 0 || file.indexOf('.yml') > 0){
+			var fileName = file.replace('.yaml', '').replace('.yml', '').toLowerCase().trim();
+
+			_configs[i] = new Array(fileName, yaml.load(fs.readFileSync(dir + '/' + file, 'utf8')));
+
+			console.log('loading configuration file --> ' + file)
+
+			// Tell node to watch this file for changes
+			fs.watchFile(__dirname + '/' + file, function (curr, prev) {
+				// If the file was updated reload it
+				if(curr.mtime > prev.mtime){
+					console.log('change detected, reloading configuration file --> ' + file);
+					_configs[i] = new Array(fileName, yaml.load(fs.readFileSync(dir + '/' + file, 'utf8')));
+				}
+			});
+
+			i++;
+		}
+	});
+}
+
 
 function findConfig(name){
 	var ret = [];

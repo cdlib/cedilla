@@ -30,26 +30,30 @@ describe('service.js', function(){
 // Initialization
 // ---------------------------------------------------------------------------------------------------
 	it("should be disabled by default!", function(){
-	
+		var conf = { max_attempts: 1, timeout: 5, display_name: 'The Tester Service', 
+								 target: 'http://localhost:3000/test'};
+								 
+		svc = new Service('tester', conf);
+		
+		assert(!svc.isEnabled());
 	});
 	
 	// ---------------------------------------------------------------------------------------------------
 	it('should set the attributes appropriately', function(){
-		
-		
-		var conf = { enabled: true, max_attempts: 1, timeout: 5, display_name: 'The Internet Archive', 
-								 target: 'http://localhost:3000/test', svc_specific_val: 'foo' };
+		var conf = { enabled: true, max_attempts: 1, timeout: 5, display_name: 'The Tester Service', 
+								 target: 'http://localhost:3000/test', translator: 'mapping_opac', svc_specific_val: 'foo'};
 								 
 		svc = new Service('tester', conf);
 		
-		assert
+		assert(svc.isEnabled());
+		assert.equal('tester', svc.getName());
+		assert.equal('The Tester Service', svc.getDisplayName());
+		assert.equal('tester', svc.toString());
 		
 		// Test all of the services defined in the ./config/services.yaml to make sure they initialize
 		_.forEach(serviceDefinitions, function(config, service){
 			var svc = new Service(service, config);
 		
-			console.log(config);
-			
 			assert(config['enabled'] == svc.isEnabled());
 			assert.equal(service, svc.getName());
 			assert.equal(service, svc.toString());

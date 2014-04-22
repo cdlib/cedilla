@@ -53,7 +53,7 @@ io.sockets.on('connection', function (socket) {
 		console.log('dispatching services for: ' + data);
 		
 		try{
-			var translator = new Translator('mapping_openurl');
+			var translator = new Translator('openurl');
 			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
 			var item = buildInitialItems(translator, helper.queryStringToMap(data.toString()));
 			
@@ -95,7 +95,7 @@ function buildInitialItems(translator, map){
 	configManager.getConfig('data', function(config){
 		itemDefinitions = config['objects'];
 	});
-	configManager.getConfig('mapping_openurl', function(config){
+	configManager.getConfig('openurl', function(config){
 		openurl = config;
 	});
 	

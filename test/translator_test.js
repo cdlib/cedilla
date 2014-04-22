@@ -23,7 +23,7 @@ describe('translator.js', function(){
 		configManager.getConfig('data', function(config){	
 			itemDefinitions = config['objects'];	
 			
-			configManager.getConfig('mapping_openurl', function(config){	
+			configManager.getConfig('openurl', function(config){	
 				openurl = config;	
 				
 				configManager.getConfig('message', function(config){	
@@ -55,7 +55,7 @@ describe('translator.js', function(){
 	
 	// ------------------------------------------------------------------------------------------------------
 	it("should initialize with a mapping file defined!", function(){
-		assert.doesNotThrow(function(){ new Translator('mapping_openurl'); });
+		assert.doesNotThrow(function(){ new Translator('openurl'); });
 	});
 	
 // ------------------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ describe('translator.js', function(){
 	
 	// ------------------------------------------------------------------------------------------------------
 	it("openURL translations should return correct value specified in yaml config!", function(){
-		translator = new Translator('mapping_openurl');
+		translator = new Translator('openurl');
 		
 		_.forEach(openurl, function(map, type){
 			_.forEach(map, function(externalName, internalName){
@@ -151,7 +151,7 @@ describe('translator.js', function(){
 		
 	// ------------------------------------------------------------------------------------------------------
 	it("OpenURL should return an item with the translated attributes!", function(){
-		translator = new Translator('mapping_openurl');
+		translator = new Translator('openurl');
 		
 		_.forEach(openurl, function(map, type){
 			var internals = [],
@@ -206,7 +206,7 @@ describe('translator.js', function(){
 				i++;
 			});
 			
-			var map = translator.itemToMap(item);
+			var map = translator.itemToMap(item, true);
 			
 			assert(typeof map != 'undefined');
 			assert.equal(i, _.size(map));
@@ -222,7 +222,7 @@ describe('translator.js', function(){
 	
 	// -----------------------------------------------------------------------------------------------
 	it("OpenURL should return a map of the translated items!", function(){
-		translator = new Translator('mapping_openurl');
+		translator = new Translator('openurl');
 		var attributes = {};
 		
 		// Add each attribute from the openURL mapping file to the item
@@ -232,7 +232,7 @@ describe('translator.js', function(){
 			});
 		
 			var item = new Item(type, false, attributes);			
-			var map = translator.itemToMap(item);
+			var map = translator.itemToMap(item, true);
 
 			assert(typeof map != 'undefined');
 			assert.equal(_.size(attributes), _.size(map));
@@ -240,4 +240,22 @@ describe('translator.js', function(){
 		});
 		
 	});
+	
+	
+// ------------------------------------------------------------------------------------------------------
+// itemToJSON() Tests
+// ------------------------------------------------------------------------------------------------------
+	it("should return valid JSON", function(){
+		_.forEach(itemDefinitions, function(def, type){
+			var item = new Item(type, false, attributes);
+			
+			var json = translator.itemToJSON(item);
+			
+			item.getAttributes().forEach(function(value, key){
+				assert(json.indexOf('"' + key + '":"' + value + '"') > 0);
+			});
+			
+		});
+	});
+	
 });
