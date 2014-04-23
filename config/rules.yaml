@@ -60,6 +60,11 @@ objects:
     genre:
       journal:
         - service_test
+        - error_400_test
+        - error_404_test
+        - error_500_fatal_test
+        - error_500_error_test
+        - error_500_warning_test
         - cover_elsevier
         - cover_open_library
       book:
@@ -93,6 +98,11 @@ objects:
         - cover_open_library
       full_text:
         - service_test
+        - error_400_test
+        - error_404_test
+        - error_500_fatal_test
+        - error_500_error_test
+        - error_500_warning_test
         - internet_archive
         - cover_thing
         - cover_elsevier
