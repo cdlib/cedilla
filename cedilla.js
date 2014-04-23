@@ -4,6 +4,7 @@ var server = require('http').createServer(onRequest),
 		io = require('socket.io').listen(server),
 		fs = require('fs'),
 		url = require('url'),
+		querystring = require('querystring'),
 		_ = require('underscore'),
 		helper = require('./lib/helper.js'),
 		Translator = require('./lib/translator.js'),
@@ -43,11 +44,10 @@ io.sockets.on('connection', function (socket) {
 	socket.on('openurl', function (data) {
 		console.log('dispatching services for: ' + data);
 		
-		//try{
+		try{
 			
 			var translator = new Translator('openurl');
-			//var item = buildInitialCitation(translator, helper.queryStringToMap(data.toString()));
-			var item = buildInitialItems(translator, helper.queryStringToMap(data.toString()));
+			var item = buildInitialItems(translator, querystring.parse(data.toString()));
 			
 			if(typeof item != undefined){
 				console.log('translated openurl into: ' + item.toString());
@@ -64,10 +64,10 @@ io.sockets.on('connection', function (socket) {
 				socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
 			}
 			
-		/*}catch(e){
+		}catch(e){
 			console.log(e);
 			socket.emit('error', CONFIGS['message']['generic_http_error']);
-		}*/
+		}
 		
 		console.log('broker finished intializing ... waiting for responses');
   });
