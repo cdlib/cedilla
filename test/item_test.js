@@ -1,23 +1,12 @@
+var CONFIGS = require('../lib/config.js');
+
 var assert = require("assert"),
 		_ = require('underscore'),
 		helper = require("../lib/helper.js"),
 		Item = require("../lib/item.js");
 				
 describe('item.js', function(){
-	var configManager = undefined,
-			itemDefinitions = undefined,
-			attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
-	
-	// ---------------------------------------------------------------------------------------------------
-	before(function(done){
-		configManager = require("../config/config.js")
-		
-		// Call the configManager for the first time so that the yaml files get loaded
-		configManager.getConfig('data', function(config){	
-			itemDefinitions = config['objects'];	
-			done();
-		});
-	});
+	var attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
 	
 // ------------------------------------------------------------------------------------------------------	
 // Initialization
@@ -36,7 +25,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------	
 	// Valid item types do NOT throw errors
 	it('should NOT throw an error when the type is defined in the ./config/data.config!', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			assert.doesNotThrow(function(){ new Item(type, false, {}); });
 			assert.doesNotThrow(function(){ new Item(type, true, {}); });
 			assert.doesNotThrow(function(){ new Item(type, false, attributes); });
@@ -47,7 +36,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------	
 	// defaults off returns empty object
 	it('should have no attributes when defaults are turned off and no attributes were supplied!', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, {});
 			assert.equal(0, _.size(item.getAttributes()));
 		});
@@ -56,7 +45,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------		
 	// defaults on returns object with only defaults
 	it('should have an attribute for each default defined in ./config/data.yaml!', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 		
 			var item = new Item(type, true, {});
 			
@@ -74,7 +63,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------	
 	// attribute assignment working
 	it('should have an attribute for each attribute specified!', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			assert.equal(_.size(attributes), _.size(item.getAttributes()));
@@ -90,7 +79,7 @@ describe('item.js', function(){
 // IsValid()
 // ------------------------------------------------------------------------------------------------------
 	it('testing for invalid items', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			if(typeof def['validation'] != 'undefined'){
 				var item = new Item(type, true, {});
 				
@@ -102,7 +91,7 @@ describe('item.js', function(){
 		
 	// ------------------------------------------------------------------------------------------------------	
 	it('testing for valid items', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var attributes = {};
 			
 			// Set a value for each attribute defined in the items validation config
@@ -130,7 +119,7 @@ describe('item.js', function(){
 // ------------------------------------------------------------------------------------------------------
 	// has attributes
 	it('testing hasAttributes()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			assert(_.size(item.getAttributes()) > 0);
@@ -141,7 +130,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------
 	// has attribute
 	it('testing hasAttribute()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			assert(item.hasAttribute('foo'));
@@ -157,7 +146,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------		
 	// add attribute
 	it('testing addAttribute()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			item.addAttribute('new', 'one');
@@ -170,7 +159,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------
 	// set attributes in bulk
 	it('testing addAttributes()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			item.addAttributes({'a':'z', 'b':'y', 'c':'x'});
@@ -184,7 +173,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------
 	// remove attribute
 	it('testing removeAttribute()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			item.removeAttribute('red');
@@ -197,7 +186,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------
 	// get value
 	it('testing getAttribute()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 			
 			assert(item.getAttribute('foo') == 'bar');
@@ -213,9 +202,7 @@ describe('item.js', function(){
 	// ------------------------------------------------------------------------------------------------------
 	// check adding child items
 	it('testing addAttribute() and removeAttribute() for array of child items', function(){
-		var defs = itemDefinitions;
-		
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			if(typeof def['children'] != 'undefined'){
 				var item = new Item(type, false, attributes);
 				var children = [];
@@ -250,7 +237,7 @@ describe('item.js', function(){
 // to String
 // ------------------------------------------------------------------------------------------------------
 	it('testing toString()', function(){
-		_.forEach(itemDefinitions, function(def, type){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			var item = new Item(type, false, attributes);
 		
 			assert(item.toString() == '"foo" = "bar", "one" = "fish", "two" = "fish", "red" = "fish", "blue" = "fish"');

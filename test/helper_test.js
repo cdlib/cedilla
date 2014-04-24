@@ -1,49 +1,10 @@
+var CONFIGS = require('../lib/config.js');
+
 var assert = require("assert"),
 		_ = require('underscore'),
 		helper = require("../lib/helper.js");
 		
 describe("helper.js", function(){
-	var configManager = undefined,
-			messages = undefined;
-	
-	// ---------------------------------------------------------------------------------------------------
-	before(function(done){
-		configManager = require("../config/config.js")
-		
-		// Call the configManager for the first time so that the yaml files get loaded
-		configManager.getConfig('message', function(config){	
-			messages = config;	
-			done();
-		});
-	});
-	
-	// ---------------------------------------------------------------------------------------------------
-	it('testing queryStringToMap()', function(){
-		var answer = {"foo":"bar", "my":"my new map", "child":"two"};
-		var qs = "foo=bar&my=my%20new%20map&child=one&child=two";
-		
-		//console.log(map);
-		// We're unable to interpret parent-child relationships in a queryString therefore the above child=one&child=two
-		// will result in "child":"two"
-		assert.equal(_.size(answer), _.size(helper.queryStringToMap(qs)));
-		
-		assert.equal(0, _.size(helper.queryStringToMap("?")));
-		assert.equal(0, _.size(helper.queryStringToMap("")));
-		assert.equal(0, _.size(helper.queryStringToMap(undefined)));
-		assert.equal(0, _.size(helper.queryStringToMap(13)));
-	});
-
-	// ---------------------------------------------------------------------------------------------------
-	it('testing mapToQueryString()', function(){
-		var map = {"foo":"bar", "my":"my new map", "children":[{"child":"one"}, {"child":"two"}]};
-		
-		var answer = "foo=bar&my=my%20new%20map&child=one&child=two";
-		
-		assert.equal(answer, helper.mapToQueryString(map));
-		
-		map = {};
-		assert.equal("", helper.mapToQueryString(map));
-	});
 	
 	// ---------------------------------------------------------------------------------------------------
 	it('testing safeAssign()', function(){
@@ -71,7 +32,7 @@ describe("helper.js", function(){
 	
 	// ---------------------------------------------------------------------------------------------------
 	it('testing buildMessage()', function(){
-		_.forEach(messages, function(value, key){
+		_.forEach(CONFIGS['message'], function(value, key){
 			var tmp = value,
 					vals = [];
 			
