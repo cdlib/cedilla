@@ -20,12 +20,11 @@ function onRequest (request, response) {
 	var pathname = url.parse(request.url).pathname;
 	var query = url.parse(request.url).query;
 	
-	console.log('received request for index.html');
+	console.log('received request for index.html: ' + query);
 	
 	// This is a default page that opens up a socket.io connection with this server, so requests
 	// originating from clients without the socket socket.io library get passed through properly
-	fs.readFile(__dirname + '/index.html',
-  function (err, data) {
+	fs.readFile(__dirname + '/index.html', function (err, data) {
     if (err) {
       response.writeHead(500);
       return response.end('error loading index.html');

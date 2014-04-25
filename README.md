@@ -72,7 +72,7 @@ The Cedilla Project was influenced by the Umlaut project: https://github.com/tea
 
 * create symbolic links in /config for each of the example files in your new directory 
 
-* cd into the local repo
+* cd into the local project
 
 * > npm install socket.io
 
@@ -90,11 +90,11 @@ The Cedilla Project was influenced by the Umlaut project: https://github.com/tea
 
 * > node cedilla.js
 
-* cd out of the repo
+* cd out of the project
 
-* clone the ruby based services from: https://github.com/briri/test_socket_node_ruby into a new repo
+* clone the ruby based services from: https://github.com/briri/test_socket_node_ruby into a new project
 
-* cd into that repo
+* cd into that project
 
 * > bundle install
 

@@ -22,6 +22,16 @@ broker_response_holding_remain: 'Not enough citation information to process rema
 broker_response_errored: 'Unable to complete request.'
 broker_response_success: 'All services have responded.'
 
+# Service
+service_connection_refused: 'The ? service appears to be offline!'
+service_wrong_response: 'The response from ? could not be verified.'
+service_timeout: '? took too long to respond.'
+service_bad_request: 'The JSON sent to ? appears to have been invalid!'
+service_bad_json: '? did not return valid JSON.'
+service_unknown_item: '? returned an unknown item type.'
+service_unable_to_translate: 'Unable to interpret the response from ?'
+service_server_error: '? was unable to process the request.'
+service_server_error_fatal: 'The ? service couold not respond to your request.'
 
 
 # General
