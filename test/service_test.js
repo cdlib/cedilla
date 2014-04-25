@@ -252,7 +252,20 @@ describe('service.js', function(){
 		});
 	});
 	
-	// Catch Buffer Overload Attempt
+	// ---------------------------------------------------------------------------------------------------	
+	it('should return an error when the response overflows the buffer!', function(done){
+		// Buffer Overflow
+		svc.setTarget("http://localhost:9000/flood_buffer");
+		svc.call(item, function(result){
+
+			console.log(result);
+
+			assert(result instanceof Error);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_buffer_overflow'], ['tester']), result.message);
+			
+			done();
+		});
+	});
 	
 });
 
@@ -344,6 +357,17 @@ function spinUpServer(){
 			}else if(route == '/not_json'){
 				response.writeHead(200);
 				response.end("<html><head><title>test</title></head><body><div>Hello Tester!</div></body></html>");
+			
+			}else if(route == '/flood_buffer'){
+				response.writeHead(200);
+				var msg = "{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
+															json.api_ver + "\",\"citations\":[";
+															
+				for(var i = 0; i < CONFIGS['application']['service_max_response_length'] + 1; i++){
+					msg += "{\"genre\":\"bar\",\"content_type\":\"foo\",\"isbn\":\"" + i + "\"}";
+				}
+				
+				response.end(msg + "]}");
 			
 			}else{
 				// Generic server error
