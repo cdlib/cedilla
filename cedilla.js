@@ -1,16 +1,18 @@
-var CONFIGS = require('./lib/config.js');
+var CONFIGS = require('./lib/config.js'),
+		LOGGER = require('./lib/logger.js');
 
 var server = require('http').createServer(onRequest),
 		io = require('socket.io').listen(server),
 		fs = require('fs'),
 		url = require('url'),
 		querystring = require('querystring'),
-		_ = require('underscore'),
-		helper = require('./lib/helper.js'),
+		_ = require('underscore');
+		
+var helper = require('./lib/helper.js'),
 		Translator = require('./lib/translator.js'),
 		Broker = require('./lib/broker.js'),
 		Item = require('./lib/item.js');
-
+		
 server.listen(3005);
 
 /* -------------------------------------------------------------------------------------------
@@ -20,7 +22,7 @@ function onRequest (request, response) {
 	var pathname = url.parse(request.url).pathname;
 	var query = url.parse(request.url).query;
 	
-	console.log('received request for index.html: ' + query);
+	LOGGER.log('debug', 'received request for index.html: ' + query);
 	
 	// This is a default page that opens up a socket.io connection with this server, so requests
 	// originating from clients without the socket socket.io library get passed through properly
@@ -41,7 +43,7 @@ function onRequest (request, response) {
 io.sockets.on('connection', function (socket) {
 	
 	socket.on('openurl', function (data) {
-		console.log('dispatching services for: ' + data);
+		LOGGER.log('debug', 'dispatching services for: ' + data);
 		
 		try{
 			
@@ -49,30 +51,26 @@ io.sockets.on('connection', function (socket) {
 			var item = buildInitialItems(translator, querystring.parse(data.toString()));
 			
 			if(typeof item != undefined){
-				console.log('translated openurl into: ' + item.toString());
-				
+				LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 				// Send the socket, configuration manager, and the item to the broker for processing
 				
-				// TODO: Make the Broker an evented object so that we don't have to pass the socket
-				//       object around. Just let this listen for messages posted from the Broker
 				var broker = new Broker(socket, item);
 				
 			}else{
 				// Warn about invalid item
-				console.log('unable to build initial item from the openurl passed!');
+				LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
+				
 				socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
 			}
 			
 		}catch(e){
-			console.log(e);
+			LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
+			LOGGER.log('error', e.stack);
+			
 			socket.emit('error', CONFIGS['message']['generic_http_error']);
 		}
 		
-		console.log('broker finished intializing ... waiting for responses');
-  });
-
-  socket.on('disconnect', function(){
-	  console.log('connection terminated by client');
+		LOGGER.log('debug', 'broker finished intializing ... waiting for responses');
   });
 	
 });

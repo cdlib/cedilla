@@ -1,3 +1,14 @@
+# -----------------------------------------------------------------------------------------------------------------------------
+# This file contains application specific settings
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# -----------------------------------------------------------------------------------------------------------------------------
+
 # ---------------------------------------------------------------------------------
 # General settings
 # ---------------------------------------------------------------------------------
@@ -5,13 +16,18 @@ organization_name: 'Your Organization'
 application_name: 'Cedilla Delivery Aggregator'
 application_description: 'Delivery aggregation service for library resources'
 
+log_path: './log'
+access_log_name: 'access.log'
+error_log_name: 'error.log'
+
 # ---------------------------------------------------------------------------------
 # Broker settings
 # ---------------------------------------------------------------------------------
-broker_timeout: 120000 # 2 minutes before a 'complete' message is automatically set to the client
-broker_heartbeat_interval: 5000 # 5 seconds between checks to see if all services have finished
-broker_no_services_available: 'No services could fulfill your request.'
-broker_bad_item_message: 'Invalid citation genre and/or content_type'
-broker_response_holding_remain: 'Not enough citation information to process remaining services.'
-broker_response_errored: 'Unable to complete request.'
-broker_response_success: 'All services have responded.'
+broker_timeout: 120000 # 2 minutes
+broker_heartbeat_interval: 5000 # 5 seconds
+
+# ---------------------------------------------------------------------------------
+# Service settings
+# ---------------------------------------------------------------------------------
+service_max_response_length: 30000 # bytes
+service_api_version: 1.0

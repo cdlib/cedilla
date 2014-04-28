@@ -54,7 +54,7 @@ describe('service.js', function(){
 		done();
 	});
 
-
+	
 	// ---------------------------------------------------------------------------------------------------
 	it('should throw an error if no name is supplied!', function(){
 		assert.throws(function(){ new Service(); });
@@ -214,8 +214,6 @@ describe('service.js', function(){
 	it('should return an timeout!', function(done){
 		// Timeout
 		svc.setTarget("http://localhost:9000/timeout");
-		
-		
 		svc.call(item, function(result){
 
 			assert(result instanceof Error);
@@ -225,7 +223,7 @@ describe('service.js', function(){
 		});
 		
 	});
-	
+
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an error when the service returned an unknown item!', function(done){
 		// Unknown item type returned
@@ -266,6 +264,7 @@ describe('service.js', function(){
 			done();
 		});
 	});
+
 	
 });
 
@@ -282,6 +281,8 @@ function spinUpServer(){
 		// Do routing 
 		// ----------------------------------------------------------------------------------------------
 		var route = url.parse(request.url).pathname;
+					
+console.log('routing to: ' + request.url);					
 					
 		// Deal with timeouts
 		// ----------------------------------------------------------------------------------------------
@@ -309,6 +310,8 @@ function spinUpServer(){
 		// Send back the appropriate response based on the route
 		// ----------------------------------------------------------------------------------------------
 		request.on('end', function(){ 
+			response.writeHead(404);
+			
 			var json = JSON.parse(body);
 				
 			if(route == '/success'){
