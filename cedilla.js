@@ -15,14 +15,37 @@ var helper = require('./lib/helper.js'),
 		
 server.listen(3005);
 
+/* -----------------------------------------------------------------------------------------
+ * Primitive routing logic.
+ * ----------------------------------------------------------------------------------------- */
+function onRequest (request, response) {
+  var pathname = url.parse(request.url).pathname;
+
+  switch(pathname) {
+    case '/':
+      LOGGER.log ('debug', 'routing to index page');
+      testPage (request, response);
+      break;
+    case '/citation':
+      LOGGER.log ('debug', 'routing to citation service');
+      citationService (request, response);
+      break;
+    default:
+      LOGGER.log ('debug', 'resource not found');
+      response.writeHead(404);
+      response.end('resource not found');
+  }
+}
+
 /* -------------------------------------------------------------------------------------------
  * Default route
  * ------------------------------------------------------------------------------------------- */
-function onRequest (request, response) { 
+function testPage (request, response) { 
 	var pathname = url.parse(request.url).pathname;
 	var query = url.parse(request.url).query;
 	
 	LOGGER.log('debug', 'received request for index.html: ' + query);
+        LOGGER.log('debug', 'pathname is: ' + pathname);
 	
 	// This is a default page that opens up a socket.io connection with this server, so requests
 	// originating from clients without the socket socket.io library get passed through properly
@@ -35,6 +58,35 @@ function onRequest (request, response) {
     response.writeHead(200);
     response.end(data);
   });
+}
+
+
+/* -------------------------------------------------------------------------------------------
+ * Citation service
+ * This service takes an OpenURL as input and returns a JSON representation of the citation.
+ * ------------------------------------------------------------------------------------------- */
+function citationService (request, response) {
+  var query = url.parse(request.url).query;
+
+  if (!queryValid (query)) {
+    response.writeHead(400);
+    response.end('query not valid');
+  }
+
+  LOGGER.log('received request for citation JSON representation');
+  translator = new Translator('openurl');
+  var item = buildInitialItems(translator, querystring.parse(query));
+  response.writeHead(200);
+  response.end(translator.itemToJSON(item));    
+}
+
+/*
+ * TODO: basic query validation?
+ */
+function queryValid (query) {
+
+  if (query) return true;
+  return false;
 }
 
 /* -------------------------------------------------------------------------------------------
