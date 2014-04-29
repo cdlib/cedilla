@@ -77,6 +77,7 @@ function citationService (request, response) {
   translator = new Translator('openurl');
   var item = buildInitialItems(translator, querystring.parse(query));
   response.writeHead(200);
+  response.setHeader('Content-Type', 'application/json');
   response.end(translator.itemToJSON(item));    
 }
 
