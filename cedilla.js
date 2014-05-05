@@ -71,7 +71,13 @@ function homePage (request, response) {
  * This service takes an OpenURL as input and returns a JSON representation of the citation.
  * ------------------------------------------------------------------------------------------- */
 function citationService (request, response) {
-  var query = url.parse(request.url).query;
+	
+	var query = url.parse(request.url).query;
+	
+	var item = buildInitialItemsFromOpenUrl(query),
+	    translator = new Translator('openurl');
+			
+/*  var query = url.parse(request.url).query;
   var queryValid = function () {
     // TODO: validation logic
     if (query) return true;
@@ -85,10 +91,10 @@ function citationService (request, response) {
 
   LOGGER.log('received request for citation JSON representation');
   translator = new Translator('openurl');
-  var item = buildInitialItems(translator, querystring.parse(query));
+  var item = buildInitialItems(translator, querystring.parse(query));*/
   response.setHeader('Content-Type', 'application/json');
   response.writeHead(200);
-  response.end(translator.itemToJSON(item));    
+  response.end(JSON.stringify(helper.itemToMap(item)));    
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -96,17 +102,13 @@ function citationService (request, response) {
  * Handles the openurl event that is emitted by the client
  * ------------------------------------------------------------------------------------------- */
 io.sockets.on('connection', function (socket) {
+	var self = this;
 	
 	socket.on('openurl', function (data) {
 		LOGGER.log('debug', 'dispatching services for: ' + data);
 		
 		try{
-			var qs = helper.queryStringToMap(data.toString());
-
-			var translator = new Translator('openurl');
-			var map = translator.translateMap(qs);
-
-			var item = helper.mapToItem('citation', true, map);
+			var item = self.buildInitialItemsFromOpenUrl(data.toString());
 
 			if(item instanceof Item){
 				LOGGER.log('debug', 'translated openurl into: ' + item.toString());
@@ -133,5 +135,12 @@ io.sockets.on('connection', function (socket) {
 	
 });
 
+// -------------------------------------------------------------------------------------------
+function buildInitialItemsFromOpenUrl(queryString){
+	var qs = helper.queryStringToMap(queryString);
 
+	var translator = new Translator('openurl');
+	var map = translator.translateMap(qs);
 
+	return helper.mapToItem('citation', true, map);
+}
