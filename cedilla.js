@@ -16,38 +16,44 @@ server.listen(3005);
 
 /* -----------------------------------------------------------------------------------------
  * Primitive routing logic.
+ * This is the HTTP entry point to the application.
  * ----------------------------------------------------------------------------------------- */
 function onRequest (request, response) {
-  var pathname = url.parse(request.url).pathname;
-
-  switch(pathname) {
-    case '/':
-      LOGGER.log ('debug', 'routing to index page');
-      testPage (request, response);
-      break;
-    case '/citation':
-      LOGGER.log ('debug', 'routing to citation service');
-      citationService (request, response);
-      break;
-    default:
-      LOGGER.log ('debug', 'resource not found');
-      response.writeHead(404);
-      response.end('resource not found');
+  try {
+    var pathname = url.parse(request.url).pathname;
+    switch(pathname) {
+      case '/':
+        LOGGER.log ('debug', 'routing to index page');
+        homePage (request, response);
+        break;
+      case '/citation':
+        LOGGER.log ('debug', 'routing to citation service');
+        citationService (request, response);
+        break;
+      default:
+        LOGGER.log ('debug', 'resource not found');
+        response.writeHead(404);
+        response.end('resource not found');
+    }
+  } 
+  catch (err) {
+        var errMsg = "Cedilla server error. " + err;
+        LOGGER.log ('error', errMsg);
+        response.writeHead(500);
+        response.end(errMsg);
   }
 }
 
 /* -------------------------------------------------------------------------------------------
  * Default route
+ * This displays index.html.
  * ------------------------------------------------------------------------------------------- */
-function testPage (request, response) { 
+function homePage (request, response) { 
 	var pathname = url.parse(request.url).pathname;
 	var query = url.parse(request.url).query;
 	
 	LOGGER.log('debug', 'received request for index.html: ' + query);
         LOGGER.log('debug', 'pathname is: ' + pathname);
-	
-	// This is a default page that opens up a socket.io connection with this server, so requests
-	// originating from clients without the socket socket.io library get passed through properly
 	fs.readFile(__dirname + '/index.html', function (err, data) {
     if (err) {
       response.writeHead(500);
@@ -66,8 +72,13 @@ function testPage (request, response) {
  * ------------------------------------------------------------------------------------------- */
 function citationService (request, response) {
   var query = url.parse(request.url).query;
+  var queryValid = function () {
+    // TODO: validation logic
+    if (query) return true;
+    return false;
+  }
 
-  if (!queryValid (query)) {
+  if (!queryValid()) {
     response.writeHead(400);
     response.end('query not valid');
   }
@@ -75,21 +86,14 @@ function citationService (request, response) {
   LOGGER.log('received request for citation JSON representation');
   translator = new Translator('openurl');
   var item = buildInitialItems(translator, querystring.parse(query));
+  response.setHeader('Content-Type', 'application/json');
   response.writeHead(200);
   response.end(translator.itemToJSON(item));    
 }
 
-/*
- * TODO: basic query validation?
- */
-function queryValid (query) {
-
-  if (query) return true;
-  return false;
-}
-
 /* -------------------------------------------------------------------------------------------
  * Setup the socket.io connection
+ * Handles the openurl event that is emitted by the client
  * ------------------------------------------------------------------------------------------- */
 io.sockets.on('connection', function (socket) {
 	
