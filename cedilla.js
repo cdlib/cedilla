@@ -5,14 +5,13 @@ var server = require('http').createServer(onRequest),
 		io = require('socket.io').listen(server),
 		fs = require('fs'),
 		url = require('url'),
-		querystring = require('querystring'),
 		_ = require('underscore');
 		
 var helper = require('./lib/helper.js'),
 		Translator = require('./lib/translator.js'),
-		Broker = require('./lib/broker.js'),
-		Item = require('./lib/item.js');
-		
+		Item = require('./lib/item.js'),
+		Broker = require('./lib/broker.js');
+
 server.listen(3005);
 
 /* -----------------------------------------------------------------------------------------
@@ -98,14 +97,17 @@ io.sockets.on('connection', function (socket) {
 		LOGGER.log('debug', 'dispatching services for: ' + data);
 		
 		try{
-			
+			var qs = helper.queryStringToMap(data.toString());
+
 			var translator = new Translator('openurl');
-			var item = buildInitialItems(translator, querystring.parse(data.toString()));
-			
-			if(typeof item != undefined){
+			var map = translator.translateMap(qs);
+
+			var item = helper.mapToItem('citation', true, map);
+
+			if(item instanceof Item){
 				LOGGER.log('debug', 'translated openurl into: ' + item.toString());
+
 				// Send the socket, configuration manager, and the item to the broker for processing
-				
 				var broker = new Broker(socket, item);
 				
 			}else{
@@ -128,37 +130,4 @@ io.sockets.on('connection', function (socket) {
 });
 
 
-/* -------------------------------------------------------------------------------------------
- * Build the initial Items
- * ------------------------------------------------------------------------------------------- */
-function buildInitialItems(translator, map){
-	var ret = undefined;
-	
-	// loop through the item types in the OpenURL mapping file definition
-	_.forEach(CONFIGS['openurl'], function(mapping, type){
-		var item = undefined;
-		
-		item = translator.mapToItem(type, true, map, true);
-		
-		// If this is the first item to be translated, make it the root
-		if(typeof ret == 'undefined'){
-			ret = item;
-		
-		}else{
-			// If not, add it to the root item if its an appropriate child type
-			if(typeof CONFIGS['data']['objects'][ret.getType()] != 'undefined'){
-				if(typeof CONFIGS['data']['objects'][ret.getType()]['children'] != 'undefined'){
-				
-					if(_.contains(CONFIGS['data']['objects'][ret.getType()]['children'], item.getType())){
-						ret.addAttribute(type + 's', [item]);
-					}
-				
-				}
-			}
-		}
-		
-	});
-	
-	return ret;
-}
 

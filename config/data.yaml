@@ -4,19 +4,20 @@
 # The cedilla agregator is not tied to any specific data model!
 #
 # You define your rudimentary data model below. It is assumed that the individual service
-# targets and the clients making requests to this system will curate their own data.
+# targets and the clients making requests to this system will curate their own data if necessary.
 #
 # With that said, you must define some very rudimentary information about your implementation's
 # data model below. This information is used in conjunction with the rules.yaml file to 
 # determine when and if any individual service is called.
 #
-# Your primary object should appear first! All incoming requests from the client will
-# attempt to be translated into the first object defined!
-#
-# The ./config/rules.yaml defintion works against the primary object
+# The ./config/rules.yaml defintion works against these object definitions
 # 
+# EXAMPLE:
+# -----------------------------------------------------------------
 # objects:
 #   object_a:
+#     root: true
+#
 #     default:
 #       parameter_1: 'foo'
 #       item_2: 'bar'
@@ -28,10 +29,39 @@
 #     children:
 #       - object_b
 #
+#     attributes:
+#       - field_1
+#       - field_2
+#
 #   object_b:
 #     validation:
 #       - parameter_Z
 #
+#     attributes:
+#       - field_a
+#       - field_b
+#       - field_c
+#
+# ---------------------------------------------------------------------------------
+# ROOT:
+#   Your primary object in your data model. You can have only one root object. This is the primary container used in 
+#   communications between the aggregator and its services as well as the object that is created when the client's incoming request comes in
+#
+# DEFAULT:
+#   Default values for the attributes you define
+#
+# VALIDATION:
+#   Tells the system that the identified attributes are required. If any one of the values is missing from an incoming
+#   client request, the system will return an invalid request error back to the client
+#
+# CHILDREN:
+#   Establishes hierarchy between the objects. 
+#
+# ATTRIBUTES:
+#   The individual data elements for each object. If an attribute comes in from a client request or response from a service 
+#   that does not appear in the root object or one of its children, then it is added to a hash map called 'additional'
+#
+# ---------------------------------------------------------------------------------
 # This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
 # changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
 # not dispatch to the new service(s) though until after you add it them to the rules.yaml)
@@ -41,10 +71,12 @@
 # ---------------------------------------------------------------------------------
 objects:
   citation:
+    root: true
+
     default:             # Default values
       content_type: 'full_text'
 
-    validation:          # Fields required for a citation to be valid
+    validation:          # Fields required for the item to be valid
       - genre
       - content_type     
 
@@ -52,11 +84,82 @@ objects:
       - author
       - resource
 
+    attributes:
+      - genre
+      - content_type
+      - issn
+      - eissn
+      - isbn
+      - eisbn
+      - oclc
+      - lccn
+      - doi
+      - coden
+      - sici
+      - bici
+      - document_id
+      - title
+      - book_title
+      - journal_title
+      - chapter_title
+      - article_title
+      - short_title
+      - publisher
+      - publication_date
+      - publication_place
+      - year
+      - month
+      - day
+      - volume
+      - issue
+      - article_number
+      - enumeration
+      - edition
+      - part
+      - season
+      - quarter
+      - series
+      - institution
+      - subject
+      - pages
+      - start_page
+      - end_page
+      - language
+      - abstract
+      - cover_image
+
   author:                
     validation:          # One of these fields is required for the author to be valid
       - ['last_name', 'full_name', 'corporate_name']
 
+    attributes:
+      - corporate_author
+      - full_name
+      - last_name
+      - first_name
+      - initials
+      - first_initial
+      - middle_initial
+      - suffix
+
   resource:
     validation:          # Either a source AND a local_id OR a target are required for the resource to be valid
-      - ['source', 'local_id']
+      - 'source'
+      - ['target', 'local_id']
+  
+    attributes:
+      - source
+      - location
       - target
+      - local_id
+      - local_title
+      - format
+      - type
+      - catalog_target
+      - cover_image
+      - description
+      - language
+      - license
+      - rating
+      - availability
+      - status

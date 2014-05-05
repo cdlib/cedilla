@@ -15,7 +15,7 @@
 # break the YAML parser and will cause the Aggregator to shutdown!
 # ---------------------------------------------------------------------------------
 # Citation
-citation:
+#citation:
   genre: ['rft.genre', 'rfe.genre', 'genre']
   content_type: ['rft.content', 'rfe.content', 'content', 'content_type']
 
@@ -66,7 +66,7 @@ citation:
 
 # ---------------------------------------------------------------------------------
 # Author
-author:
+#author:
   full_name: ['rft.au', 'rfe.au', 'rft.inventor', 'rfe.inventor', 'rft.creator', 'rfe.creator', 'rft.contributor', 'rfe.contributor', 'au', 'inventor', 'creator', 'contributor']
   last_name: ['rft.aulast', 'rfe.aulast', 'rft.invlast', 'rfe.invlast', 'aulast', 'invlast']
   first_name: ['rft.aufirst', 'rfe.aufirst', 'rft.invfirst', 'rfe.invfirst', 'aufirst', 'invfirst']

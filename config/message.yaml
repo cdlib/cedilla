@@ -22,7 +22,13 @@ broker_response_holding_remain: 'Not enough citation information to process rema
 broker_response_errored: 'Unable to complete request.'
 broker_response_success: 'All services have responded.'
 
+# Tier 
+tier_no_name: 'The tier must have a name!'
+tier_services_not_array: 'The services for tier ? must be an Array!'
+tier_services_no_services: 'Each service for tier ? must be an instance of a Service!'
+
 # Service
+service_no_name: 'Your service must have a name!'
 service_no_target_defined: Cannot contact ? because no HTTP target is defined in ./config/services.yaml!'
 service_connection_refused: 'The ? service appears to be offline!'
 service_wrong_response: 'The response from ? could not be verified.'
@@ -38,6 +44,10 @@ service_buffer_overflow: 'The response from ? was too large!'
 # General
 bad_url: 'Invalid URL!'
 bad_boolean: 'Must be a boolean value!'
+
+
+
+
 
 # -------------------------------------------------------------------
 # Citation Object Specific

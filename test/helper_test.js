@@ -1,10 +1,35 @@
-var CONFIGS = require('../lib/config.js');
-
-var assert = require("assert"),
-		_ = require('underscore'),
-		helper = require("../lib/helper.js");
+require('./index.js');
 		
 describe("helper.js", function(){
+	
+	var getAttributeMap = undefined;
+	
+	// ---------------------------------------------------------------------------------------------------
+	before(function(done){
+		
+		getAttributeMap = function(type){
+			var map = {},
+					self = this;
+
+			if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+				
+				_.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+					map[attribute] = 'foo-bar';
+				});
+		
+				if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
+					_.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
+						map[child + 's'] = [getAttributeMap(child)];
+					});
+				}
+			}
+	
+			return map;
+		};
+		
+		done();
+	});
+	
 	
 	// ---------------------------------------------------------------------------------------------------
 	it('testing safeAssign()', function(){
@@ -59,4 +84,76 @@ describe("helper.js", function(){
 		assert.notEqual('mouse', helper.depluralize('mice'));
 		assert.notEqual('goose', helper.depluralize('geese'));
 	});
+	
+	// ---------------------------------------------------------------------------------------------------
+	it('testing queryStringToMap()', function(){
+		var map = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
+		
+		var out = helper.queryStringToMap('foo=bar&one=fish&two=fish&red=fish&blue=fish');
+		
+		_.forEach(map, function(val, key){
+			assert.equal(val, out[key]);
+		});
+		
+	});
+	
+	// ---------------------------------------------------------------------------------------------------
+	it('testing mapToQueryString()', function(){
+		var qs = 'foo=bar&one=fish&two=fish&red=fish&blue=fish';
+		
+		var out = helper.mapToQueryString({'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'});
+		
+		assert.equal(qs, out);
+	});
+	
+	// ---------------------------------------------------------------------------------------------------
+	it('testing itemToMap()', function(){
+		var self = this;
+		
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
+			var map = getAttributeMap(type);
+			
+			var item = new Item(type, false, map);
+			
+			var out = helper.itemToMap(item);
+			
+			_.forEach(map, function(val, key){
+				if(val instanceof Array){
+					_.forEach(val, function(v, k){
+						assert.equal(v, out[key][k]);
+					});
+					
+				}else{
+					assert.equal(val, out[key]);
+				}
+			});
+		});
+	});
+	
+	// ---------------------------------------------------------------------------------------------------
+	it('testing mapToItem()', function(){
+		var self = this;
+		
+		assert.throws(function(){ helper.mapToItem('foo', false, {}); });
+		
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
+		
+			var map = getAttributeMap(type);
+		
+			var item = new Item(type, false, map);
+		
+			var out = helper.mapToItem(type, false, map);
+		
+			_.forEach(item.getAttributes(), function(val, key){
+				if(val instanceof Array){
+					assert.equal(1, _.size(val));
+					
+				}else{
+					assert.equal(val, out.getAttribute(key));
+				}
+			});
+			
+		});
+	});
+	
 });

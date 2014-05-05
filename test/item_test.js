@@ -1,12 +1,23 @@
-var CONFIGS = require('../lib/config.js');
-
-var assert = require("assert"),
-		_ = require('underscore'),
-		helper = require("../lib/helper.js"),
-		Item = require("../lib/item.js");
+require('./index.js');
 				
 describe('item.js', function(){
-	var attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
+	var attributes = {},
+			defaultValue = 'foo-bar';
+	
+	// ------------------------------------------------------------------------------------------------------	
+	before(function(done){
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
+			var attrs = {};
+			
+			_.forEach(def['attributes'], function(attribute){
+				attrs[attribute] = defaultValue;
+			});
+			
+			attributes[type] = attrs;
+		});
+		
+		done();
+	});
 	
 // ------------------------------------------------------------------------------------------------------	
 // Initialization
@@ -64,11 +75,11 @@ describe('item.js', function(){
 	// attribute assignment working
 	it('should have an attribute for each attribute specified!', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 			
-			assert.equal(_.size(attributes), _.size(item.getAttributes()));
+			assert.equal(_.size(attributes[type]), _.size(item.getAttributes()));
 				
-			_.forEach(attributes, function(value, key){
+			_.forEach(attributes[type], function(value, key){
 				assert.equal(value, item.getAttribute(key));
 			});
 		});
@@ -120,10 +131,10 @@ describe('item.js', function(){
 	// has attributes
 	it('testing hasAttributes()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 			
 			assert(_.size(item.getAttributes()) > 0);
-			assert(_.size(item.getAttributes()) == 5);
+			assert(_.size(item.getAttributes()) == _.size(attributes[type]));
 		});
 	});
 	
@@ -131,13 +142,11 @@ describe('item.js', function(){
 	// has attribute
 	it('testing hasAttribute()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 			
-			assert(item.hasAttribute('foo'));
-			assert(item.hasAttribute('one'));
-			assert(item.hasAttribute('two'));
-			assert(item.hasAttribute('red'));
-			assert(item.hasAttribute('blue'));
+			_.forEach(attributes[type], function(value, key){
+				assert(item.hasAttribute(key));
+			});
 		
 			assert(!item.hasAttribute('bar'));
 		});
@@ -147,12 +156,15 @@ describe('item.js', function(){
 	// add attribute
 	it('testing addAttribute()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, {});
 			
-			item.addAttribute('new', 'one');
+			_.forEach(attributes[type], function(value, key){
+				item.addAttribute(key, value);
+				
+				assert(item.hasAttribute(key));
+				assert(item.getAttribute(key) == value);
+			})
 
-			assert(item.hasAttribute('new'));
-			assert(item.getAttribute('new') == 'one');
 		});
 	});
 			
@@ -160,13 +172,13 @@ describe('item.js', function(){
 	// set attributes in bulk
 	it('testing addAttributes()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, {});
 			
-			item.addAttributes({'a':'z', 'b':'y', 'c':'x'});
+			item.addAttributes(attributes[type]);
 	
-			assert(item.getAttribute('a') == 'z');
-			assert(item.getAttribute('b') == 'y');
-			assert(item.getAttribute('c') == 'x');
+			_.forEach(attributes[type], function(value, key){
+				assert(item.getAttribute(key) == value);
+			});
 		});
 	});
 		
@@ -174,12 +186,14 @@ describe('item.js', function(){
 	// remove attribute
 	it('testing removeAttribute()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 			
-			item.removeAttribute('red');
+			_.forEach(attributes[type], function(value, key){
+				item.removeAttribute(key);
 	
-			assert(!item.hasAttribute('red'));
-			assert(typeof item.getAttribute('red') == 'undefined');
+				assert(!item.hasAttribute(key));
+				assert(typeof item.getAttribute(key) == 'undefined');
+			});
 		});
 	});
 		
@@ -187,15 +201,13 @@ describe('item.js', function(){
 	// get value
 	it('testing getAttribute()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 			
-			assert(item.getAttribute('foo') == 'bar');
-			assert(item.getAttribute('one') == 'fish');
-			assert(item.getAttribute('two') == 'fish');
-			assert(item.getAttribute('red') == 'fish');
-			assert(item.getAttribute('blue') == 'fish');
+			_.forEach(attributes[type], function(value, key){
+				assert(item.getAttribute(key) == value);
+			});
 		
-			assert(typeof item.getAttribute('bar') == 'undefined');
+			assert(typeof item.getAttribute('foobar') == 'undefined');
 		});
 	});
 		
@@ -204,30 +216,35 @@ describe('item.js', function(){
 	it('testing addAttribute() and removeAttribute() for array of child items', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
 			if(typeof def['children'] != 'undefined'){
-				var item = new Item(type, false, attributes);
-				var children = [];
+				var item = new Item(type, false, attributes[type]);
+				var children = {};
 			
 				var i = 0;
 				_.forEach(def['children'], function(child){
-					children[i] = new Item(child, true, {'nimble':'jack','frost':'jack','trades':'jack','id':i});
+					children[child + 's'] = new Item(child, true, attributes[child]);
 				});
 				
-				item.addAttribute('children', children);
+				_.forEach(children, function(kid, name){
+					item.addAttribute(name, [kid]);
+					
+					assert(item.hasAttribute(name));
+					
+					assert.equal(1, _.size(item.getAttribute(name)));
+					
+					_.forEach(item.getAttribute(name), function(child){
+						assert(_.size(child.getAttributes()) == _.size(attributes[child.getType()]));
+						
+						_.forEach(child.getAttributes(), function(v, k){
+							assert(child.getAttribute(k) == attributes[child.getType()][k]);
+						});
+						
+					});
+					
+					item.removeAttribute(name);
 		
-				assert(item.hasAttribute('children'));
-
-				children = item.getAttribute('children');
-		
-				assert.equal(i + 1, _.size(children));
-		
-				_.forEach(children, function(child){
-					assert(_.size(child.getAttributes()) == 4);
-					assert(child.getAttribute('frost') == 'jack');
+					assert(!item.hasAttribute(name));
 				});
 		
-				item.removeAttribute('children');
-		
-				assert(!item.hasAttribute('children'));
 			}
 		});
 	});
@@ -238,9 +255,14 @@ describe('item.js', function(){
 // ------------------------------------------------------------------------------------------------------
 	it('testing toString()', function(){
 		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			var item = new Item(type, false, attributes);
+			var item = new Item(type, false, attributes[type]);
 		
-			assert(item.toString() == '"foo" = "bar", "one" = "fish", "two" = "fish", "red" = "fish", "blue" = "fish"');
+			var test = '';
+			_.forEach(attributes[type], function(value, key){
+				test += '"' + key + '" = "' + value + '", ';
+			});
+		
+			assert(item.toString().trim() == test.slice(0, -2).trim());
 		});
 	});
 

@@ -1,15 +1,9 @@
-var CONFIGS = require('../lib/config.js');
+require('./index.js');
 
-var assert = require("assert"),
-		_ = require('underscore'),
-		net = require('http'),
-		url = require('url'),
-		helper = require("../lib/helper.js"),
-		Service = require("../lib/service.js"),
-		Item = require("../lib/item.js"),
-		Translator = require("../lib/translator.js");
+var net = require('http'),
+		url = require('url');
 				
-
+		/*
 // ---------------------------------------------------------------------------------------------------
 // Mock some methods onto the Service object so we can manipulate and view all attributes
 // ---------------------------------------------------------------------------------------------------
@@ -28,12 +22,28 @@ describe('service.js', function(){
 	
 	var svc = undefined,
 			item = undefined,
+			returnField = undefined,
+			returnValue = 'foo-bar',
 			mockService = undefined;
 	
 	// ---------------------------------------------------------------------------------------------------
 	before(function(done){
+		var type = '';
+		
+		_.forEach(CONFIGS['data']['objects'], function(config, name){
+			if(typeof config['root'] != 'undefined'){
+				type = name;
+				
+				returnField = config['attributes'][0];
+			}
+		});
+		
+		item = new Item(type, true, {});
+		
 		// Spin up some stub http servers for testing
-		mockService = spinUpServer();
+		mockService = spinUpServer(returnField, returnValue);
+
+		svc = new Service('tester');
 		
 		done();
 	});
@@ -43,14 +53,6 @@ describe('service.js', function(){
 		mockService.close();
 		
 		console.log('shutdown mock service.');
-		done();
-	});
-
-	// ---------------------------------------------------------------------------------------------------
-	beforeEach(function(done){
-		item = new Item(_.keys(CONFIGS['data']['objects'])[0], true, {});
-		
-		svc = new Service('tester');
 		done();
 	});
 
@@ -127,7 +129,7 @@ describe('service.js', function(){
 		svc.call(item, function(result){
 
 			assert(result instanceof Item);
-			assert.equal('bar', result.getAttribute('foo'));
+			assert.equal(returnValue, result.getAttribute(returnField));
 			
 			done();
 		});
@@ -228,6 +230,7 @@ describe('service.js', function(){
 	it('should return an error when the service returned an unknown item!', function(done){
 		// Unknown item type returned
 		svc.setTarget("http://localhost:9000/unknown_item");
+		
 		svc.call(item, function(result){
 
 			assert(result instanceof Error);
@@ -271,7 +274,7 @@ describe('service.js', function(){
 // ----------------------------------------------------------------------------------------------
 // Mock external service for testing
 // ----------------------------------------------------------------------------------------------
-function spinUpServer(){
+function spinUpServer(returnField, returnValue){
 	mockService = net.createServer(function(request, response){
 		var now = new Date(),
 				body = '',
@@ -281,8 +284,6 @@ function spinUpServer(){
 		// Do routing 
 		// ----------------------------------------------------------------------------------------------
 		var route = url.parse(request.url).pathname;
-					
-console.log('routing to: ' + request.url);					
 					
 		// Deal with timeouts
 		// ----------------------------------------------------------------------------------------------
@@ -317,12 +318,12 @@ console.log('routing to: ' + request.url);
 			if(route == '/success'){
 				response.writeHead(200);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"citations\":[{\"foo\":\"bar\"}]}");
+															json.api_ver + "\",\"citations\":[{\"" + returnField + "\":\"" + returnValue + "\"}]}");
 			
 			}else if(route == '/wrong_id'){
 				response.writeHead(200);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"ABCD-1234\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"citations\":[{\"foo\":\"bar\"}]}");
+															json.api_ver + "\",\"citations\":[{\"" + returnField + "\":\"" + returnValue + "\"}]}");
 			
 			}else if(route == '/bad_request'){
 				response.writeHead(400);
@@ -355,7 +356,7 @@ console.log('routing to: ' + request.url);
 			}else if(route == '/unknown_item'){
 				response.writeHead(200);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"examples\":[{\"foo\":\"bar\"}]}");
+															json.api_ver + "\",\"examples\":[{\"" + returnField + "\":\"" + returnValue + "\"}]}");
 															
 			}else if(route == '/not_json'){
 				response.writeHead(200);
@@ -388,3 +389,4 @@ console.log('routing to: ' + request.url);
 }
 
 
+*/
