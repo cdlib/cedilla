@@ -6,3 +6,6 @@ config/application.yaml
 config/services.yaml
 config/test.yaml
 
+bin/**/*
+*.out
+

@@ -5,9 +5,9 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-  var socket = io.connect('http://localhost');
+  var socket = io.connect('http://cdla-api-stg.cdlib.org:3005/');
   
-  socket.emit('openurl', 'rft.genre=journal&rft.title=A%20Tale%20Of%20Two%20Cities&rft.aulast=Dickens&foo=bar');
+  socket.emit('openurl', 'rft.genre=book&rft.title=Dune&rft.isbn=9788371502118');
   
   socket.on('citation', function (data) {
     update_div(data);

@@ -22,10 +22,8 @@
   issn: ['rft.issn', 'rfe.issn', 'issn']
   eissn: ['rft.eissn', 'rfe.eissn', 'eissn']
 
-  isbn_10: ['rft.isbn', 'rfe.isbn', 'isbn']
-  eisbn_10: ['rft.eisbn', 'rfe.eisbn', 'eisbn']
-  isbn_13: ['rft.isbn_13', 'rfe.isbn_13', 'rft.isbn_additional', 'rfe.isbn_additional', 'isbn_13', 'isbn_additional']
-  eisbn_13: ['rft.eisbn_additional', 'rfe.eisbn_additional', 'eisbn_additional']
+  isbn: ['rft.isbn', 'rfe.isbn', 'isbn', 'rft.isbn_13', 'rfe.isbn_13', 'rft.isbn_additional', 'rfe.isbn_additional', 'isbn_13', 'isbn_additional']
+  eisbn: ['rft.eisbn', 'rfe.eisbn', 'eisbn', 'rft.eisbn_additional', 'rfe.eisbn_additional', 'eisbn_additional']
 
   oclc: ['rft.oclcnum', 'rfe.oclcnum', 'oclc', 'oclcnum']
   lccn: ['rft.lccn', 'rfe.lccn', 'lccn']
