@@ -108,7 +108,7 @@ io.sockets.on('connection', function (socket) {
 		LOGGER.log('debug', 'dispatching services for: ' + data);
 		
 		try{
-			var item = self.buildInitialItemsFromOpenUrl(data.toString());
+			var item = buildInitialItemsFromOpenUrl(data.toString());
 
 			if(item instanceof Item){
 				LOGGER.log('debug', 'translated openurl into: ' + item.toString());
