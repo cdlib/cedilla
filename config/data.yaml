@@ -126,7 +126,7 @@ objects:
       - end_page
       - language
       - abstract
-      - cover_image
+      - sample_cover_image
 
   author:                
     validation:          # One of these fields is required for the author to be valid
