@@ -7,7 +7,7 @@
 <script>
   var socket = io.connect('http://localhost:3005/');
   
-  socket.emit('openurl', 'rft.genre=book&rft.title=Dune&rft.isbn=9788371502118');
+  socket.emit('openurl', 'rft.genre=book&rft.title=Dune&rft.isbn=9780575035409');
   
   socket.on('citation', function (data) {
     update_div(data);

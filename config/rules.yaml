@@ -60,27 +60,33 @@ objects:
     genre:
       journal:
         - oclc_xid
+        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       book:
         - oclc_xid
+        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
       issue:
         - oclc_xid
+        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       article:
         - oclc_xid
+        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       series:
         - oclc_xid
+        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       bookitem:
         - oclc_xid
+        - worldcat_discovery
         - cover_thing
         - cover_open_library
 
@@ -92,28 +98,33 @@ objects:
     content_type:
       electronic:
         - oclc_xid
+        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       full_text:
         - oclc_xid
+        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       holdings:
         - oclc_xid
+        - worldcat_discovery
         - cover_thing
         - cover_elsevier
         - cover_open_library
       audio:
         - oclc_xid
+        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
       video:
         - oclc_xid
+        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
@@ -139,6 +150,8 @@ objects:
 minimum_item_groups:
   oclc_xid:
     - ['isbn', 'eisbn', 'issn', 'eissn']
+  worldcat_discovery:
+    - ['isbn', 'eisbn', 'issn', 'eissn', 'oclc', 'lccn', 'title', 'book_title', 'journal_title', 'article_title']
   internet_archive:
     - ['title', 'book_title']
     - ['AUTHOR']
