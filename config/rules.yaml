@@ -162,7 +162,7 @@ minimum_item_groups:
   oclc_xid:
     - ['isbn', 'eisbn', 'issn', 'eissn']
   worldcat_discovery:
-    - ['isbn', 'eisbn', 'issn', 'eissn', 'oclc', 'lccn', 'title', 'book_title', 'journal_title', 'article_title']
+    - ['oclc']
   internet_archive:
     - ['title', 'book_title']
     - ['AUTHOR']

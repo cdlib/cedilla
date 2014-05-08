@@ -1,16 +1,16 @@
 var CONFIGS = require('./lib/config.js'),
-		LOGGER = require('./lib/logger.js');
+    LOGGER = require('./lib/logger.js');
 
 var server = require('http').createServer(onRequest),
-		io = require('socket.io').listen(server),
-		fs = require('fs'),
-		url = require('url'),
-		_ = require('underscore');
-		
+    io = require('socket.io').listen(server),
+    fs = require('fs'),
+    url = require('url'),
+    _ = require('underscore');
+    
 var helper = require('./lib/helper.js'),
-		Translator = require('./lib/translator.js'),
-		Item = require('./lib/item.js'),
-		Broker = require('./lib/broker.js');
+    Translator = require('./lib/translator.js'),
+    Item = require('./lib/item.js'),
+    Broker = require('./lib/broker.js');
 
 server.listen(3005);
 
@@ -49,12 +49,12 @@ function onRequest (request, response) {
  * This displays index.html.
  * ------------------------------------------------------------------------------------------- */
 function homePage (request, response) { 
-	var pathname = url.parse(request.url).pathname;
-	var query = url.parse(request.url).query;
-	
-	LOGGER.log('debug', 'received request for index.html: ' + query);
+  var pathname = url.parse(request.url).pathname;
+  var query = url.parse(request.url).query;
+  
+  LOGGER.log('debug', 'received request for index.html: ' + query);
         LOGGER.log('debug', 'pathname is: ' + pathname);
-	fs.readFile(__dirname + '/index.html', function (err, data) {
+  fs.readFile(__dirname + '/index.html', function (err, data) {
     if (err) {
       response.writeHead(500);
       return response.end('error loading index.html');
@@ -71,12 +71,12 @@ function homePage (request, response) {
  * This service takes an OpenURL as input and returns a JSON representation of the citation.
  * ------------------------------------------------------------------------------------------- */
 function citationService (request, response) {
-	
-	var query = url.parse(request.url).query;
-	
-	var item = buildInitialItemsFromOpenUrl(query),
-	    translator = new Translator('openurl');
-			
+  
+  var query = url.parse(request.url).query;
+  
+  var item = buildInitialItemsFromOpenUrl(query),
+      translator = new Translator('openurl');
+      
 /*  var query = url.parse(request.url).query;
   var queryValid = function () {
     // TODO: validation logic
@@ -102,45 +102,45 @@ function citationService (request, response) {
  * Handles the openurl event that is emitted by the client
  * ------------------------------------------------------------------------------------------- */
 io.sockets.on('connection', function (socket) {
-	var self = this;
-	
-	socket.on('openurl', function (data) {
-		LOGGER.log('debug', 'dispatching services for: ' + data);
-		
-		try{
-			var item = buildInitialItemsFromOpenUrl(data.toString());
+  var self = this;
+  
+  socket.on('openurl', function (data) {
+    LOGGER.log('debug', 'dispatching services for: ' + data);
+    
+    try{
+      var item = buildInitialItemsFromOpenUrl(data.toString());
 
-			if(item instanceof Item){
-				LOGGER.log('debug', 'translated openurl into: ' + item.toString());
+      if(item instanceof Item){
+        LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
-				// Send the socket, configuration manager, and the item to the broker for processing
-				var broker = new Broker(socket, item);
-				
-			}else{
-				// Warn about invalid item
-				LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
-				
-				socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
-			}
-			
-		}catch(e){
-			LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
-			LOGGER.log('error', e.stack);
-			
-			socket.emit('error', CONFIGS['message']['generic_http_error']);
-		}
-		
-		LOGGER.log('debug', 'broker finished intializing ... waiting for responses');
+        // Send the socket, configuration manager, and the item to the broker for processing
+        var broker = new Broker(socket, item);
+        
+      }else{
+        // Warn about invalid item
+        LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
+        
+        socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
+      }
+      
+    }catch(e){
+      LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
+      LOGGER.log('error', e.stack);
+      
+      socket.emit('error', CONFIGS['message']['generic_http_error']);
+    }
+    
+    LOGGER.log('debug', 'broker finished intializing ... waiting for responses');
   });
-	
+  
 });
 
 // -------------------------------------------------------------------------------------------
 function buildInitialItemsFromOpenUrl(queryString){
-	var qs = helper.queryStringToMap(queryString);
+  var qs = helper.queryStringToMap(queryString);
 
-	var translator = new Translator('openurl');
-	var map = translator.translateMap(qs);
+  var translator = new Translator('openurl');
+  var map = translator.translateMap(qs);
 
-	return helper.mapToItem('citation', true, map);
+  return helper.mapToItem('citation', true, map);
 }

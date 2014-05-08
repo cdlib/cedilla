@@ -127,7 +127,9 @@ objects:
       - language
       - abstract
       - sample_cover_image
+      - subject
 
+  # ----------------------------------------------------------
   author:                
     validation:          # One of these fields is required for the author to be valid
       - ['last_name', 'full_name', 'corporate_name']
@@ -141,7 +143,10 @@ objects:
       - first_initial
       - middle_initial
       - suffix
+      - dates
+      - authority
 
+  # ----------------------------------------------------------
   resource:
     validation:          # Either a source AND a local_id OR a target are required for the resource to be valid
       - 'source'
@@ -163,3 +168,12 @@ objects:
       - rating
       - availability
       - status
+
+  # ----------------------------------------------------------
+  error:
+    default:
+      - 'error'
+
+    attributes:
+      - level
+      - message
