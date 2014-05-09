@@ -8,4 +8,5 @@ config/test.yaml
 
 bin/**/*
 *.out
+*.log
 
