@@ -141,6 +141,8 @@ function buildInitialItemsFromOpenUrl(queryString){
 
   var translator = new Translator('openurl');
   var map = translator.translateMap(qs);
+	
+	map['original_citation'] = queryString;
 
   return helper.flattenedMapToItem('citation', true, map);
 }
