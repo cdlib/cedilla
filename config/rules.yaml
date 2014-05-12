@@ -69,6 +69,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - internet_archive
         - cover_thing
@@ -98,6 +99,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - cover_thing
         - cover_open_library
@@ -112,6 +114,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - internet_archive
         - cover_thing
@@ -121,6 +124,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - internet_archive
         - cover_thing
@@ -138,6 +142,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - internet_archive
         - cover_thing
@@ -146,6 +151,7 @@ objects:
         - oclc_xid
         - oclc_lc_authority
         - sfx
+        - internet_archive
         - worldcat_discovery
         - internet_archive
         - cover_thing
