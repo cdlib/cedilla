@@ -24,6 +24,8 @@
 # -------------------------------------------------------------------------------------------------------------------------
 dispatch_always:
   - sfx
+  - oclc_xid
+  - worldcat_discovery
 
 # -------------------------------------------------------------------------------------------------------------------------
 # In this section you categorize services into groups that are then tied to specific data elements values.
@@ -59,48 +61,23 @@ objects:
     # results for books so it should only appear in the book and bookitem genre types
     genre:
       journal:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       book:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - internet_archive
-        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
       issue:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       article:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       series:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - worldcat_discovery
         - cover_elsevier
         - cover_open_library
       bookitem:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
         - internet_archive
-        - worldcat_discovery
         - cover_thing
         - cover_open_library
 
@@ -111,48 +88,24 @@ objects:
     # category!
     content_type:
       electronic:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - internet_archive
-        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       full_text:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - internet_archive
-        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_elsevier
         - cover_open_library
       holdings:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - worldcat_discovery
         - cover_thing
         - cover_elsevier
         - cover_open_library
       audio:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - internet_archive
-        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
       video:
-        - oclc_xid
-        - oclc_lc_authority
-        - sfx
-        - internet_archive
-        - worldcat_discovery
         - internet_archive
         - cover_thing
         - cover_open_library
@@ -163,28 +116,31 @@ objects:
 # Define the minimum amount of citation information required to process a service. The options MUST match attributes on the Citation object!
 # Items within an array indicate an OR relationship and items on different lines indicate an AND relationship so:
 #
-#    article:
+#    some_journal:
 #      - 'article_title'
 #      - ['title', 'journal_title']
 #
 #   Translates to:  citation includes -> an Article Title AND (a Title OR a Journal Title)
 #
-# You may also use the AUTHOR keyword to indicate that the citation must have at least one author
+# You may also use the names of children to have the system verify that the citation has at least one child
 #
-#    book:
-#      - ['title', 'article_title']
-#      - ['AUTHOR']
+#    internet_archive:
+#      - ['title', 'book_title']
+#      - ['authors']
+#
+#   Translates to: citation includes -> (a Title OR book_title) AND at least 1 author
+#
 # -------------------------------------------------------------------------------------------------------------------------
 minimum_item_groups:
   oclc_xid:
     - ['isbn', 'eisbn', 'issn', 'eissn']
   oclc_lc_authority:
-    - ['AUTHOR']
+    - ['authors']       
   worldcat_discovery:
     - ['oclc']
   internet_archive:
     - ['title', 'book_title']
-    - ['AUTHOR']
+    - ['authors']
   sfx:
     - ['title', 'journal_title', 'book_title', 'article_title', 'series_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'pmid', 'coden', 'sici', 'bici', 'document_id']
   cover_thing:
