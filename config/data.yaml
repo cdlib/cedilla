@@ -172,7 +172,7 @@ objects:
   # ----------------------------------------------------------
   error:
     default:
-      - 'error'
+      level: 'error'
 
     attributes:
       - level

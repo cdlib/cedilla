@@ -1,4 +1,4 @@
-require('./index.js');
+require('../index.js');
 		
 describe('cedilla.js testing', function(){
 	

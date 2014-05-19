@@ -1,17 +1,19 @@
+require('./index.js');
+/*
 var CONFIGS = require('./lib/config.js'),
     LOGGER = require('./lib/logger.js');
-
+*/
 var server = require('http').createServer(onRequest),
     io = require('socket.io').listen(server),
     fs = require('fs'),
-    url = require('url'),
-    _ = require('underscore');
-    
+    url = require('url');//,
+//    _ = require('underscore');
+/*    
 var helper = require('./lib/helper.js'),
     Translator = require('./lib/translator.js'),
     Item = require('./lib/item.js'),
     Broker = require('./lib/broker.js');
-
+*/
 server.listen(3005);
 
 /* -----------------------------------------------------------------------------------------
@@ -140,7 +142,7 @@ function buildInitialItemsFromOpenUrl(queryString){
   var qs = helper.queryStringToMap(queryString);
 
   var translator = new Translator('openurl');
-  var map = translator.translateMap(qs);
+  var map = translator.translateMap(qs, false);
 	
 	map['original_citation'] = queryString;
 

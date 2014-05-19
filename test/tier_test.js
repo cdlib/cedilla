@@ -1,6 +1,4 @@
-var assert = require("assert"),
-		_ = require('underscore'),
-		Service = require('../lib/service.js');
+require("../index.js");
 		
 Service.prototype.enable = function(){ this._enabled = true; }
 		

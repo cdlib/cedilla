@@ -1,4 +1,4 @@
-require('./index.js');
+require('../index.js');
 
 var net = require('http'),
 		url = require('url');

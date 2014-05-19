@@ -1,4 +1,4 @@
-require('./index.js');
+require('../index.js');
 				
 describe('item.js', function(){
 	var attributes = {},
