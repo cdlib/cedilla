@@ -26,6 +26,7 @@ broker_response_success: 'All services have responded.'
 tier_no_name: 'The tier must have a name!'
 tier_services_not_array: 'The services for tier ? must be an Array!'
 tier_services_no_services: 'Each service for tier ? must be an instance of a Service!'
+tier_unable_to_process_results: 'Unable to process the results from ?!'
 
 # Service
 service_no_name: 'Your service must have a name!'

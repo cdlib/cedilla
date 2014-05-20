@@ -122,14 +122,20 @@ io.sockets.on('connection', function (socket) {
         // Warn about invalid item
         LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
         
-        socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
+				var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+				socket.emit(serializer.itemToJsonForClient('cedilla', err));
+				
+        //socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
       }
       
     }catch(e){
       LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
       LOGGER.log('error', e.stack);
-      
-      socket.emit('error', CONFIGS['message']['generic_http_error']);
+  
+			var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['generic_http_error']});
+			socket.emit(serializer.itemToJsonForClient('cedilla', err));
+			    
+      //socket.emit('error', CONFIGS['message']['generic_http_error']);
     }
     
     LOGGER.log('debug', 'broker finished intializing ... waiting for responses');
