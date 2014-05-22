@@ -39,7 +39,7 @@ describe('service.js', function(){
 				returnField = config['attributes'][0];
 			}
 		});
-		
+
 		item = new Item(type, true, {});
 		
 		// Spin up some stub http servers for testing
@@ -122,7 +122,16 @@ describe('service.js', function(){
 // ---------------------------------------------------------------------------------------------------	
 	it('should throw an error when the connection to the service is refused!', function(done){
 		// No Target defined!
-		var _svc = new Service('tester');
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
+		
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_no_target_defined'], [_svc.getDisplayName()]), _msg);
+			
+			done();
+		};
 		
 		_svc.on('success', function(items){
 			// Force an assertion failure because this should have fired an error
@@ -131,24 +140,40 @@ describe('service.js', function(){
 		});
 		
 		_svc.on('error', function(error){
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_no_target_defined'], [_svc.getDisplayName()]), error.getAttribute('message'));
-			done();
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
 		});
 		
 		_svc.call(item, {});
-		
 	});
 
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return a valid response from the service!', function(done){
 		// Success HTTP 200
-		var _svc = new Service('tester');
+		var _svc = new Service('tester'),
+				_isArray = false,
+				_isItem = false,
+				_valMatched = false,
+				_count = 0;
+		
+		var assertions = function(){
+			assert(_isArray);
+			assert(_isItem);
+			assert(_valMatched);
+			assert.equal(1, _count);
+			
+			done();
+		};
 		
 		_svc.on('success', function(items){
-			assert(items instanceof Array);
-			assert(_.first(items) instanceof Item);
-			assert.equal(returnValue, _.first(items).getAttribute(returnField));
-			done();
+			_isArray = items instanceof Array;
+			_count = _.size(items);
+			_isItem = _.first(items) instanceof Item;
+			_valMatched = returnValue == _.first(items).getAttribute(returnField);
+			
+			assertions();
 		});
 		
 		_svc.on('error', function(error){
@@ -161,151 +186,337 @@ describe('service.js', function(){
 		_svc.call(item, {});
 	});
 
-/*	
-	// ---------------------------------------------------------------------------------------------------	
-	it('should return a valid response from the service!', function(done){
-		// Success HTTP 200
-		svc.setTarget("http://localhost:9000/success");
-		svc.call(item, {}, function(result){
-
-			assert(_.first(result) instanceof Item);
-			assert.equal(returnValue, _.first(result).getAttribute(returnField));
-			
-			done();
-		});
-	}); 
-	
-	// ---------------------------------------------------------------------------------------------------	
-	it('should return a 400 bad request from the service!', function(done){
-		// Bad Request HTTP 400
-		svc.setTarget("http://localhost:9000/bad_request");
-		svc.call(item, {}, function(result){
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_bad_request'], ['tester']), result.getAttribute('message'));
-			
-			done();
-		});
-	});
-		
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return a 404 not found from the service!', function(done){
-		// Not Found HTTP 404
-		svc.setTarget("http://localhost:9000/not_found");
-		svc.call(item, {}, function(result){
+		// No results found!
+		var _svc = new Service('tester'),
+				_isArray = false,
+				_isItem = false,
+				_count = 0,
+				_itemsAttributeCount = 0;
 
-			assert(result instanceof Item);
-			assert.equal(0, _.size(result.getAttributes()));
+		var assertions = function(){
+			// Call should return one empty Item in an Array
+			assert(_isArray);
+			assert(_isItem);
+			assert.equal(1, _count);
+			assert.equal(0, _itemsAttributeCount);
 			
 			done();
+		};
+
+		_svc.on('success', function(items){
+			_isArray = items instanceof Array;
+			_count = _.size(items);
+			
+			_isItem = _.first(items) instanceof Item;
+			
+			if(_.first(items) instanceof Item){
+				_itemsAttributeCount = _.size(_.first(items).getAttributes());
+			}
+			
+			assertions();
 		});
-	});
+
+		_svc.on('error', function(error){
+			// Force an assertion failure because this should NOT have fired an error
+			assert.equal(error.getAttribute('message'), 'Should have returned a success message!!!');
+			done();
+		});
+
+		_svc.setTarget("http://localhost:9000/not_found");
+		_svc.call(item, {});
 		
+	});
+
+	// ---------------------------------------------------------------------------------------------------	
+	it('should return a 400 bad request from the service!', function(done){	
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
+
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_bad_request'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
+			done();
+		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/bad_request");
+		_svc.call(item, {});
+	});
+	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return a 500 warning error from the service!', function(done){
-		// Server Error HTTP 500 warning
-		svc.setTarget("http://localhost:9000/warning");
-		svc.call(item, {}, function(result){
-
-			assert(result instanceof Item);
-			assert.equal(0, _.size(result.getAttributes()));
+		// Warning received from the target
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_level = '',
+				_msg = '';
+		
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal('warning', _level);
+			assert.equal('foobar', _msg);
 			
 			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
+			done();
 		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_level = error.getAttribute('level');
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/warning");
+		_svc.call(item, {});
 	});
 	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return a 500 error from the service!', function(done){
-		// Server Error HTTP 500 warning
-		svc.setTarget("http://localhost:9000/error");
-		svc.call(item, {}, function(result){
-
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_server_error'], ['tester']), result.getAttribute('message'));
+		// Warning received from the target
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_level = '',
+				_msg = '';
+		
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal('error', _level);
+			assert.equal('foobar', _msg);
 			
 			done();
-		});
-	});
+		};
 		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
+			done();
+		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_level = error.getAttribute('level');
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/error");
+		_svc.call(item, {});
+	});
+	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return a 500 fatal error from the service!', function(done){
-		// Server Error HTTP 500 warning
-		svc.setTarget("http://localhost:9000/fatal");
-		svc.call(item, {}, function(result){
-
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_server_error_fatal'], ['tester']), result.getAttribute('message'));
+		// Warning received from the target
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_level = '',
+				_msg = '';
+		
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal('fatal', _level);
+			assert.equal('foobar', _msg);
 			
 			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
+			done();
 		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_level = error.getAttribute('level');
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/fatal");
+		_svc.call(item, {});
 	});
 	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an id mismatch!', function(done){
-		// Wrong id in the response JSON
-		svc.setTarget("http://localhost:9000/wrong_id");
-		svc.call(item, {}, function(result){
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
 
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_wrong_response'], ['tester']), result.getAttribute('message'));
-			
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_wrong_response'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
 			done();
 		});
-	});
 		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/wrong_id");
+		_svc.call(item, {});
+	});
+	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an timeout!', function(done){
-		// Timeout
-		svc.setTarget("http://localhost:9000/timeout");
-		svc.call(item, {}, function(result){
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
 
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_timeout'], ['tester']), result.getAttribute('message'));
-			
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_timeout'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
 			done();
 		});
 		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/timeout");
+		_svc.call(item, {});
 	});
-
+	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an error when the service returned an unknown item!', function(done){
-		// Unknown item type returned
-		svc.setTarget("http://localhost:9000/unknown_item");
-		
-		svc.call(item, {}, function(result){
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
 
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_unknown_item'], ['tester']), result.getAttribute('message'));
-			
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_unknown_item'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
 			done();
 		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/unknown_item");
+		_svc.call(item, {});
 	});
 	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an error when the service does NOT return JSON!', function(done){
-		// Not JSON
-		svc.setTarget("http://localhost:9000/not_json");
-		svc.call(item, {}, function(result){
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
 
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_bad_json'], ['tester']), result.getAttribute('message'));
-			
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_bad_json'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
 			done();
 		});
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/not_json");
+		_svc.call(item, {});
 	});
 	
 	// ---------------------------------------------------------------------------------------------------	
 	it('should return an error when the response overflows the buffer!', function(done){
-		// Buffer Overflow
-		svc.setTarget("http://localhost:9000/flood_buffer");
-		svc.call(item, {}, function(result){
-			assert(result instanceof Item);
-			assert.equal(helper.buildMessage(CONFIGS['message']['service_buffer_overflow'], ['tester']), result.getAttribute('message'));
-			
+		// Bad JSON sent to end service!
+		var _svc = new Service('tester'),
+				_isItem = false,
+				_msg = '';
+
+		var assertions = function(){
+			assert(_isItem);
+			assert.equal(helper.buildMessage(CONFIGS['message']['service_buffer_overflow'], [_svc.getDisplayName()]), _msg);
+	
+			done();
+		};
+		
+		_svc.on('success', function(items){
+			// Force an assertion failure because this should have fired an error
+			assert.equal('', 'Should NOT have returned a success message!!!');
 			done();
 		});
-	});*/
+		
+		_svc.on('error', function(error){
+			_isItem = error instanceof Item;
+			_msg = error.getAttribute('message');
+			
+			assertions();
+		});
+		
+		_svc.setTarget("http://localhost:9000/flood_buffer");
+		_svc.call(item, {});
+	});
 
-	
 });
 
 // ----------------------------------------------------------------------------------------------
@@ -373,17 +584,17 @@ function spinUpServer(returnField, returnValue){
 			}else if(route == '/warning' ){
 				response.writeHead(500);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"error\":\"foobar\",\"level\":\"warning\"}");
+															json.api_ver + "\",\"error\":{\"message\":\"foobar\",\"level\":\"warning\"}}");
 			
 			}else if(route == '/error'){
 				response.writeHead(500);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"error\":\"foobar\",\"level\":\"error\"}");
+															json.api_ver + "\",\"error\":{\"message\":\"foobar\",\"level\":\"error\"}}");
 			
 			}else if(route == '/fatal'){
 				response.writeHead(500);
 				response.end("{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
-															json.api_ver + "\",\"error\":\"foobar\",\"level\":\"fatal\"}");
+															json.api_ver + "\",\"error\":{\"message\":\"foobar\",\"level\":\"fatal\"}}");
 															
 			}else if(route == '/timeout'){				
 //				setTimeout(function(){
