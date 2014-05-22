@@ -212,6 +212,126 @@ describe('tier.js', function(){
 	
 	// ---------------------------------------------------------------------------------------------------
 	it('should return only the services that meet the minimum item attributes rules', function(done){
+		var rootItem = '',
+				_complete = 0,
+				required = {},
+				children = [],
+				childAttributes = {};
+				
+		// Create the item for the root object
+		_.forEach(CONFIGS['data']['objects'], function(def, type){
+			if(typeof def['root'] != 'undefined'){
+				rootItem = type;
+			}
+		});
+
+		children = CONFIGS['data']['objects'][rootItem]['children'] || [];
+
+		// Add any required attributes
+		_.forEach(CONFIGS['rules']['objects'][rootItem], function(rules, attribute){
+			required[attribute] = 'yadda';
+		});
+
+		_.forEach(children, function(child){
+			var params = {};
+			
+			_.forEach(CONFIGS['data']['objects'][child]['attributes'], function(attribute){
+				params[attribute] = 'blah';
+			});
+			
+			childAttributes[child] = params;
+		});
+
+	  // Setup a heartbeat monitor at the top to verify that all rules passed
+	  var heartbeat = setInterval(function(){
+			if(_complete >= _.size(CONFIGS['rules']['minimum_item_groups'])){
+	      clearInterval(heartbeat);
+			
+				console.log('.... responses received from all services: ' + svcsResponding);
+			
+				assert.equal(_complete, _.size(CONFIGS['rules']['minimum_item_groups']));
+			
+	      done();
+	    }
+	  }, 1000);
+
+
+		// Expect them all to PASS
+		_.forEach(CONFIGS['rules']['minimum_item_groups'], function(rules, service){
+			var responded = false;
+			
+		  // Setup a heartbeat monitor
+		  /*var heartbeat = setInterval(function(){
+				if(responded){
+		      clearInterval(heartbeat);
+		    }
+		  }, 1000);*/
+			
+			
+			// Check each tier (because the service will only be attached to one tier)
+			_.forEach(tiers, function(tier){
+				
+				// If the service hasn't responded to a prior tier
+				if(!responded){
+					var socket = new events.EventEmitter(),
+							isDone = false;
+			
+					console.log('checking to see if tier ' + tier.getName() + ' called ' + service);
+			
+					socket.on(rootItem, function(data){
+						var json = JSON.parse(data);
+				
+						// If this is the first NON-ERROR response from the service record the service
+						if(json['service'] == tier.getServiceDisplayName(service)){
+							responded = true;
+						}
+					});
+			
+					socket.on('complete', function(data){
+						isDone = true;
+					
+						console.log('.... responded? ' + responded);
+					
+						if(responded){
+							_complete++;
+						}
+					});
+			
+					var item = new Item(rootItem, false, required);
+					
+					// Setup the attributes according to the rules for the service
+					_.forEach(rules, function(andRule){
+						console.log(andRule);
+						
+						if(andRule instanceof Array){
+							if(_.contains(children, _.first(andRule).slice(0, -1))){
+								console.log('first: ' + _.first(andRule) + ' == ' + _.first(andRule).slice(0, -1));
+								
+								item.addAttribute(_.first(andRule), [new Item(_.first(andRule).slice(0, -1), false, childAttributes[_.first(andRule).slice(0, -1)])]);
+							}else{
+								item.addAttribute(_.first(andRule), 'foo-bar');
+							}
+						
+						}else{
+							if(_.contains(children, andRule.slice(0, -1))){
+								console.log('first: ' + andRule + ' == ' + andRule.slice(0, -1));
+								
+								item.addAttribute(andRule, [new Item(andRule.slice(0, -1), false, childAttributes[andRule.slice(0, -1)])]);
+							}else{
+								item.addAttribute(andRule, 'foo-bar');
+							}
+						}
+					});
+			
+					console.log('.... sending ' + item);
+			
+					tier.negotiate(socket, item, function(augmentedItem, leftoverServices){
+						socket.emit('complete', CONFIGS['message']['broker_response_success']);
+					});
+				}
+			});
+		
+		});
 		
 	});
 	

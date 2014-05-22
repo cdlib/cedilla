@@ -61,25 +61,19 @@ objects:
     # results for books so it should only appear in the book and bookitem genre types
     genre:
       journal:
-        - cover_elsevier
-        - cover_open_library
+        - internet_archive
       book:
         - internet_archive
         - cover_thing
-        - cover_open_library
       issue:
         - cover_elsevier
-        - cover_open_library
       article:
         - cover_elsevier
-        - cover_open_library
       series:
         - cover_elsevier
-        - cover_open_library
       bookitem:
         - internet_archive
         - cover_thing
-        - cover_open_library
 
     # Group services into the type of content they can provide
     # When a citation comes in from a client the rules engine will use this list to determine what
@@ -90,25 +84,17 @@ objects:
       electronic:
         - internet_archive
         - cover_thing
-        - cover_elsevier
-        - cover_open_library
       full_text:
         - internet_archive
         - cover_thing
-        - cover_elsevier
-        - cover_open_library
       holdings:
         - cover_thing
-        - cover_elsevier
-        - cover_open_library
       audio:
         - internet_archive
         - cover_thing
-        - cover_open_library
       video:
         - internet_archive
         - cover_thing
-        - cover_open_library
 
 # -------------------------------------------------------------------------------------------------------------------------
 # In this section you categorize services into groups that are then tied to specific data elements values.
@@ -134,8 +120,6 @@ objects:
 minimum_item_groups:
   oclc_xid:
     - ['isbn', 'eisbn', 'issn', 'eissn']
-  oclc_lc_authority:
-    - ['authors']       
   worldcat_discovery:
     - ['oclc']
   internet_archive:
@@ -145,7 +129,3 @@ minimum_item_groups:
     - ['title', 'journal_title', 'book_title', 'article_title', 'series_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'pmid', 'coden', 'sici', 'bici', 'document_id']
   cover_thing:
     - ['isbn', 'eisbn']
-  cover_elsevier:
-    - ['issn', 'eissn']
-  cover_open_library:
-    - ['isbn', 'eisbn', 'oclc', 'lccn']
