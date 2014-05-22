@@ -29,6 +29,7 @@ tier_services_no_services: 'Each service for tier ? must be an instance of a Ser
 tier_unable_to_process_results: 'Unable to process the results from ?!'
 
 # Service
+service_not_found: '? did not find any results.'
 service_no_name: 'Your service must have a name!'
 service_no_target_defined: Cannot contact ? because no HTTP target is defined in ./config/services.yaml!'
 service_connection_refused: 'The ? service appears to be offline!'
