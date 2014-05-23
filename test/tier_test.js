@@ -1,6 +1,10 @@
-require("../index.js");
+require("../init.js");
 
-var events = require('events');
+var events = require('events'),
+		mockery = require('./mockery.js');
+		
+// Add a new setter so we can send all HTTP service calls to our mock server!
+Service.prototype.setTarget = function(value){ this._target = value; };
 		
 describe('tier.js', function(){
 	this.timeout(10000);
@@ -8,10 +12,28 @@ describe('tier.js', function(){
 	var getAttributeMap = undefined,
 			processTier = undefined,
 			tiers = [],
-			rootItem = '';
+			rootItem = '',
+			returnField = '',
+			returnValue = 'blah-blah',
+			item = undefined,
+			mockServer = undefined;
 	
 	// ---------------------------------------------------------------------------------------------------
 	before(function(done){
+		_.forEach(CONFIGS['data']['objects'], function(config, name){
+			if(typeof config['root'] != 'undefined'){
+				rootItem = name;
+				
+				returnField = config['attributes'][0];
+			}
+		});
+
+		item = new Item(rootItem, true, {});
+		
+		// Spin up some stub http servers for testing
+		mockServer = mockery.spinUpServer(returnField, returnValue);
+				
+/*
     getAttributeMap = function(type, value){
       var map = {};
 
@@ -37,9 +59,21 @@ describe('tier.js', function(){
 			}
 		});
 		
+		// Spin up some stub http servers for testing
+		mockServer = mockery.spinUpServer(returnField, returnValue);
+*/
+		done();
+	});
+
+	// ---------------------------------------------------------------------------------------------------
+	after(function(done){
+		mockServer.close();
+		
+		console.log('shutdown mock server.');
 		done();
 	});
 	
+	// ---------------------------------------------------------------------------------------------------
 	beforeEach(function(done){
 		// ----------------------------------------------------------------------
 		// Build out the tiers and their services as defined in the config
@@ -49,40 +83,80 @@ describe('tier.js', function(){
 			var mockServices = [];
 			
 			_.forEach(svcs, function(def, name){
-				mockServices.push(new Service(name));
+				var svc = new Service(name);
+				svc.setTarget('http://localhost:9000/success');
+				
+				mockServices.push(svc);
 			});
 			
-			tiers.push(new Tier(tier, mockServices));
+			var tier = new Tier(tier);
+			tier.emit('register', mockServices);
+			
+			tiers.push(tier);
 		});
 		
 		done();
 	});
 	
 	// ---------------------------------------------------------------------------------------------------
-	it('should throw an error if no services are supplied!', function(){
-		assert.throws(function(){ new Tier('tester', undefined) });
-		assert.throws(function(){ new Tier('tester', '') });
-		assert.throws(function(){ new Tier('tester', {}) });
-		
-		assert(new Tier('tester', []) instanceof Tier);
-		assert(new Tier('tester', ['svc_test']) instanceof Tier);
-		assert(new Tier('tester', ['svc_test1', 'svc_test2']) instanceof Tier);
-		assert(new Tier('tester', [new Service('test')]) instanceof Tier);
-	});
-
-	// ---------------------------------------------------------------------------------------------------
 	it('should return the name and the service count!', function(){
-		var tier = new Tier('test', [new Service('one'), new Service('two'), new Service('three')]);
+		var tier = new Tier('test');
 		
 		assert.equal('test', tier.getName());
-		assert.equal(3, tier.getServiceCount());
-		
-		tier.addServices([new Service('foo'), new Service('bar')]);
-		assert.equal(5, tier.getServiceCount());
+		assert.equal(0, tier.getServiceCount());
 	});
 	
 	// ---------------------------------------------------------------------------------------------------
-	it('should negotiate but be unable to call any of the services due to minimum citation check', function(done){
+	it('should be able to register services!', function(){
+		var tier = new Tier('test');
+		
+		assert.equal('test', tier.getName());
+		assert.equal(0, tier.getServiceCount());
+		
+		tier.emit('register', [new Service('test'), new Service('test2')]);
+		assert.equal(2, tier.getServiceCount());
+		
+		tier.emit('register', [new Service('test3')]);
+		assert.equal(3, tier.getServiceCount());
+	});
+
+	// ---------------------------------------------------------------------------------------------------
+	it('should not be able to dispatch any services due to minimum item attribute rules!', function(done){
+		var _ret = [],
+				_complete = false;
+		
+		_.forEach(tiers, function(tier){
+			
+			var heartbeat = setInterval(function(){
+				if(_complete){
+					clearInterval(heartbeat);
+				
+					console.log(_ret);
+					
+					done();
+				}				
+			}, 500);
+			
+			tier.on('success', function(item){
+				_ret.push(item);
+			});
+			
+			tier.on('error', function(error){
+				_ret.push(error);
+			});
+			
+			tier.on('complete', function(leftovers){
+				console.log('tier ' + tier.getName() + ' had ' + _.size(leftovers) + ' leftover services.');
+				_complete = true;
+			});
+			
+			console.log('processing tier ' + tier.getName());
+			tier.process({}, new Item(rootItem, false, {}));
+		});
+	});
+	
+	// ---------------------------------------------------------------------------------------------------
+/*	it('should negotiate but be unable to call any of the services due to minimum citation check', function(done){
 		var _complete = 0,
 				svcsResponding = [],
 				runAlwaysCount = 0;
@@ -207,11 +281,11 @@ describe('tier.js', function(){
 			});
 		});
 			
-	});
+	});*/
 	
 	
 	// ---------------------------------------------------------------------------------------------------
-	it('should return only the services that meet the minimum item attributes rules', function(done){
+/*	it('should return only the services that meet the minimum item attributes rules', function(done){
 		var rootItem = '',
 				_complete = 0,
 				required = {},
@@ -259,14 +333,7 @@ describe('tier.js', function(){
 		// Expect them all to PASS
 		_.forEach(CONFIGS['rules']['minimum_item_groups'], function(rules, service){
 			var responded = false;
-			
-		  // Setup a heartbeat monitor
-		  /*var heartbeat = setInterval(function(){
-				if(responded){
-		      clearInterval(heartbeat);
-		    }
-		  }, 1000);*/
-			
+
 			
 			// Check each tier (because the service will only be attached to one tier)
 			_.forEach(tiers, function(tier){
@@ -347,7 +414,7 @@ describe('tier.js', function(){
 		
 		// Error messages from service
 		
-	});
+	});*/
 	
 });
 
@@ -376,7 +443,7 @@ Tier.prototype.getServices = function(){ return this._services; }
 // ---------------------------------------------------------------------------------------------------
 // mock the actual call to the service
 // ---------------------------------------------------------------------------------------------------
-Tier.prototype._callService = function(service, item, headers, callback){
+Tier.prototype._callService = function(headers, service, item){
   var obj = undefined;
 	
 	buildItemMap = function(type, value){
