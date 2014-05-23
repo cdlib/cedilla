@@ -1,0 +1,34 @@
+{
+  "name": "cedilla",
+  "version": "0.0.1",
+  "description": "An example module to illustrate the usage of a package.json",
+  "author": "Brian Riley <brian.riley@ucop.edu>",
+  "contributors": [{
+    "name": "Brian Riley",
+    "email": "brian.riley@ucop.edu"
+    },
+    {
+    "name": "Stephanie Collett",
+    "email": "stephanie.collett@ucop.edu"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cdlib/cedilla_delivery_aggregator"
+  },
+  "bugs": {
+    "url": "https://github.com/cdlib/cedilla_delivery_aggregator/issues"
+  },
+  "dependencies": {
+    "socket.io": "latest",
+    "js-yaml": "latest",
+    "collections": "latest",
+    "node-html-encoder": "latest",
+    "node-uuid": "latest",
+    "underscore": "latest",
+    "mocha": "latest"
+  },
+  "preferGlobal": true,
+  "private": true,
+  "license": "BSD-3-Clause"
+}
