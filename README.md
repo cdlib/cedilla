@@ -64,31 +64,11 @@ The Cedilla Project was influenced by the Umlaut project: https://github.com/tea
 
 * clone this repository
 
-* make a new directory to store your local configuration files
+* within the project directory
 
-* copy the *.example files from /config into this new directory
+* > npm install
 
-* rename the copied files so that they are .yaml instead of .example
-
-* create symbolic links in /config for each of the example files in your new directory 
-
-* cd into the local project
-
-* > npm install socket.io
-
-* > npm install js-yaml
-
-* > npm install collections
-
-* > npm install node-html-encoder
-
-* > npm install node-uuid
-
-* > npm install underscore
-
-* > npm install mocha (needs to be installed globally as well)
-
-* > node cedilla.js
+* within the project/config directory rename the *.example files to .yaml
 
 * cd out of the project
 
@@ -103,6 +83,16 @@ The Cedilla Project was influenced by the Umlaut project: https://github.com/tea
 * Pull up the node target in a browser: http://localhost:3005 
 
 The node server takes in a request via the browser and establishes a socket.io link back to the client (e.g. websockets, ajax long polling, whatever the client can handle) and then dispatches out to the 2 sample ruby services that are listening on port 3000. As the services respond, the result is posted back to the client via the original socket.io connection.
+
+### Testing
+
+* install mocha globally
+
+* npm install -g mocha
+
+* run the tests
+
+* > mocha 
 
 ### Wiki
 
