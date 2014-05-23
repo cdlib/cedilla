@@ -14,7 +14,7 @@ var helper = require('./lib/helper.js'),
     Item = require('./lib/item.js'),
     Broker = require('./lib/broker.js');
 */
-server.listen(3005);
+server.listen(3007);
 
 /* -----------------------------------------------------------------------------------------
  * Primitive routing logic.
@@ -55,7 +55,7 @@ function homePage (request, response) {
   var query = url.parse(request.url).query;
   
   LOGGER.log('debug', 'received request for index.html: ' + query);
-        LOGGER.log('debug', 'pathname is: ' + pathname);
+  LOGGER.log('debug', 'pathname is: ' + pathname);
   fs.readFile(__dirname + '/index.html', function (err, data) {
     if (err) {
       response.writeHead(500);
@@ -75,25 +75,11 @@ function homePage (request, response) {
 function citationService (request, response) {
   
   var query = url.parse(request.url).query;
+  LOGGER.log('debug', 'parsed query into key/value array: ' + JSON.stringify(query));
   
-  var item = buildInitialItemsFromOpenUrl(query),
-      translator = new Translator('openurl');
+  var item = buildInitialItemsFromOpenUrl(query);
+  LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
       
-/*  var query = url.parse(request.url).query;
-  var queryValid = function () {
-    // TODO: validation logic
-    if (query) return true;
-    return false;
-  }
-
-  if (!queryValid()) {
-    response.writeHead(400);
-    response.end('query not valid');
-  }
-
-  LOGGER.log('received request for citation JSON representation');
-  translator = new Translator('openurl');
-  var item = buildInitialItems(translator, querystring.parse(query));*/
   response.setHeader('Content-Type', 'application/json');
   response.writeHead(200);
   response.end(JSON.stringify(helper.itemToMap(item)));    
@@ -149,8 +135,8 @@ function buildInitialItemsFromOpenUrl(queryString){
 
   var translator = new Translator('openurl');
   var map = translator.translateMap(qs, false);
-	
-	map['original_citation'] = queryString;
+  LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
+  map['original_citation'] = queryString;
 
   return helper.flattenedMapToItem('citation', true, map);
 }
