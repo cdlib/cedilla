@@ -5,13 +5,47 @@ var events = require('events'),
 		
 // Add a new setter so we can send all HTTP service calls to our mock server!
 Service.prototype.setTarget = function(value){ this._target = value; };
+// ---------------------------------------------------------------------------------------------------
+Service.prototype.call = function(item, headers){
+	
+	if(headers['error']){
+		this.emit('response', new Item('error', false, {'level':'error','message':'You got an error!'}));
 		
+	}else if(headers['timeout']){
+		setTimeout(function(){
+			this.emit('response', new Item('error', false, {'level':'error','message':'Tier shoudl have timed out!'}));
+		}, CONFIGS['application']['tier_timeout'] * 2);
+		
+	}else{
+    
+    var map = {},
+				type = item.getType();
+
+		// Only build out a full item is we're called the desired service OR none was defined!
+		if(headers['service'] == this._name || (typeof headers['service'] == 'undefined')){
+
+	    if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+	      _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+	        map[attribute] = 'foo';
+	      });
+	    }
+		}
+		
+		this.emit('response', [helper.mapToItem(type, false, map)]);
+	}
+};
+
+		
+// ---------------------------------------------------------------------------------------------------
 describe('tier.js', function(){
-	this.timeout(10000);
+	this.timeout(120000);
 	
 	var getAttributeMap = undefined,
+			buildTiers = undefined,
 			processTier = undefined,
+			displayNames = {},
 			tiers = [],
+			_ret = [],
 			rootItem = '',
 			returnField = '',
 			returnValue = 'blah-blah',
@@ -20,6 +54,29 @@ describe('tier.js', function(){
 	
 	// ---------------------------------------------------------------------------------------------------
 	before(function(done){
+		// Build out the tiers and their services as defined in the config
+		buildTiers = function(){
+			tiers = [];
+			
+			_.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
+				var mockServices = [];
+			
+				_.forEach(svcs, function(def, name){
+					var svc = new Service(name);
+					svc.setTarget('http://localhost:9000/success');
+				
+					mockServices.push(svc);
+				
+					displayNames[name] = svc.getDisplayName();
+				});
+			
+				var tier = new Tier(tier);
+				tier.emit('register', mockServices);
+			
+				tiers.push(tier);
+			});
+		};
+		
 		_.forEach(CONFIGS['data']['objects'], function(config, name){
 			if(typeof config['root'] != 'undefined'){
 				rootItem = name;
@@ -32,36 +89,7 @@ describe('tier.js', function(){
 		
 		// Spin up some stub http servers for testing
 		mockServer = mockery.spinUpServer(returnField, returnValue);
-				
-/*
-    getAttributeMap = function(type, value){
-      var map = {};
 
-      if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
-        _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-          map[attribute] = value;
-        });
-    
-        if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
-          _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
-            map[child + 's'] = [getAttributeMap(child, value)];
-          });
-        }
-      }
-  
-      return map;
-    };
-		
-		// Get the root item
-		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			if(def['root'] == true){
-				rootItem = type;
-			}
-		});
-		
-		// Spin up some stub http servers for testing
-		mockServer = mockery.spinUpServer(returnField, returnValue);
-*/
 		done();
 	});
 
@@ -75,25 +103,50 @@ describe('tier.js', function(){
 	
 	// ---------------------------------------------------------------------------------------------------
 	beforeEach(function(done){
-		// ----------------------------------------------------------------------
-		// Build out the tiers and their services as defined in the config
-		tiers = [];
 		
-		_.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
-			var mockServices = [];
-			
-			_.forEach(svcs, function(def, name){
-				var svc = new Service(name);
-				svc.setTarget('http://localhost:9000/success');
+		processTier = function(headers, index, item, callback){
+			var self = this,
+					_complete = false;
+		
+			if(tiers[index] instanceof Tier){
+				var tier = tiers[index];
 				
-				mockServices.push(svc);
-			});
+				var heartbeat = setInterval(function(){
+					if(_complete){
+						clearInterval(heartbeat);
+
+						processTier(headers, (index + 1), item, callback);
+					}				
+				}, 500);
 			
-			var tier = new Tier(tier);
-			tier.emit('register', mockServices);
+				tier.on('success', function(item){
+					_ret.push(item);
+				});
 			
-			tiers.push(tier);
-		});
+				tier.on('error', function(error){
+					_ret.push(error);
+				});
+			
+				tier.on('complete', function(leftovers){
+					if(_.size(leftovers) > 0){
+						if(tiers[index + 1] instanceof Tier){
+							tiers[index + 1].emit('register', leftovers);
+						}
+					}
+					
+					_complete = true;
+				});
+			
+				tier.process(headers, item);
+				
+			}else{
+				// We processed the final tier so call the callback
+				callback(_ret);
+			}
+		};
+		
+		// Initialize the tiers
+		buildTiers();
 		
 		done();
 	});
@@ -102,6 +155,8 @@ describe('tier.js', function(){
 	it('should return the name and the service count!', function(){
 		var tier = new Tier('test');
 		
+		console.log('.. TIER: checking initialization');
+		
 		assert.equal('test', tier.getName());
 		assert.equal(0, tier.getServiceCount());
 	});
@@ -109,6 +164,8 @@ describe('tier.js', function(){
 	// ---------------------------------------------------------------------------------------------------
 	it('should be able to register services!', function(){
 		var tier = new Tier('test');
+		
+		console.log('.. TIER: checking service registration.');
 		
 		assert.equal('test', tier.getName());
 		assert.equal(0, tier.getServiceCount());
@@ -119,368 +176,268 @@ describe('tier.js', function(){
 		tier.emit('register', [new Service('test3')]);
 		assert.equal(3, tier.getServiceCount());
 	});
+	
+	// ---------------------------------------------------------------------------------------------------
+	it('should not allow multiple calls to process() at once.', function(done){
+		var _complete = 0,
+				_passed = false,
+				self = this;
+		
+		console.log('.. TIER: verifying tier cannot be started when its already running.');
+		
+		var heartbeat = setInterval(function(){
+			if(_complete >= 1){
+				clearInterval(heartbeat);
+				
+				assert(_passed != false);
+				done();
+			}
+		}, 500);
+		
+		var tier = tiers[0];
+		var item = new Item(rootItem, true, {'foo':'bar'});
+			
+		_passed = assert.throws(function(){ 
+			
+			for(var i = 0; i <= 2; i++){
+				tier.process({}, item);
+			}
+			
+		});
+		
+		_complete++;
+		
+	});
 
 	// ---------------------------------------------------------------------------------------------------
 	it('should not be able to dispatch any services due to minimum item attribute rules!', function(done){
-		var _ret = [],
-				_complete = false;
+		console.log('.. TIER: ensuring no services are called when item does not have enough info.');
 		
-		_.forEach(tiers, function(tier){
+		processTier({}, 0, new Item(rootItem, false, {}), function(items){
+			// The number of leftover services should match the number of services with minimum item attribute rules!
+			assert.equal(_.size(CONFIGS['rules']['minimum_item_groups']), tiers[_.size(tiers) - 1].getServiceCount());
 			
-			var heartbeat = setInterval(function(){
-				if(_complete){
-					clearInterval(heartbeat);
-				
-					console.log(_ret);
-					
-					done();
-				}				
-			}, 500);
-			
-			tier.on('success', function(item){
-				_ret.push(item);
-			});
-			
-			tier.on('error', function(error){
-				_ret.push(error);
-			});
-			
-			tier.on('complete', function(leftovers){
-				console.log('tier ' + tier.getName() + ' had ' + _.size(leftovers) + ' leftover services.');
-				_complete = true;
-			});
-			
-			console.log('processing tier ' + tier.getName());
-			tier.process({}, new Item(rootItem, false, {}));
+			done();
 		});
-	});
+	
+	}); 
 	
 	// ---------------------------------------------------------------------------------------------------
-/*	it('should negotiate but be unable to call any of the services due to minimum citation check', function(done){
-		var _complete = 0,
-				svcsResponding = [],
-				runAlwaysCount = 0;
-		
-	  // Setup a heartbeat monitor
-	  var heartbeat = setInterval(function(){
-			if(_complete >= _.size(tiers)){
-	      clearInterval(heartbeat);
-		
-				console.log('.... responses received from mocks for: ' + svcsResponding);
-		
-				assert.equal(runAlwaysCount, _.size(svcsResponding));
-		
-	      done();
-	    }
-	  }, 1000);
-				
-		_.forEach(tiers, function(tier){
-			var socket = new events.EventEmitter(),
-					item = undefined;
-			
-			console.log('checking tier ' + tier.getName() + ' with an invalid item.');
-		
-			// Create a socket event for each data type.
-			_.forEach(CONFIGS['data']['objects'], function(def, type){
-				if(typeof def['root'] != 'undefined'){
-					item = helper.mapToItem(type, false, {'foo':'bar'});
-				}
-			
-				socket.on(type, function(data){
-					var json = JSON.parse(data);
-					
-					// If this is the first NON-ERROR response from the service record the service
-					if(!_.contains(svcsResponding, json['service']) && (typeof json['error'] == 'undefined')){
-						svcsResponding.push(json['service']);
-					}
-					
-				});
-			});
-		
-			socket.on('complete', function(data){
-				// Make sure the 'dispatch_always' services returned data
-				_.forEach(tier.getServiceNames(), function(service){
-					if(_.contains(CONFIGS['rules']['dispatch_always'], service)){
-						runAlwaysCount++;
-						
-						assert(_.contains(svcsResponding, tier.getServiceDisplayName(service)));
-					}
-				});
-				
-				_complete++;
-			});
-		
-			tier.negotiate(socket, item, function(augmentedItem, leftoverServices){
-				socket.emit('complete', CONFIGS['message']['broker_response_success']);
-			});
+	it('should properly augment the item', function(done){
+		var _params = {};
+
+		console.log('.. TIER: checking item augmentation');
+
+		// Get the REQUIRED attributes
+		_.forEach(CONFIGS['rules']['objects'][rootItem], function(vals, attribute){
+			_params[attribute] = 'foo-bar';
 		});
 		
-	});
-	
-	// ---------------------------------------------------------------------------------------------------
-	it('should negotiate and return messages from each service', function(done){
-		var _complete = 0,
-				svcsResponding = [],
-				totalSvcs = 0;
-		
-		// Count up all of the services
-		_.forEach(tiers, function(tier){
-			totalSvcs += tier.getServiceCount();
-		});
-		
-	  // Setup a heartbeat monitor
-	  var heartbeat = setInterval(function(){
-			if(_complete >= _.size(tiers)){
-	      clearInterval(heartbeat);
-				
-				console.log('.... responses received from mocks for: ' + svcsResponding);
-				
-				assert.equal(totalSvcs, _.size(svcsResponding));
-				
-	      done();
-	    }
-	  }, 1000);
-		
-		// Process each tier in order
-		_.forEach(tiers, function(tier){
-			var socket = new events.EventEmitter(),
-					item = undefined;
-		
-			console.log('checking tier ' + tier.getName() + ' with a valid item.');
-		
-			// Create a socket event for each data type.
-			_.forEach(CONFIGS['data']['objects'], function(def, type){
-				if(typeof def['root'] != 'undefined'){
-					item = helper.mapToItem(type, false, getAttributeMap(type, 'bar'));
-				}
-			
-				socket.on(type, function(data){
-					var json = JSON.parse(data);
-					
-					// If this is the first NON-ERROR response from the service record the service
-					if(!_.contains(svcsResponding, json['service']) && (typeof json['error'] == 'undefined')){
-						svcsResponding.push(json['service']);
-					}
-					
-				});
-			});
-		
-			socket.on('complete', function(data){
-				// Make sure the 'dispatch_always' services returned data
-				_.forEach(tier.getServiceNames(), function(service){
-					if(_.contains(CONFIGS['rules']['dispatch_always'], service)){
-						assert(_.contains(svcsResponding, tier.getServiceDisplayName(service)));
-					}
-				});
-				
-				_complete++;
-			});
-		
-			tier.negotiate(socket, item, function(augmentedItem, leftoverServices){
-				socket.emit('complete', CONFIGS['message']['broker_response_success']);
-			});
-		});
-			
-	});*/
-	
-	
-	// ---------------------------------------------------------------------------------------------------
-/*	it('should return only the services that meet the minimum item attributes rules', function(done){
-		var rootItem = '',
-				_complete = 0,
-				required = {},
-				children = [],
-				childAttributes = {};
-				
-		// Create the item for the root object
-		_.forEach(CONFIGS['data']['objects'], function(def, type){
-			if(typeof def['root'] != 'undefined'){
-				rootItem = type;
+		var i = 0;
+		_.forEach(CONFIGS['data']['objects'][rootItem]['attributes'], function(attribute){
+			if(i <= 3){
+				_params[attribute] = 'yadda-yadda';
 			}
+			i++;
 		});
+		
+		var item = new Item(rootItem, true, _params);
+		_ret = [];
 
-		children = CONFIGS['data']['objects'][rootItem]['children'] || [];
-
-		// Add any required attributes
-		_.forEach(CONFIGS['rules']['objects'][rootItem], function(rules, attribute){
-			required[attribute] = 'yadda';
-		});
-
-		_.forEach(children, function(child){
-			var params = {};
+		processTier({}, 0, item, function(results){
 			
-			_.forEach(CONFIGS['data']['objects'][child]['attributes'], function(attribute){
-				params[attribute] = 'blah';
-			});
-			
-			childAttributes[child] = params;
-		});
-
-	  // Setup a heartbeat monitor at the top to verify that all rules passed
-	  var heartbeat = setInterval(function(){
-			if(_complete >= _.size(CONFIGS['rules']['minimum_item_groups'])){
-	      clearInterval(heartbeat);
-			
-				console.log('.... responses received from all services: ' + svcsResponding);
-			
-				assert.equal(_complete, _.size(CONFIGS['rules']['minimum_item_groups']));
-			
-	      done();
-	    }
-	  }, 1000);
-
-
-		// Expect them all to PASS
-		_.forEach(CONFIGS['rules']['minimum_item_groups'], function(rules, service){
-			var responded = false;
-
-			
-			// Check each tier (because the service will only be attached to one tier)
-			_.forEach(tiers, function(tier){
-				
-				// If the service hasn't responded to a prior tier
-				if(!responded){
-					var socket = new events.EventEmitter(),
-							isDone = false;
-			
-					console.log('checking to see if tier ' + tier.getName() + ' called ' + service);
-			
-					socket.on(rootItem, function(data){
-						var json = JSON.parse(data);
-				
-						// If this is the first NON-ERROR response from the service record the service
-						if(json['service'] == tier.getServiceDisplayName(service)){
-							responded = true;
-						}
-					});
-			
-					socket.on('complete', function(data){
-						isDone = true;
-					
-						console.log('.... responded? ' + responded);
-					
-						if(responded){
-							_complete++;
-						}
-					});
-			
-					var item = new Item(rootItem, false, required);
-					
-					// Setup the attributes according to the rules for the service
-					_.forEach(rules, function(andRule){
-						console.log(andRule);
+			_.forEach(results, function(result){
+				if(result['item']){
+					_.forEach(result['item'].getAttributes(), function(value, key){
 						
-						if(andRule instanceof Array){
-							if(_.contains(children, _.first(andRule).slice(0, -1))){
-								console.log('first: ' + _.first(andRule) + ' == ' + _.first(andRule).slice(0, -1));
-								
-								item.addAttribute(_.first(andRule), [new Item(_.first(andRule).slice(0, -1), false, childAttributes[_.first(andRule).slice(0, -1)])]);
-							}else{
-								item.addAttribute(_.first(andRule), 'foo-bar');
-							}
-						
-						}else{
-							if(_.contains(children, andRule.slice(0, -1))){
-								console.log('first: ' + andRule + ' == ' + andRule.slice(0, -1));
-								
-								item.addAttribute(andRule, [new Item(andRule.slice(0, -1), false, childAttributes[andRule.slice(0, -1)])]);
-							}else{
-								item.addAttribute(andRule, 'foo-bar');
-							}
-						}
-					});
-			
-					console.log('.... sending ' + item);
-			
-					tier.negotiate(socket, item, function(augmentedItem, leftoverServices){
-						socket.emit('complete', CONFIGS['message']['broker_response_success']);
+						// The returned item should NOT contain the the original attributes
+						assert(!_.contains(_params, key));
 					});
 				}
 			});
-		
+			
+			done();
 		});
 		
 	});
 	
 	// ---------------------------------------------------------------------------------------------------
-	it('should correctly pass services on hold to the next tier', function(done){
+	it('should properly return an error', function(done){
+		var _params = {};
+		
+		console.log('.. TIER: checking error handling');
+		
+		// Get the REQUIRED attributes
+		_.forEach(CONFIGS['rules']['objects'][rootItem], function(vals, attribute){
+			_params[attribute] = 'foo-bar';
+		});
+		
+		var i = 0;
+		_.forEach(CONFIGS['data']['objects'][rootItem]['attributes'], function(attribute){
+			if(i <= 3){
+				_params[attribute] = 'yadda-yadda';
+			}
+			i++;
+		});
+		
+		var item = new Item(rootItem, true, _params);
+		_ret = [];
+		
+		processTier({'error': true}, 0, item, function(results){
+			
+			_.forEach(results, function(result){
+				assert(result['error'] instanceof Item);
+			});
+			
+			done();
+		});
 		
 	});
 	
 	// ---------------------------------------------------------------------------------------------------
-	it('should handle errors from a service correctly', function(done){
+	it('should return an item for the service when its minimum item attributes are met!', function(done){
+		var _completed = 0,
+				_passed = 0,
+				_failed = [];
 		
-		// Undefined responses
+		console.log('.. TIER: checking minimum item attribute rules.');
 		
-		// Error messages from service
+		var heartbeat = setInterval(function(){
+			if(_completed >= _.size(CONFIGS['rules']['minimum_item_groups'])){
+				clearInterval(heartbeat);
+				
+				// The number of passed tests should match the number of services tested.
+				assert.equal(_completed, _passed);
+				assert.equal(0, _failed);
+				
+				done();
+			}
+		}, 500);
+
 		
-	});*/
+		var tryService = function(index){
+			var _params = {};
+			
+			var i = 0;
+			_.forEach(CONFIGS['rules']['minimum_item_groups'], function(rules, service){
+				if(i == index){
+					
+					console.log('.. running minimum item attribute requirements test for ' + service);
+					
+					_.forEach(CONFIGS['rules']['objects'][rootItem], function(vals, attribute){
+						_params[attribute] = 'foo-bar';
+					});
+			
+					_.forEach(rules, function(vals, andRule){
+						if(vals instanceof Array){
+							if(_.contains(CONFIGS['data']['objects'][rootItem]['children'], _.first(vals).slice(0, -1))){
+								_params[_.first(vals)] = [new Item(_.first(vals).slice(0, -1), true, {'foo':'bar'})];
+							}else{
+								_params[_.first(vals)] = 'yadda-yadda';
+							}
+						}else{
+							if(_.contains(CONFIGS['data']['objects'][rootItem]['children'], vals.slice(0, -1))){
+								_params[vals] = [new Item(vals.slice(0, -1), true, {'foo':'bar'})];
+							}else{
+								_params[vals] = 'blah-blah';
+							}
+						}
+					});
+			
+					var item = new Item(rootItem, false, _params);
+			
+					_ret = [];
+			
+					processTier({'service': service}, 0, item, function(items){
+						_.forEach(items, function(newItem){
+					
+							if(newItem['item']){
+								if(_.size(newItem['item'].getAttributes()) > 0){
+									if(newItem['service'] == displayNames[service]){
+										_passed++;
+									}
+								}
+						
+							}else{
+								_failed++;
+							}
+
+						});
+			
+						_completed++;
+						
+						if((index + 1) < _.size(CONFIGS['rules']['minimum_item_groups'])){
+							buildTiers();
+							
+							tryService((index + 1));
+						}
+					});
+			
+				}
+				i++;
+			});
+			
+		};
+
+		tryService(0);
+	
+	});
+
+	// ---------------------------------------------------------------------------------------------------
+	it('should timeout!', function(done){
+		var _completed = false,
+				_passed = false,
+				_message = '',
+				_params = {};
+		
+		console.log('.. TIER: verifying that tier times out.');
+		
+		// Get the REQUIRED attributes
+		_.forEach(CONFIGS['rules']['objects'][rootItem], function(vals, attribute){
+			_params[attribute] = 'foo-bar';
+		});
+		
+		var i = 0;
+		_.forEach(CONFIGS['data']['objects'][rootItem]['attributes'], function(attribute){
+			if(i <= 3){
+				_params[attribute] = 'yadda-yadda';
+			}
+			i++;
+		});
+		
+		var heartbeat = setInterval(function(){
+			if(_completed){
+				
+				console.log(_message);
+				
+				// The number of passed tests should match the number of services tested.
+				assert(_passed);
+				assert.equal(helper.buildMessage(CONFIGS['message']['tier_timeout'], [tier.getName()]), _message);
+				
+				done();
+			}
+		}, 500);
+		
+		var tier = tiers[0];
+		
+		tier.on('error', function(error){
+			_message = error.getAttribute('message');
+			_passed = true;
+		});
+		
+		tier.on('success', function(results){
+			_message = 'Got a success message when we should have received an error!';
+		});
+		
+		tier.on('complete', function(leftovers){
+			_completed = true;
+		});
+		
+		var item = new Item(rootItem, true, _params);
+		tier.process({'timeout': true}, item);
+		
+	});
+
 	
 });
 
-
-// ---------------------------------------------------------------------------------------------------
-Tier.prototype.getServiceDisplayName = function(serviceName){
-	var ret = '';
-	_.forEach(this._services, function(service){
-		if(service.getName() == serviceName){
-			ret = service.getDisplayName();
-		}
-	});
-	return ret;
-};
-// ---------------------------------------------------------------------------------------------------
-Tier.prototype.getServiceNames = function(){
-	var ret = [];
-	_.forEach(this._services, function(service){
-		ret.push(service.getName());
-	});
-	return ret; 
-};
-// ---------------------------------------------------------------------------------------------------
-Tier.prototype.getServices = function(){ return this._services; }
-
-// ---------------------------------------------------------------------------------------------------
-// mock the actual call to the service
-// ---------------------------------------------------------------------------------------------------
-Tier.prototype._callService = function(headers, service, item){
-  var obj = undefined;
-	
-	buildItemMap = function(type, value){
-    var map = {};
-
-    if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
-      
-      _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-        map[attribute] = value;
-      });
-  
-      if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
-        _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
-          map[child + 's'] = [buildItemMap(child, value)];
-        });
-      }
-    }
-
-    return map;
-	}
-	
-	// Build the response objects
-	if(service.getName() == 'error'){
-		obj = helper.mapToItem('error', false, {'level' : 'warning', 'message': 'you got an error!'});
-		
-	}else{
-		_.forEach(CONFIGS['data']['objects'], function(def, type){
-
-			if(typeof def['root'] != 'undefined'){
-				obj = helper.mapToItem(type, false, buildItemMap(type, 'blah'));
-			
-			}else{
-				obj.addAttribute(type + 's', [helper.mapToItem(type, false, buildItemMap(type, 'foo')), 
-																			 helper.mapToItem(type, false, buildItemMap(type, 'bar'))]);
-			}
-		});
-	}
-	
-	callback([obj]);
-};
