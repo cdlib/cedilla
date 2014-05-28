@@ -1,4 +1,4 @@
-require('../index.js');
+require('../init.js');
     
 var uuid = require('node-uuid');
     

@@ -1,4 +1,4 @@
-require('./index.js');
+require('./init.js');
 /*
 var CONFIGS = require('./lib/config.js'),
     LOGGER = require('./lib/logger.js');
@@ -78,22 +78,7 @@ function citationService (request, response) {
   
   var item = buildInitialItemsFromOpenUrl(query),
       translator = new Translator('openurl');
-      
-/*  var query = url.parse(request.url).query;
-  var queryValid = function () {
-    // TODO: validation logic
-    if (query) return true;
-    return false;
-  }
 
-  if (!queryValid()) {
-    response.writeHead(400);
-    response.end('query not valid');
-  }
-
-  LOGGER.log('received request for citation JSON representation');
-  translator = new Translator('openurl');
-  var item = buildInitialItems(translator, querystring.parse(query));*/
   response.setHeader('Content-Type', 'application/json');
   response.writeHead(200);
   response.end(JSON.stringify(helper.itemToMap(item)));    
@@ -122,20 +107,16 @@ io.sockets.on('connection', function (socket) {
         // Warn about invalid item
         LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
         
-				var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
-				socket.emit(serializer.itemToJsonForClient('cedilla', err));
-				
-        //socket.emit('error', CONFIGS['message']['broker_bad_item_message']);
+        var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+        socket.emit(serializer.itemToJsonForClient('cedilla', err));
       }
       
     }catch(e){
       LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
       LOGGER.log('error', e.stack);
   
-			var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['generic_http_error']});
-			socket.emit(serializer.itemToJsonForClient('cedilla', err));
-			    
-      //socket.emit('error', CONFIGS['message']['generic_http_error']);
+      var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['generic_http_error']});
+      socket.emit(serializer.itemToJsonForClient('cedilla', err));
     }
     
     LOGGER.log('debug', 'broker finished intializing ... waiting for responses');
@@ -149,8 +130,8 @@ function buildInitialItemsFromOpenUrl(queryString){
 
   var translator = new Translator('openurl');
   var map = translator.translateMap(qs, false);
-	
-	map['original_citation'] = queryString;
+  
+  map['original_citation'] = queryString;
 
   return helper.flattenedMapToItem('citation', true, map);
 }
