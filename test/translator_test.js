@@ -1,4 +1,4 @@
-require('../index.js');
+require('../init.js');
 
 describe('translator.js', function(){
   var attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};

@@ -26,13 +26,12 @@ error_log_name: 'error.log'
 client_api_version: 1.0
 
 # ---------------------------------------------------------------------------------
-# Broker settings
+# Timer settings (milliseconds)
 # ---------------------------------------------------------------------------------
-broker_timeout: 120000 # 2 minutes
-broker_heartbeat_interval: 5000 # 5 seconds
+tier_timeout: 20000 
 
 # ---------------------------------------------------------------------------------
-# Service settings
+# Service settings (response length is in bytes)
 # ---------------------------------------------------------------------------------
 service_max_response_length: 30000 # bytes
 service_api_version: 1.0
