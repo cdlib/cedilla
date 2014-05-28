@@ -7,6 +7,7 @@ module.exports = _ = require('underscore');
 module.exports = augmenter = require("./lib/augmenter.js");
 module.exports = helper = require("./lib/helper.js");
 module.exports = serializer = require("./lib/serializer.js");
+module.exports = specializers = require("./lib/specializer.js");
 
 module.exports = Broker = require("./lib/broker.js");
 module.exports = Item = require("./lib/item.js");
