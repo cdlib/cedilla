@@ -85,6 +85,7 @@ objects:
       - resource
 
     attributes:
+      - campus
       - genre
       - content_type
       - issn
@@ -132,7 +133,7 @@ objects:
   # ----------------------------------------------------------
   author:                
     validation:          # One of these fields is required for the author to be valid
-      - ['last_name', 'full_name', 'corporate_name']
+      - ['last_name', 'full_name', 'corporate_author']
 
     attributes:
       - corporate_author
