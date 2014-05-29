@@ -3,6 +3,8 @@ require("../init.js");
 var events = require('events'),
     mockery = require('./mockery.js');
     
+Tier.prototype.setTimeout = function(value){ this._timeout = value; };
+
 // ---------------------------------------------------------------------------------------------------
 describe('tier.js', function(){
   this.timeout(120000);
@@ -423,6 +425,7 @@ describe('tier.js', function(){
     }, 500);
     
     var tier = tiers[0];
+    tier.setTimeout(5000);
     
     tier.on('error', function(error){
       _message = error.getAttribute('message');

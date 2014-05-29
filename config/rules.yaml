@@ -65,12 +65,6 @@ objects:
       book:
         - internet_archive
         - cover_thing
-      issue:
-        - cover_elsevier
-      article:
-        - cover_elsevier
-      series:
-        - cover_elsevier
       bookitem:
         - internet_archive
         - cover_thing
@@ -126,6 +120,6 @@ minimum_item_groups:
     - ['title', 'book_title']
     - ['authors']
   sfx:
-    - ['title', 'journal_title', 'book_title', 'article_title', 'series_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'pmid', 'coden', 'sici', 'bici', 'document_id']
+    - ['title', 'journal_title', 'book_title', 'article_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'coden', 'sici', 'bici', 'document_id']
   cover_thing:
     - ['isbn', 'eisbn']
