@@ -5,7 +5,7 @@ var server = require('http').createServer(onRequest),
     fs = require('fs'),
     url = require('url');
 
-server.listen(CONFIGS['application']['port']);
+server.listen(3005);
 
 /* -----------------------------------------------------------------------------------------
  * Primitive routing logic.

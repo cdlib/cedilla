@@ -16,6 +16,8 @@ organization_name: 'Your Organization'
 application_name: 'Cedilla Delivery Aggregator'
 application_description: 'Delivery aggregation service for library resources'
 
+port: 3005
+
 log_path: './log'
 access_log_name: 'access.log'
 error_log_name: 'error.log'
