@@ -25,9 +25,14 @@
     "collections": "latest",
     "node-html-encoder": "latest",
     "node-uuid": "latest",
-    "underscore": "latest",
-    "mocha": "latest"
+    "underscore": "latest"
   },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "scripts": {
+     "test": "node_modules/.bin/mocha"
+   },
   "preferGlobal": true,
   "private": true,
   "license": "BSD-3-Clause"
