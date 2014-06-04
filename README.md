@@ -4,6 +4,9 @@
 
 The Cedilla Delivery Aggregator system is a component of the larger Cedilla project. 
 
+#### Build Status:
+[![Build Status](https://secure.travis-ci.org/cdlib/cedilla_delivery_aggregator.png)](http://travis-ci.org/cdlib/cedilla_delivery_aggregator)
+
 #### Who is it for?
 
 The Cedilla Project is designed for libraries (the kind with books, not code) that want to expose resources from multiple catalogs through one common delivery mechanism.
