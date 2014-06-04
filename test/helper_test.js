@@ -34,6 +34,8 @@ describe("helper.js", function(){
   // ---------------------------------------------------------------------------------------------------
   it('testing safeAssign()', function(){
   
+  console.log('HELPER: checking safeAssign');
+  
     // Make sure the default is assigned if the value is missing
     assert.equal('default', helper.safeAssign('string', undefined, 'default'));
     assert.equal('default', helper.safeAssign('string', null, 'default'));
@@ -56,7 +58,10 @@ describe("helper.js", function(){
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it('testing buildMessage()', function(){
+  it('testing buildMessage()', function(){    
+    
+    console.log('HELPER: checking buildMessage');
+  
     _.forEach(CONFIGS['message'], function(value, key){
       var tmp = value,
           vals = [];
@@ -72,6 +77,9 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing depluralize()', function(){
+    
+    console.log('HELPER: checking depluralize');
+  
     assert.equal('citation', helper.depluralize('citations'));
     assert.equal('camel', helper.depluralize('camels'));
     assert.equal('city', helper.depluralize('cities'));
@@ -87,6 +95,8 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing queryStringToMap()', function(){
+    console.log('HELPER: checking query string to Map');
+  
     var map = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
     
     var out = helper.queryStringToMap('foo=bar&one=fish&two=fish&red=fish&blue=fish');
@@ -99,6 +109,8 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing mapToQueryString()', function(){
+    console.log('HELPER: checking map to query string');
+  
     var qs = 'foo=bar&one=fish&two=fish&red=fish&blue=fish';
     
     var out = helper.mapToQueryString({'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'});
@@ -109,6 +121,8 @@ describe("helper.js", function(){
   // ---------------------------------------------------------------------------------------------------
   it('testing itemToMap()', function(){
     var self = this;
+    
+    console.log('HELPER: checking item to map conversion');
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var map = getAttributeMap(type);
@@ -134,6 +148,8 @@ describe("helper.js", function(){
   it('testing mapToItem()', function(){
     var self = this;
     
+    console.log('HELPER: checking map to item conversion');
+  
     assert.throws(function(){ helper.mapToItem('foo', false, {}); });
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
@@ -166,6 +182,8 @@ describe("helper.js", function(){
         obj = undefined,
         obj2 = undefined;
     
+    console.log('HELPER: checking flattened map (e.g. openurl) to item conversion');
+  
     // Loop through the object definitions and translate their attribute names 
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var map = translator.translateMap(getAttributeMap(type), true);
@@ -222,6 +240,8 @@ describe("helper.js", function(){
   it('testing getRootItemType()', function(){
     var root = '';
     
+    console.log('HELPER: checking root item');
+  
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(typeof def['root'] != 'undefined'){
         root = type;

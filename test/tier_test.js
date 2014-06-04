@@ -2,8 +2,6 @@ require("../init.js");
 
 var events = require('events'),
     mockery = require('./mockery.js');
-    
-Tier.prototype.setTimeout = function(value){ this._timeout = value; };
 
 // ---------------------------------------------------------------------------------------------------
 describe('tier.js', function(){
@@ -20,9 +18,13 @@ describe('tier.js', function(){
       returnValue = 'blah-blah',
       item = undefined,
       mockServer = undefined;
+      
+  var oldServiceCallMethod = undefined; 
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
+    
+    oldServiceCallMethod = Service.prototype.call;
     
     // Add a new setter so we can send all HTTP service calls to our mock server!
     // These MUST be set inside the before() method so that the Service.call() method is not overriden in
@@ -58,6 +60,7 @@ describe('tier.js', function(){
       }
     };
     
+    Tier.prototype.setTimeout = function(value){ this._timeout = value; };
     
     // Build out the tiers and their services as defined in the config
     // ---------------------------------------------------------------------------------------------------
@@ -104,6 +107,12 @@ describe('tier.js', function(){
     mockServer.close();
     
     console.log('shutdown mock server.');
+    
+    // Remove monkey patches and set Service back to its original state
+    Service.prototype.call = oldServiceCallMethod;
+    Service.prototype.setTarget = undefined;
+    Tier.prototype.setTimeout = undefined;
+    
     done();
   });
   
@@ -128,10 +137,6 @@ describe('tier.js', function(){
         tier.on('message', function(item){
           _ret.push(item);
         });
-      
-/*        tier.on('error', function(error){
-          _ret.push(error);
-        });*/
       
         tier.on('complete', function(leftovers){
           if(_.size(leftovers) > 0){

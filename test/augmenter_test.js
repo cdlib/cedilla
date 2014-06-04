@@ -45,6 +45,8 @@ describe("augmenter.js", function(){
     var original = item;
     var newItem = new Item(rootItem, false, getAttributeMap(rootItem, 'blah-blah'));
     
+    console.log('AUGMENTER: Making sure items are properly augmented.')
+    
     augmenter.augmentItem(original, newItem);
 
     _.forEach(item.getAttributes(), function(value, key){

@@ -53,6 +53,9 @@ describe("serializer.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing itemToJsonForClient()', function(){
+    
+    console.log('SERIALIZER: checking item to JSON for client');
+    
     var json = JSON.parse(serializer.itemToJsonForClient('test_svc', item));
     
     assert.equal('undefined', (typeof json['foo']));
@@ -88,6 +91,9 @@ describe("serializer.js", function(){
   // ---------------------------------------------------------------------------------------------------
   it('testing itemToJsonForService()', function(){
     var transId = uuid.v4();
+    
+    console.log('SERIALIZER: checking item to JSON for services');
+    
     var json = JSON.parse(serializer.itemToJsonForService(transId, item));
     
     assert.equal('undefined', (typeof json['foo']));

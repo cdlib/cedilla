@@ -78,7 +78,7 @@ objects:
 
     validation:          # Fields required for the item to be valid
       - genre
-      - content_type     
+      - content_type
 
     children:            # Establish the relationship between the objects
       - author

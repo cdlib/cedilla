@@ -24,18 +24,27 @@ describe('item.js', function(){
 // ------------------------------------------------------------------------------------------------------
   // Missing type throws error
   it('should throw an error when the type is not specified!', function(){
+    
+    console.log('ITEM: checking that error is thrown when no type specified');
+    
     assert.throws(function(){ new Item(undefined, false, {}); });
   });
     
   // ------------------------------------------------------------------------------------------------------
   // Invalid type throws error
   it('should throw an error when the type is not defined in the ./config/data.config!', function(){
+    
+    console.log('ITEM: checking that error is thrown when no type specified');
+    
     assert.throws(function(){ new Item(undefined, false, {}); });
   });
   
   // ------------------------------------------------------------------------------------------------------  
   // Valid item types do NOT throw errors
   it('should NOT throw an error when the type is defined in the ./config/data.config!', function(){
+    
+    console.log('ITEM: checking that error is NOT thrown when no type specified');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       assert.doesNotThrow(function(){ new Item(type, false, {}); });
       assert.doesNotThrow(function(){ new Item(type, true, {}); });
@@ -47,6 +56,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------  
   // defaults off returns empty object
   it('should have no attributes when defaults are turned off and no attributes were supplied!', function(){
+    
+    console.log('ITEM: checking that an empty item with no attributes can be created');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, {});
       assert.equal(0, _.size(item.getAttributes()));
@@ -56,6 +68,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------    
   // defaults on returns object with only defaults
   it('should have an attribute for each default defined in ./config/data.yaml!', function(){
+    
+    console.log('ITEM: checking that defaults are set properly');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
     
       var item = new Item(type, true, {});
@@ -74,6 +89,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------  
   // attribute assignment working
   it('should have an attribute for each attribute specified!', function(){
+    
+    console.log('ITEM: checking that all attributes defined get created properly');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
       
@@ -90,6 +108,9 @@ describe('item.js', function(){
 // IsValid()
 // ------------------------------------------------------------------------------------------------------
   it('testing for invalid items', function(){
+    
+    console.log('ITEM: checking item validation');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(typeof def['validation'] != 'undefined'){
         var item = new Item(type, true, {});
@@ -102,6 +123,9 @@ describe('item.js', function(){
     
   // ------------------------------------------------------------------------------------------------------  
   it('testing for valid items', function(){
+    
+    console.log('ITEM: checking item validation policies');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var attributes = {};
       
@@ -130,6 +154,9 @@ describe('item.js', function(){
 // ------------------------------------------------------------------------------------------------------
   // has attributes
   it('testing hasAttributes()', function(){
+    
+    console.log('ITEM: testing hasAttributes');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
       
@@ -141,6 +168,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------
   // has attribute
   it('testing hasAttribute()', function(){
+    
+    console.log('ITEM: testing hasAttribute for specific attributes');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
       
@@ -155,6 +185,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------    
   // add attribute
   it('testing addAttribute()', function(){
+    
+    console.log('ITEM: checking that individual attributes can be added');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, {});
       
@@ -171,6 +204,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------
   // set attributes in bulk
   it('testing addAttributes()', function(){
+    
+    console.log('ITEM: checking that attributes can be added as a map');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, {});
       
@@ -185,6 +221,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------
   // remove attribute
   it('testing removeAttribute()', function(){
+    
+    console.log('ITEM: checking that attributes can be removed');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
       
@@ -200,6 +239,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------
   // get value
   it('testing getAttribute()', function(){
+    
+    console.log('ITEM: checking that attributes can be retrieved by name');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
       
@@ -214,6 +256,9 @@ describe('item.js', function(){
   // ------------------------------------------------------------------------------------------------------
   // check adding child items
   it('testing addAttribute() and removeAttribute() for array of child items', function(){
+    
+    console.log('ITEM: testing add and remove of child items');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(typeof def['children'] != 'undefined'){
         var item = new Item(type, false, attributes[type]);
@@ -254,6 +299,9 @@ describe('item.js', function(){
 // to String
 // ------------------------------------------------------------------------------------------------------
   it('testing toString()', function(){
+    
+    console.log('ITEM: checking toString');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var item = new Item(type, false, attributes[type]);
     
