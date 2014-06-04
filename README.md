@@ -86,13 +86,9 @@ The node server takes in a request via the browser and establishes a socket.io l
 
 ### Testing
 
-* install mocha globally
+* > npm test
 
-* npm install -g mocha
-
-* run the tests
-
-* > mocha 
+* alternatively, install mocha globally (npm install -g mocha) and run mocha from project root
 
 ### Wiki
 
