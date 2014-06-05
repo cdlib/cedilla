@@ -4,7 +4,7 @@ var events = require('events'),
     util = require('util');
 
 // ---------------------------------------------------------------------------------------------------
-describe('attribute_service_test.js', function(){
+describe('broker_additional_test.js', function(){
   this.timeout(40000);
   
   var Socket = undefined,
@@ -28,6 +28,10 @@ describe('attribute_service_test.js', function(){
     Item.prototype.setServices = function(services){ this._services = services };
     // ---------------------------------------------------------------------------------------------------
     Item.prototype.getServices = function(){ return this._services };
+    // ---------------------------------------------------------------------------------------------------
+    Item.prototype.setServiceDisplays = function(displays){ this._displays = displays };
+    // ---------------------------------------------------------------------------------------------------
+    Item.prototype.getServiceDisplays = function(){ return this._displays };
 
     // ---------------------------------------------------------------------------------------------------
     // Override Tier and Service level rules checks that do not apply to this test
@@ -55,7 +59,7 @@ describe('attribute_service_test.js', function(){
 
       _.forEach(self._queue, function(service){
         if(service instanceof Service){
-          self.emit('response', {'service': service.getName(), 'original': item, 'new': [new Item(item.getType(), true, {'foo':'bar'})]});
+          self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': [new Item(item.getType(), true, {'foo':'bar'})]});
         }
       });
 
@@ -195,11 +199,28 @@ describe('attribute_service_test.js', function(){
           }
         });
         
+        // Throw the always dispatch services into the list
+        _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
+          svcs.push(service);
+        });
         
         //console.log(paramSet['genre'] + ', ' + paramSet['content_type'] + ' --> ' + svcs);
         
         var item = new Item(type, false, paramSet)
-         item.setServices(svcs);
+        item.setServices(svcs);
+        
+        // Convert the service names over to display names so we can match them up later
+        var displays = [];
+        _.forEach(svcs, function(svc){
+          _.forEach(CONFIGS['services']['tiers'], function(services, tier){
+            _.forEach(services, function(def, service){
+              if(svc == service){
+                displays.push((typeof def['display_name'] == 'undefined' ? svc : def['display_name']));
+              }
+            });
+          });  
+        });
+        item.setServiceDisplays(displays);
         
         ret.push(item);
       });
@@ -229,23 +250,27 @@ describe('attribute_service_test.js', function(){
 
       var dispatchItem = function(index, callback){
         if(items[index] instanceof Item){
-          var responses = _.size(always) + _.size(items[index].getServices());
+          var responses = _.size(items[index].getServices()); //_.size(always) + _.size(items[index].getServices());
         
           if(typeof items[index] != 'undefined'){
           
             socket = new Socket(function(){
               console.log('checking services responding to: genre: ' + items[index].getAttribute('genre') + ', content_type: ' + items[index].getAttribute('content_type'));
-              console.log(results);
+//              console.log(results);
         
               // Make sure the right number of responses were fired
               assert.equal(responses, _.size(results));
             
               _.forEach(results, function(result){
                 var json = JSON.parse(result);
-              
-                if(!_.contains(items[index].getServices(), json['service']) && !_.contains(CONFIGS['rules']['dispatch_always'], json['service'])){
+                var passed = true;
+
+                if(!_.contains(items[index].getServiceDisplays(), json['service']) && !_.contains(CONFIGS['rules']['dispatch_always'], json['service'])){
                   console.log('Incorrect service, ' + json['service'] + ' responded for genre: ' + items[index].getAttribute('genre') + ', content_type: ' + items[index].getAttribute('content_type'));
+                  passed = false;
                 }
+                
+                assert(passed);
               });
             
               results = [];

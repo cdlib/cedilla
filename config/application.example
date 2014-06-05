@@ -23,6 +23,18 @@ access_log_name: 'access.log'
 error_log_name: 'error.log'
 
 # ---------------------------------------------------------------------------------
+# Turn this on to enable to built in default service so that you get data back when
+# you want to verify that everything was properly installed and the system is working.
+#
+# This will kick off an http server on port 9000
+#
+# The server returns one item (including one of each child item). The 'default' service
+# must also be defined in services.yaml and be listed in the dispatch_always section
+# of the rules.yaml file
+# ---------------------------------------------------------------------------------
+server_default_content: true
+
+# ---------------------------------------------------------------------------------
 # Socket settings
 # ---------------------------------------------------------------------------------
 client_api_version: 1.0

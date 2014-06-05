@@ -1,5 +1,6 @@
-
-
+var fs = require('fs'),
+    yaml = require('js-yaml');
+		
 module.exports = CONFIGS = require("./lib/config.js");
 module.exports = LOGGER = require('./lib/logger.js');
 

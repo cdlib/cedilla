@@ -58,7 +58,7 @@ describe('broker.js', function(){
           var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
 
           if(service instanceof Service){
-            self.emit('response', {'service': service.getName(), 'original': item, 'new': items});
+            self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': items});
           }
         });
 

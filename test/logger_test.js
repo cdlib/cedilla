@@ -3,9 +3,16 @@ var LOGGER = undefined;
 var yaml = require('js-yaml'),
     fs = require('fs'),
     assert = require("assert"),
-    config = yaml.load(fs.readFileSync(process.cwd() + '/config/application.yaml', 'utf8')),
     _ = require('underscore');
-    
+
+var config = undefined;
+
+if(fs.existsSync(process.cwd() + '/config/application.yaml')){
+  config = yaml.load(fs.readFileSync(process.cwd() + '/config/application.yaml', 'utf8'));  
+}else{
+  config = yaml.load(fs.readFileSync(process.cwd() + '/config/application.example', 'utf8'));
+}
+
 describe('logger.js testing', function(){
   this.timeout(10000);
   

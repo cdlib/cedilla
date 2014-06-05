@@ -3,7 +3,9 @@ require('./init.js');
 var server = require('http').createServer(onRequest),
     io = require('socket.io').listen(server),
     fs = require('fs'),
-    url = require('url');
+    url = require('url'),
+    defaultServiceRunning = false;
+
 
 server.listen(3005);
 
@@ -12,6 +14,13 @@ server.listen(3005);
  * This is the HTTP entry point to the application.
  * ----------------------------------------------------------------------------------------- */
 function onRequest (request, response) {
+	
+	// Stub service implementation only available when the application.yaml contains the serve_default_content parameter
+	if(CONFIGS['application']['server_default_content'] && !defaultServiceRunning){
+		var defaultService = startDefaultService();
+		defaultServiceRunning = true;
+	}
+	
   try {
     var pathname = url.parse(request.url).pathname;
     switch(pathname) {
@@ -128,4 +137,68 @@ function buildInitialItemsFromOpenUrl(queryString){
   map['original_citation'] = queryString;
 
   return helper.flattenedMapToItem('citation', true, map);
+}
+
+// -------------------------------------------------------------------------------------------
+function startDefaultService(){
+	var net = require('http');
+	
+	mockService = net.createServer(function(request, response){
+		var body = '';
+
+		// Do routing 
+		// ----------------------------------------------------------------------------------------------
+		var route = url.parse(request.url).pathname;
+
+		// Chunk up the data coming through in the request - kill it if it its too much
+		// ----------------------------------------------------------------------------------------------
+		request.on('data', function(data){ 
+			body += data;
+		});
+
+		// Send back the appropriate response based on the route
+		// ----------------------------------------------------------------------------------------------
+		request.on('end', function(){ 
+			var json = JSON.parse(body),
+					now = new Date();
+		
+			if(route == '/default'){
+				response.writeHead(200);
+			
+				var buildItem = function(type){
+					var params = {};
+				
+					_.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+						params[attribute] = 'example';
+					});
+				
+					return new Item(type, true, params);
+				};
+			
+				var item = buildItem(helper.getRootItemType());
+			
+				_.forEach(CONFIGS['data']['objects'][helper.getRootItemType()]['children'], function(child){
+					item.addAttribute(child + 's', [buildItem(child)]);
+				});
+				
+				var ret = "{\"time\":\"" + now.toJSON() + "\",\"id\":\"" + json.id + "\",\"api_ver\":\"" + 
+																json.api_ver + "\",\"" + helper.getRootItemType() + "s\":[" + JSON.stringify(helper.itemToMap(item)) + "]}";
+																
+				console.log(ret);
+			
+				response.end(ret);
+	
+			}else{
+				response.writeHead(404);
+				response.end();
+			}
+	
+		});
+
+	});
+
+	mockService.listen(9000);
+	console.log('spun up mock server on 9000');
+
+	return mockService;
 }

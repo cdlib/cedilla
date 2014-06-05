@@ -1,6 +1,17 @@
 # See bottom of this file for an explanation of these values!
 tiers:
   1:
+    default:
+      enabled: true
+      max_attempts: 1
+      timeout: 30000
+      display_name: 'Default Data'
+
+      target: 'http://localhost:9000/default'
+
+      items_types_returned: ['citation', 'author', 'resource']
+
+    # ------------------------------------
     oclc_xid:
       enabled: true
       max_attempts: 1
