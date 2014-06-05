@@ -81,19 +81,46 @@ The Cedilla Project was influenced by the great work done over at the Umlaut pro
 
 * within the project/config directory rename the *.example files to .yaml
 
-* cd out of the project
+* start Cedilla
 
-* clone the ruby based services from: https://github.com/briri/test_socket_node_ruby into a new project
+* > node cedilla.js
 
-* cd into that project
+* Pull up Cedilla in a browser: http://localhost:3005 
 
-* > bundle install
+You should see 3 responses from the default service. Your screen should display (in Google Chrome):
+```
+{"time":"2014-06-05T21:43:55.964Z","api_ver":"1","service":"Default Data","author":{"corporate_author":"example","full_name":"example","last_name":"example","first_name":"example","initials":"example","first_initial":"example","middle_initial":"example","suffix":"example","dates":"example","authority":"example"}}
 
-* > thin -R config.ru start
+{"time":"2014-06-05T21:43:55.964Z","api_ver":"1","service":"Default Data","resource":{"source":"example","location":"example","target":"example","local_id":"example","local_title":"example","format":"example","type":"example","catalog_target":"example","cover_image":"example","description":"example","language":"example","license":"example","rating":"example","availability":"example","status":"example"}}
 
-* Pull up the node target in a browser: http://localhost:3005 
+{"time":"2014-06-05T21:43:55.964Z","api_ver":"1","service":"Default Data","citation":{"campus":"example","issn":"example","eissn":"example","eisbn":"example","oclc":"example","lccn":"example","doi":"example","coden":"example","sici":"example","bici":"example","document_id":"example","book_title":"example","journal_title":"example","chapter_title":"example","article_title":"example","short_title":"example","year":"example","month":"example","day":"example","volume":"example","issue":"example","article_number":"example","enumeration":"example","edition":"example","part":"example","season":"example","quarter":"example","series":"example","institution":"example","subject":"example","pages":"example","start_page":"example","end_page":"example","language":"example","abstract":"example","sample_cover_image":"example"}}
 
-The node server takes in a request via the browser and establishes a socket.io link back to the client (e.g. websockets, ajax long polling, whatever the client can handle) and then dispatches out to the 2 sample ruby services that are listening on port 3000. As the services respond, the result is posted back to the client via the original socket.io connection.
+All services have responded.
+```
+
+The default service is there just to help you verify that your installation worked properly. You can turn it off by commenting out the following line in application.yaml
+  > server_default_content: true
+
+### Setting up your own services
+
+* follow the installation instructions for the Cedilla Services project: https://github.com/cdlib/cedilla_services
+
+* install and start your own services (instructions for rolling your own services can be found on this project's Wiki)
+
+* update your services.yaml (make sure the 'target' is correct and that each one is enabled!)
+
+* update the rules.yaml (make sure your service appears in the dispatch_always OR in the data --> object --> item type --> attribuute --> value section)
+
+* see the Wiki or configuration file comments for further instructions on configuring your setup.
+
+* restart Cedilla if it does not pick up your configuration file changes
+
+* node cedilla.js
+
+#####Make sure you turn off the Default Service!!
+
+The default service is there just to help you verify that your installation worked properly. You can turn it off by commenting out the following line in application.yaml
+  > server_default_content: true
 
 ### Testing
 
@@ -103,5 +130,5 @@ The node server takes in a request via the browser and establishes a socket.io l
 
 ### Wiki
 
-The Wiki contains detailed information about the Delivery Aggregator and its components
+The Wiki contains detailed information about configuring Cedilla, building client applications for the system, and creating services.
 
