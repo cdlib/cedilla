@@ -126,7 +126,7 @@ objects:
       - start_page
       - end_page
       - language
-      - abstract
+      - abstract_text
       - sample_cover_image
       - subject
 

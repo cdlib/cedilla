@@ -5,7 +5,7 @@
 Cedilla is a delivery aggregation system. It receives stardardized requests from various client applications and in turn transforms that incoming request into separate calls to various services.  
 
 #### Build Status:
-[![Build Status](https://secure.travis-ci.org/cdlib/cedilla.png)](http://travis-ci.org/cdlib/cedilla)
+[![Build Status](https://secure.travis-ci.org/cdlib/cedilla.png?branch=build)](http://travis-ci.org/cdlib/cedilla)
 
 #### Who is it for?
 
