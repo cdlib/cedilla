@@ -9,34 +9,41 @@ describe("augmenter.js", function(){
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
     
-    getAttributeMap = function(type, value){
-      var map = {},
-          self = this;
-
-      if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
         
-        _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-          map[attribute] = value;
+        getAttributeMap = function(type, value){
+          var map = {},
+              self = this;
+
+          if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+        
+            _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+              map[attribute] = value;
+            });
+    
+            if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
+              _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
+                map[child + 's'] = [getAttributeMap(child)];
+              });
+            }
+          }
+  
+          return map;
+        };
+    
+        _.forEach(CONFIGS['data']['objects'], function(def, type){
+          if(typeof def['root'] != 'undefined'){
+            rootItem = type;
+            item = new Item(type, false, getAttributeMap(type, 'foo-bar'));
+          }
         });
     
-        if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
-          _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
-            map[child + 's'] = [getAttributeMap(child)];
-          });
-        }
-      }
-  
-      return map;
-    };
-    
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
-      if(typeof def['root'] != 'undefined'){
-        rootItem = type;
-        item = new Item(type, false, getAttributeMap(type, 'foo-bar'));
+        done();
       }
     });
-    
-    done();
   });
   
   

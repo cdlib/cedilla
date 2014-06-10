@@ -311,15 +311,15 @@ describe('config.js testing', function(){
     // Make sure every service has an item_types_returned and that the types are valid!
     _.forEach(CONFIGS['services']['tiers'], function(services, tier){
       _.forEach(services, function(def, service){
-        var passed = (def['items_types_returned'] instanceof Array);
+        var passed = (def['item_types_returned'] instanceof Array);
 
         if(passed){
-          _.forEach(def['items_types_returned'], function(type){
+          _.forEach(def['item_types_returned'], function(type){
             if(passed) passed = _.contains(_items, type);
           });
         }
         
-        if(!passed) console.log('.... service ' + service + ' MUST specify a "target" and an array of "items_types_returned"!');
+        if(!passed) console.log('.... service ' + service + ' MUST specify a "target" and an array of "item_types_returned"!');
         assert(passed);
       });
     });

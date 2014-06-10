@@ -2,7 +2,7 @@ require("../init.js");
 
 var events = require('events'),
     util = require('util'),
-    mockery = require('./mockery.js');
+    mockery = require('./mock_services.js');
 
 
 // ---------------------------------------------------------------------------------------------------
@@ -21,75 +21,82 @@ describe('broker.js', function(){
   before(function(done){
     var self = this;
     
-    oldTierProcessMethod = Tier.prototype.process;
-    oldTierHasMinimumCitationMethod = Tier.prototype._hasMinimumCitation;
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        oldTierProcessMethod = Tier.prototype.process;
+        oldTierHasMinimumCitationMethod = Tier.prototype._hasMinimumCitation;
     
-    // Mock the Tier's process routine to simply send back stub messages
-    Tier.prototype.process = function(headers, item){
-      var buildItemMap = function(itemType){
-        var map = {};
+        // Mock the Tier's process routine to simply send back stub messages
+        Tier.prototype.process = function(headers, item){
+          var buildItemMap = function(itemType){
+            var map = {};
 
-        _.forEach(CONFIGS['data']['objects'][itemType]['attributes'], function(attribute){
-          map[attribute] = 'blah';
-        });
+            _.forEach(CONFIGS['data']['objects'][itemType]['attributes'], function(attribute){
+              map[attribute] = 'blah';
+            });
 
-        _.forEach(CONFIGS['data']['objects'][itemType]['children'], function(child){
-          map[child + 's'] = [buildItemMap(child)];
-        });
+            _.forEach(CONFIGS['data']['objects'][itemType]['children'], function(child){
+              map[child + 's'] = [buildItemMap(child)];
+            });
 
-        return map;
-      };
+            return map;
+          };
 
-      if(headers['error']){
-        this.emit('response', {'service': headers['service'], 'original': item, 'new': new Item('error', true, {'message': 'got an error!'})});
+          if(headers['error']){
+            this.emit('response', {'service': headers['service'], 'original': item, 'new': new Item('error', true, {'message': 'got an error!'})});
 
-      }else if(headers['undefined']){
-        var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
+          }else if(headers['undefined']){
+            var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
 
-        this.emit('response', {'service': headers['service'], 'original': {'foo':'bar'}, 'new': items});
+            this.emit('response', {'service': headers['service'], 'original': {'foo':'bar'}, 'new': items});
 
-      }else if(headers['fatal']){
-        this.emit('error', new Item('error', false, {'level':'fatal','message':'A fatal tier error occurred!'}));
+          }else if(headers['fatal']){
+            this.emit('error', new Item('error', false, {'level':'fatal','message':'A fatal tier error occurred!'}));
 
-      }else{
-        var self = this;
+          }else{
+            var self = this;
 
-        _.forEach(self._queue, function(service){
-          var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
+            _.forEach(self._queue, function(service){
+              var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
 
-          if(service instanceof Service){
-            self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': items});
+              if(service instanceof Service){
+                self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': items});
+              }
+            });
+
+            self.emit('complete', 'We are done here!');
+          }
+        };
+        // ---------------------------------------------------------------------------------------------------
+        // Override Tier level rules checks that do not apply to this test
+        Tier.prototype._hasMinimumCitation = function(rules, item){ return true; }
+
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.setServices = function(services){ this._services = services };
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.getServices = function(services){ return this._services };
+    
+    
+        _.forEach(CONFIGS['data']['objects'], function(def, type){
+          if(def['root']){
+            var params = {};
+        
+            rootItem = type;
+        
+            _.forEach(def['validation'], function(attribute){
+              params[attribute] = 'got it';
+            })
+        
+            item = new Item(type, false, params);
           }
         });
-
-        self.emit('complete', 'We are done here!');
-      }
-    };
-    // ---------------------------------------------------------------------------------------------------
-    // Override Tier level rules checks that do not apply to this test
-    Tier.prototype._hasMinimumCitation = function(rules, item){ return true; }
-
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.setServices = function(services){ this._services = services };
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.getServices = function(services){ return this._services };
     
-    
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
-      if(def['root']){
-        var params = {};
-        
-        rootItem = type;
-        
-        _.forEach(def['validation'], function(attribute){
-          params[attribute] = 'got it';
-        })
-        
-        item = new Item(type, false, params);
+        done();
       }
     });
-    
-    done();
   });
   
   // ---------------------------------------------------------------------------------------------------
@@ -185,7 +192,7 @@ describe('broker.js', function(){
         _.forEach(defs, function(def, svc){
           if(svc == service){
             
-            _.forEach(def['items_types_returned'], function(type){
+            _.forEach(def['item_types_returned'], function(type){
               self.types[type] = (typeof self.types[type] == 'undefined' ? 1 : (self.types[type] + 1))
               self.responses++;
             });

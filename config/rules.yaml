@@ -23,7 +23,7 @@
 #
 # -------------------------------------------------------------------------------------------------------------------------
 dispatch_always:
-  - default              # Delete this one ONLY if youo no longer have a need for the default service which returns stub data
+#  - default              # Delete this one ONLY if youo no longer have a need for the default service which returns stub data
   - sfx
   - oclc_xid
   - worldcat_discovery

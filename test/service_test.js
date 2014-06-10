@@ -1,6 +1,6 @@
 require('../init.js');
 
-var mockery = require('./mockery.js');
+var mockery = require('./mock_services.js');
 
 // ---------------------------------------------------------------------------------------------------
 describe('service.js', function(){
@@ -15,61 +15,68 @@ describe('service.js', function(){
   before(function(done){
     var type = '';
     
-    // ---------------------------------------------------------------------------------------------------
-    // Mock some methods onto the Service object so we can manipulate and view all attributes
-    // ---------------------------------------------------------------------------------------------------
-    Service.prototype.getMaxAttempts = function(){ return this._maxAttempts; };
-    Service.prototype.setMaxAttempts = function(value){ this._maxAttempts = value; };
-    Service.prototype.getTimeout = function(){ return this._timeout; };
-    Service.prototype.setTimeout = function(value){ this._timeout = value; };
-    Service.prototype.getTranslator = function(){ return this._translator; };
-    Service.prototype.setTranslator = function(value){ this._translator = value; };
-    Service.prototype.getTarget = function(){ return this._target; };
-    Service.prototype.setTarget = function(value){ this._target = value; };
-    Service.prototype.setReferrerBlock = function(values){ this._referrerBlock = values; };
-    Service.prototype.setItemTypes = function(values){ this._itemTypesReturned = values; };
-
-    Service.prototype.runTest = function(target, item, callback){
-      this.setTarget(target == '' ? '' : ("http://localhost:9000/" + target));
-  
-      this.on('success', function(items){
-        //console.log('... success');
-    
-        callback({'success': true,
-                  'count': _.size(items),
-                  'isArray': items instanceof Array,
-                  'isItem': _.first(items) instanceof Item,
-                  'attributeCount': (typeof _.first(items) != 'undefined') ? _.size(_.first(items).getAttributes()) : 0});
-      });
-  
-      this.on('error', function(error){
-        //console.log('... failure: ' + error);
-    
-        callback({'success': false,
-                  'isArray': false,
-                  'isItem': true,
-                  'attributeCount': 0,
-                  'level': (error instanceof Item) ? error.getAttribute('level') : 'unknown',
-                  'message': (error instanceof Item) ? error.getAttribute('message') : 'Got an error!'});
-      });
-  
-      this.call(item, {});
-    }
-    
-    _.forEach(CONFIGS['data']['objects'], function(config, name){
-      if(typeof config['root'] != 'undefined'){
-        type = name;
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
         
-        returnField = config['attributes'][0];
+        // ---------------------------------------------------------------------------------------------------
+        // Mock some methods onto the Service object so we can manipulate and view all attributes
+        // ---------------------------------------------------------------------------------------------------
+        Service.prototype.getMaxAttempts = function(){ return this._maxAttempts; };
+        Service.prototype.setMaxAttempts = function(value){ this._maxAttempts = value; };
+        Service.prototype.getTimeout = function(){ return this._timeout; };
+        Service.prototype.setTimeout = function(value){ this._timeout = value; };
+        Service.prototype.getTranslator = function(){ return this._translator; };
+        Service.prototype.setTranslator = function(value){ this._translator = value; };
+        Service.prototype.getTarget = function(){ return this._target; };
+        Service.prototype.setTarget = function(value){ this._target = value; };
+        Service.prototype.setReferrerBlock = function(values){ this._referrerBlock = values; };
+        Service.prototype.setItemTypes = function(values){ this._itemTypesReturned = values; };
+
+        Service.prototype.runTest = function(target, item, callback){
+          this.setTarget(target == '' ? '' : ("http://localhost:9000/" + target));
+  
+          this.on('success', function(items){
+            //console.log('... success');
+    
+            callback({'success': true,
+                      'count': _.size(items),
+                      'isArray': items instanceof Array,
+                      'isItem': _.first(items) instanceof Item,
+                      'attributeCount': (typeof _.first(items) != 'undefined') ? _.size(_.first(items).getAttributes()) : 0});
+          });
+  
+          this.on('error', function(error){
+            //console.log('... failure: ' + error);
+    
+            callback({'success': false,
+                      'isArray': false,
+                      'isItem': true,
+                      'attributeCount': 0,
+                      'level': (error instanceof Item) ? error.getAttribute('level') : 'unknown',
+                      'message': (error instanceof Item) ? error.getAttribute('message') : 'Got an error!'});
+          });
+  
+          this.call(item, {});
+        }
+    
+        _.forEach(CONFIGS['data']['objects'], function(config, name){
+          if(typeof config['root'] != 'undefined'){
+            type = name;
+        
+            returnField = config['attributes'][0];
+          }
+        });
+
+        item = new Item(type, true, {});
+    
+        // Spin up some stub http servers for testing
+        mockServer = mockery.spinUpServer(returnField, returnValue);
+
+        done();
       }
     });
-
-    item = new Item(type, true, {});
-    
-    // Spin up some stub http servers for testing
-    mockServer = mockery.spinUpServer(returnField, returnValue);
-
-    done();
   });
   
   // ---------------------------------------------------------------------------------------------------

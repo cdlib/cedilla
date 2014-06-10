@@ -1,7 +1,7 @@
 require("../init.js");
 
 var events = require('events'),
-    mockery = require('./mockery.js');
+    mockery = require('./mock_services.js');
 
 // ---------------------------------------------------------------------------------------------------
 describe('tier.js', function(){
@@ -23,83 +23,89 @@ describe('tier.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        oldServiceCallMethod = Service.prototype.call;
     
-    oldServiceCallMethod = Service.prototype.call;
-    
-    // Add a new setter so we can send all HTTP service calls to our mock server!
-    // These MUST be set inside the before() method so that the Service.call() method is not overriden in
-    // subsequent tests!
-    Service.prototype.setTarget = function(value){ this._target = value; };
-    // ---------------------------------------------------------------------------------------------------
-    Service.prototype.call = function(item, headers){
+        // Add a new setter so we can send all HTTP service calls to our mock server!
+        // These MUST be set inside the before() method so that the Service.call() method is not overriden in
+        // subsequent tests!
+        Service.prototype.setTarget = function(value){ this._target = value; };
+        // ---------------------------------------------------------------------------------------------------
+        Service.prototype.call = function(item, headers){
   
-      if(headers['error']){
-        this.emit('response', new Item('error', false, {'level':'error','message':'You got an error!'}));
+          if(headers['error']){
+            this.emit('response', new Item('error', false, {'level':'error','message':'You got an error!'}));
     
-      }else if(headers['timeout']){
-        setTimeout(function(){
-          this.emit('response', new Item('error', false, {'level':'error','message':'Tier shoudl have timed out!'}));
-        }, CONFIGS['application']['tier_timeout'] * 2);
+          }else if(headers['timeout']){
+            setTimeout(function(){
+              this.emit('response', new Item('error', false, {'level':'error','message':'Tier shoudl have timed out!'}));
+            }, CONFIGS['application']['tier_timeout'] * 2);
     
-      }else{
+          }else{
     
-        var map = {},
-            type = item.getType();
+            var map = {},
+                type = item.getType();
 
-        // Only build out a full item is we're called the desired service OR none was defined!
-        if(headers['service'] == this._name || (typeof headers['service'] == 'undefined')){
+            // Only build out a full item is we're called the desired service OR none was defined!
+            if(headers['service'] == this._name || (typeof headers['service'] == 'undefined')){
 
-          if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
-            _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-              map[attribute] = 'foo';
-            });
+              if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+                _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+                  map[attribute] = 'foo';
+                });
+              }
+            }
+    
+            this.emit('response', [helper.mapToItem(type, false, map)]);
           }
-        }
+        };
     
-        this.emit('response', [helper.mapToItem(type, false, map)]);
-      }
-    };
+        Tier.prototype.setTimeout = function(value){ this._timeout = value; };
     
-    Tier.prototype.setTimeout = function(value){ this._timeout = value; };
-    
-    // Build out the tiers and their services as defined in the config
-    // ---------------------------------------------------------------------------------------------------
-    buildTiers = function(){
-      tiers = [];
+        // Build out the tiers and their services as defined in the config
+        // ---------------------------------------------------------------------------------------------------
+        buildTiers = function(){
+          tiers = [];
       
-      _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
-        var mockServices = [];
+          _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
+            var mockServices = [];
       
-        _.forEach(svcs, function(def, name){
-          var svc = new Service(name);
-          svc.setTarget('http://localhost:9000/success');
+            _.forEach(svcs, function(def, name){
+              var svc = new Service(name);
+              svc.setTarget('http://localhost:9000/success');
         
-          mockServices.push(svc);
+              mockServices.push(svc);
         
-          displayNames[name] = svc.getDisplayName();
+              displayNames[name] = svc.getDisplayName();
+            });
+      
+            var tier = new Tier(tier);
+            tier.emit('register', mockServices);
+      
+            tiers.push(tier);
+          });
+        };
+    
+        _.forEach(CONFIGS['data']['objects'], function(config, name){
+          if(typeof config['root'] != 'undefined'){
+            rootItem = name;
+        
+            returnField = config['attributes'][0];
+          }
         });
-      
-        var tier = new Tier(tier);
-        tier.emit('register', mockServices);
-      
-        tiers.push(tier);
-      });
-    };
+
+        item = new Item(rootItem, true, {});
     
-    _.forEach(CONFIGS['data']['objects'], function(config, name){
-      if(typeof config['root'] != 'undefined'){
-        rootItem = name;
-        
-        returnField = config['attributes'][0];
+        // Spin up some stub http servers for testing
+        mockServer = mockery.spinUpServer(returnField, returnValue);
+
+        done();
       }
     });
-
-    item = new Item(rootItem, true, {});
-    
-    // Spin up some stub http servers for testing
-    mockServer = mockery.spinUpServer(returnField, returnValue);
-
-    done();
   });
 
   // ---------------------------------------------------------------------------------------------------

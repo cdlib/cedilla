@@ -3,6 +3,17 @@ require("../init.js");
 describe('Specializer', function(){
   describe('#specialize()', function(){
     
+    before(function(done){
+      // Wait for the config file and init.js have finished loading before starting up the server
+      var delayStartup = setInterval(function(){
+        if(typeof Item != 'undefined'){
+          clearInterval(delayStartup);
+          
+          done();
+        }
+      });
+    });
+    
     it('should correctly identify the openurl version', function(){
       console.log("Checking that specializer correctly identifies openurl 1.0");
       var query = "url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=The impact of forest use and reforestation on soil hydraulic conductivity in the Western Ghats of India: Implications for surface and sub-surface hydrology&rft.aufirst=M.&rft.aulast=Bonell&rft.date=2010&rft.epage=64&rft.genre=article&rft.issn=0022-1694&rft.issue=1-2&rft.jtitle=JOURNAL OF HYDROLOGY&rft.pages=49-64&rft.spage=49&rft.stitle=J HYDROL&rft.volume=391&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Purandara, B. K.&rft.au=Venkatesh, B.&rft.au=Krishnaswamy, Jagdish&rft.au=Acharya, H. A. K.&rft_id=info:doi/10.1016/j.jhydrol.2010.07.004";

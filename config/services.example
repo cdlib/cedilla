@@ -7,9 +7,9 @@ tiers:
       timeout: 30000
       display_name: 'Default Data'
 
-      target: 'http://localhost:9000/default'
+      target: 'http://localhost:9900/default'
 
-      items_types_returned: ['citation', 'author', 'resource']
+      item_types_returned: ['citation', 'author', 'resource']
 
     # ------------------------------------
     oclc_xid:
@@ -20,7 +20,7 @@ tiers:
 
       target: 'http://localhost:3101/xid'
 
-      items_types_returned: ['citation']
+      item_types_returned: ['citation']
 
     # ------------------------------------
     sfx:
@@ -31,7 +31,8 @@ tiers:
 
       target: 'http://localhost:3102/sfx'
 
-      items_types_returned: ['citation', 'author', 'resource']
+      include_additional_attributes
+      item_types_returned: ['citation', 'author', 'resource']
       do_not_call_if_referrer_from: ['my.domain.org', 'books.google.com', 'scholar.google.com']
 
     # ------------------------------------
@@ -43,7 +44,7 @@ tiers:
 
       target: 'http://localhost:3103/worldcat_discovery'
 
-      items_types_returned: ['citation', 'author']
+      item_types_returned: ['citation', 'author']
 
 # -------------------------------------------------------------------------------
   2:
@@ -55,7 +56,7 @@ tiers:
 
       target: 'http://0.0.0.0:3104/internet_archive'
 
-      items_types_returned: ['resource']
+      item_types_returned: ['resource']
       do_not_call_if_referrer_from: ['archive.org/']
 
     # ------------------------------------
@@ -67,7 +68,7 @@ tiers:
 
       target: 'http://0.0.0.0:3105/cover_thing'
 
-      items_types_returned: ['citation']
+      item_types_returned: ['citation']
 
 
   # Explanation of the tiers definition

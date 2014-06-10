@@ -20,53 +20,60 @@ describe('broker_additional_test.js', function(){
   before(function(done){
     var self = this;
     
-    oldServiceReturnsItemTypeMethod = Service.prototype.returnsItemType;
-    oldTierProcessMethod = Tier.prototype.process;
-    oldTierHasMinimumCitation = Tier.prototype._hasMinimumCitation;
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        oldServiceReturnsItemTypeMethod = Service.prototype.returnsItemType;
+        oldTierProcessMethod = Tier.prototype.process;
+        oldTierHasMinimumCitation = Tier.prototype._hasMinimumCitation;
     
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.setServices = function(services){ this._services = services };
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.getServices = function(){ return this._services };
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.setServiceDisplays = function(displays){ this._displays = displays };
-    // ---------------------------------------------------------------------------------------------------
-    Item.prototype.getServiceDisplays = function(){ return this._displays };
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.setServices = function(services){ this._services = services };
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.getServices = function(){ return this._services };
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.setServiceDisplays = function(displays){ this._displays = displays };
+        // ---------------------------------------------------------------------------------------------------
+        Item.prototype.getServiceDisplays = function(){ return this._displays };
 
-    // ---------------------------------------------------------------------------------------------------
-    // Override Tier and Service level rules checks that do not apply to this test
-    Tier.prototype._hasMinimumCitation = function(rules, item){ return true; }
-    Service.prototype.returnsItemType = function(type){ return true; }
+        // ---------------------------------------------------------------------------------------------------
+        // Override Tier and Service level rules checks that do not apply to this test
+        Tier.prototype._hasMinimumCitation = function(rules, item){ return true; }
+        Service.prototype.returnsItemType = function(type){ return true; }
     
     
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
-      if(def['root']){
-        var params = {};
+        _.forEach(CONFIGS['data']['objects'], function(def, type){
+          if(def['root']){
+            var params = {};
         
-        rootItem = type;
+            rootItem = type;
         
-        _.forEach(def['validation'], function(attribute){
-          params[attribute] = 'got it';
-        })
+            _.forEach(def['validation'], function(attribute){
+              params[attribute] = 'got it';
+            })
         
-        item = new Item(type, false, params);
+            item = new Item(type, false, params);
+          }
+        });
+    
+        // Mock the Tier's process routine to simply send back stub messages
+        Tier.prototype.process = function(headers, item){
+          var self = this;
+
+          _.forEach(self._queue, function(service){
+            if(service instanceof Service){
+              self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': [new Item(item.getType(), true, {'foo':'bar'})]});
+            }
+          });
+
+          self.emit('complete', 'We are done here!');
+        };
+    
+        done();
       }
     });
-    
-    // Mock the Tier's process routine to simply send back stub messages
-    Tier.prototype.process = function(headers, item){
-      var self = this;
-
-      _.forEach(self._queue, function(service){
-        if(service instanceof Service){
-          self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': [new Item(item.getType(), true, {'foo':'bar'})]});
-        }
-      });
-
-      self.emit('complete', 'We are done here!');
-    };
-    
-    done();
   });
   
   // ---------------------------------------------------------------------------------------------------

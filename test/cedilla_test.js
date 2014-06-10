@@ -6,11 +6,18 @@ describe('cedilla.js testing', function(){
       translators = [];
   
   before(function(done){
-    _.forEach(CONFIGS['data']['objects'], function(config, type){
-      items.push(Item.new(type, false, {}));
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        _.forEach(CONFIGS['data']['objects'], function(config, type){
+          items.push(Item.new(type, false, {}));
+        });
+    
+        done();
+      }
     });
-    
-    
   });
   
 });

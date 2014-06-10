@@ -129,6 +129,7 @@ objects:
       - abstract_text
       - sample_cover_image
       - subject
+      - original_citation
 
   # ----------------------------------------------------------
   author:                

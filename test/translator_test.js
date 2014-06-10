@@ -3,30 +3,42 @@ require('../init.js');
 describe('translator.js', function(){
   var attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
     
+    
+  before(function(done){
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        done();
+      }
+    });
+  });
+  
 // ------------------------------------------------------------------------------------------------------
 // Initialization Tests
 // ------------------------------------------------------------------------------------------------------
   it("should initialize without a mapping file defined!", function(){
-		
-		console.log('TRANSLATOR: checking initialization without a mapping file specified');
-		
+    
+    console.log('TRANSLATOR: checking initialization without a mapping file specified');
+    
     assert.doesNotThrow(function(){ new Translator(undefined); });
     assert.doesNotThrow(function(){ new Translator(' '); });
   });
     
   // ------------------------------------------------------------------------------------------------------
   it("should NOT initialize with a missing mapping file defined!", function(){
-		
-		console.log('TRANSLATOR: verifying failure when mapping file specified does not exist');
-		
+    
+    console.log('TRANSLATOR: verifying failure when mapping file specified does not exist');
+    
     assert.throws(function(){ new Translator('foobar'); });
   });
   
   // ------------------------------------------------------------------------------------------------------
   it("should initialize with a mapping file defined!", function(){
-		
-		console.log('TRANSLATOR: checking initialization wit a mapping file specified');
-		
+    
+    console.log('TRANSLATOR: checking initialization wit a mapping file specified');
+    
     assert.doesNotThrow(function(){ new Translator('openurl'); });
   });
   
@@ -34,9 +46,9 @@ describe('translator.js', function(){
 // translateKey() Tests
 // ------------------------------------------------------------------------------------------------------
   it("translations should return the same value when no mapping file is supplied!", function(){
-		
-		console.log('TRANSLATOR: checking translations return same value when no mapping file specified');
-		
+    
+    console.log('TRANSLATOR: checking translations return same value when no mapping file specified');
+    
     var translator = new Translator('');
     
     // Make sure that the translator returns the same value if there was no match
@@ -55,8 +67,8 @@ describe('translator.js', function(){
   it("openURL translations should return correct value specified in yaml config!", function(){
     var translator = new Translator('openurl');
     
-		console.log('TRANSLATOR: checking correct translations of individual keys for openurl');
-		
+    console.log('TRANSLATOR: checking correct translations of individual keys for openurl');
+    
     _.forEach(CONFIGS['openurl'], function(externalName, internalName){
     
       if(externalName instanceof Array){
@@ -87,8 +99,8 @@ describe('translator.js', function(){
     var translator = new Translator('');
     var mapIn = {'foo': 'bar', 'abc': '123'};
     
-		console.log('TRANSLATOR: checking translation of entire maps when no mapping file was specified');
-		
+    console.log('TRANSLATOR: checking translation of entire maps when no mapping file was specified');
+    
     // ------------------------------------------------------------------
     // Internal to External
     
@@ -115,8 +127,8 @@ describe('translator.js', function(){
     
     var mapIn = {};
     
-		console.log('TRANSLATOR: checking translation of entire maps when an openurl mapping file was specified');
-		
+    console.log('TRANSLATOR: checking translation of entire maps when an openurl mapping file was specified');
+    
     // ------------------------------------------------------------------
     // External to Internal
     
@@ -167,8 +179,8 @@ describe('translator.js', function(){
     var translator = new Translator(undefined);
     var translatorOpenURL = new Translator('openurl');
     
-		console.log('TRANSLATOR: checking translation xref.yaml translations are working');
-		
+    console.log('TRANSLATOR: checking translation xref.yaml translations are working');
+    
     _.forEach(CONFIGS['xref'], function(def, item){
       _.forEach(def, function(translations, attribute){
         _.forEach(translations, function(valueOut, valueIn){

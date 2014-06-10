@@ -6,28 +6,34 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    
-    getAttributeMap = function(type){
-      var map = {},
-          self = this;
-
-      if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
         
-        _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-          map[attribute] = 'foo-bar';
-        });
+        getAttributeMap = function(type){
+          var map = {},
+              self = this;
+
+          if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+        
+            _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+              map[attribute] = 'foo-bar';
+            });
     
-        if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
-          _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
-            map[child + 's'] = [getAttributeMap(child)];
-          });
-        }
-      }
+            if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
+              _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
+                map[child + 's'] = [getAttributeMap(child)];
+              });
+            }
+          }
   
-      return map;
-    };
+          return map;
+        };
     
-    done();
+        done();
+      }
+    });
   });
   
   

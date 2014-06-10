@@ -6,17 +6,24 @@ describe('item.js', function(){
   
   // ------------------------------------------------------------------------------------------------------  
   before(function(done){
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
-      var attrs = {};
+    // Wait for the config file and init.js have finished loading before starting up the server
+    var delayStartup = setInterval(function(){
+      if(typeof Item != 'undefined'){
+        clearInterval(delayStartup);
+        
+        _.forEach(CONFIGS['data']['objects'], function(def, type){
+          var attrs = {};
       
-      _.forEach(def['attributes'], function(attribute){
-        attrs[attribute] = defaultValue;
-      });
+          _.forEach(def['attributes'], function(attribute){
+            attrs[attribute] = defaultValue;
+          });
       
-      attributes[type] = attrs;
-    });
+          attributes[type] = attrs;
+        });
     
-    done();
+        done();
+      }
+    });
   });
   
 // ------------------------------------------------------------------------------------------------------  
