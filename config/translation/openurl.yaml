@@ -28,6 +28,7 @@
   oclc: ['rft.oclcnum', 'rfe.oclcnum', 'oclc', 'oclcnum']
   lccn: ['rft.lccn', 'rfe.lccn', 'lccn']
   doi: ['rft.doi', 'rfe.doi', 'doi']
+  pmid: ['rft.pmid', 'rfe.pmid', 'pmid']
   coden: ['rft.coden', 'rfe.coden', 'coden']
   sici: ['rft.sici', 'rfe.sici', 'sici']
   bici: ['rft.bici', 'rfe.bici', 'bici']
