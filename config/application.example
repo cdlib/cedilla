@@ -19,6 +19,7 @@ application_description: 'Delivery aggregation service for library resources'
 port: 3005
 
 log_path: './log'
+log_level: 'info'
 access_log_name: 'access.log'
 error_log_name: 'error.log'
 

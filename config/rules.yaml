@@ -24,9 +24,10 @@
 # -------------------------------------------------------------------------------------------------------------------------
 dispatch_always:
 #  - default              # Delete this one ONLY if youo no longer have a need for the default service which returns stub data
-  - sfx
+  - consortial
   - oclc_xid
   - worldcat_discovery
+  - sfx
 
 # -------------------------------------------------------------------------------------------------------------------------
 # In this section you categorize services into groups that are then tied to specific data elements values.
