@@ -169,7 +169,7 @@ describe('broker.js', function(){
     
     socket = new Socket(function(){
       assert.equal(0, _.size(results));
-      
+
       done();
     });
     socket.handshake.headers['referer'] = 'http://www/google.com';
