@@ -31,7 +31,7 @@ tiers:
 
       target: 'http://localhost:3102/sfx'
 
-      include_additional_attributes
+      include_additional_attributes: true
       item_types_returned: ['citation', 'author', 'resource']
       do_not_call_if_referrer_from: ['my.domain.org', 'books.google.com', 'scholar.google.com']
 
