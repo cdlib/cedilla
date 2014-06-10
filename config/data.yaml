@@ -100,6 +100,11 @@ objects:
       - sici
       - bici
       - document_id
+      - bibcode
+      - eric
+      - oai
+      - nbn
+      - hdl
       - title
       - book_title
       - journal_title
