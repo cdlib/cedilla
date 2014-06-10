@@ -222,33 +222,36 @@ describe('config.js testing', function(){
       _.forEach(refs, function(ref){
         var passed = true;
         
-        // Warning, can only currently chek up to 4 levels deep
-        switch(ref.length){
-        case 1:
-          passed = typeof CONFIGS[config] != 'undefined';
-          if(passed) passed = typeof CONFIGS[config][ref[0]] != 'undefined';
-          break;
-        case 2:
-          passed = typeof CONFIGS[config] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
-          break;
-        case 3:
-          passed = typeof CONFIGS[config] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]] != 'undefined';
-          break;
-        case 4:
-          passed = typeof CONFIGS[config] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]] != 'undefined';
-          if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]][ref[3]] != 'undefined';
-          break;
-        default:
-          passed = typeof CONFIGS[config] != 'undefined';
-          break;
+        // Exclude checks for the temporary default service line
+        if(!_.contains(ref, 'default_content_service')){
+          // Warning, can only currently chek up to 4 levels deep
+          switch(ref.length){
+          case 1:
+            passed = typeof CONFIGS[config] != 'undefined';
+            if(passed) passed = typeof CONFIGS[config][ref[0]] != 'undefined';
+            break;
+          case 2:
+            passed = typeof CONFIGS[config] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
+            break;
+          case 3:
+            passed = typeof CONFIGS[config] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]] != 'undefined';
+            break;
+          case 4:
+            passed = typeof CONFIGS[config] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]] != 'undefined';
+            if(passed) typeof CONFIGS[config][ref[0]][ref[1]][ref[2]][ref[3]] != 'undefined';
+            break;
+          default:
+            passed = typeof CONFIGS[config] != 'undefined';
+            break;
+          }
         }
         
         if(!passed) console.log('.... "' + ref + '" does not exist in /config/' + config + '.yaml!');
