@@ -96,6 +96,7 @@ objects:
       - lccn
       - doi
       - coden
+      - pmid
       - sici
       - bici
       - document_id
