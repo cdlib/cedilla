@@ -5,6 +5,7 @@ var specializeItem = function(queryString) {
   var translator = new Translator('openurl');
   var map = translator.translateMap(qs, false);
   map['original_citation'] = queryString;
+  //console.log(JSON.stringify(map));
   var item = helper.flattenedMapToItem('citation', true, map);
   var spcl = specializers.newSpecializer('openurl', item);
   spcl.specialize();
@@ -47,12 +48,13 @@ describe('Specializer', function(){
       assert.equal(item.getAttribute('oclc'), '12345');
    });
 
-   it('should derive the oclc number and isbn from the rft_id field', function(){
-      console.log("Checking that specializer derives oclc number and isbn from rft_id field");
-      var query = "url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_id=info:oclcnum/12345&rft_id=urn:ISBN:12345&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=The impact of forest use and reforestation on soil hydraulic conductivity in the Western Ghats of India: Implications for surface and sub-surface hydrology&rft.aufirst=M.&rft.aulast=Bonell&rft.date=2010&rft.epage=64&rft.genre=article&rft.issn=0022-1694&rft.issue=1-2&rft.jtitle=JOURNAL OF HYDROLOGY&rft.pages=49-64&rft.spage=49&rft.stitle=J HYDROL&rft.volume=391&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Purandara, B. K.&rft.au=Venkatesh, B.&rft.au=Krishnaswamy, Jagdish&rft.au=Acharya, H. A. K.&rft_id=info:doi/10.1016/j.jhydrol.2010.07.004";
+   it('should derive the oclc number, isbn, and pmid from the rft_id field', function(){
+      console.log("Checking that specializer derives oclc number, pmid and isbn from rft_id field");
+      var query = "url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_id=info:oclcnum/12345&rft_id=urn:ISBN:12345&rft_id=info:pmid/56789&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=The impact of forest use and reforestation on soil hydraulic conductivity in the Western Ghats of India: Implications for surface and sub-surface hydrology&rft.aufirst=M.&rft.aulast=Bonell&rft.date=2010&rft.epage=64&rft.genre=article&rft.issn=0022-1694&rft.issue=1-2&rft.jtitle=JOURNAL OF HYDROLOGY&rft.pages=49-64&rft.spage=49&rft.stitle=J HYDROL&rft.volume=391&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Purandara, B. K.&rft.au=Venkatesh, B.&rft.au=Krishnaswamy, Jagdish&rft.au=Acharya, H. A. K.&rft_id=info:doi/10.1016/j.jhydrol.2010.07.004";
       var item = specializeItem(query); 
       assert.equal(item.getAttribute('oclc'), '12345');
       assert.equal(item.getAttribute('isbn'), '12345');
+      assert.equal(item.getAttribute('pmid'), '56789');
    });
 
 
@@ -64,10 +66,11 @@ describe('Specializer', function(){
    });
 
   it('should derive the pmid from an openurl 0.1', function() {
-    console.log("Checking that the pmid	is derived from an openurl 0.1");
-    var query = "id=pmid:19889244&sid=UCLinks-Entrez:PubMed&aulast=Spadafranca&month=11&atitle=Effect of dark chocolate on plasma epicatechin levels, DNA resistance to oxidative stress and total antioxidant activity in healthy subjects.&amp;spage=1&issn=0007-1145&genre=article&auinit=A&epage=7&title=The British Journal of Nutrition&year=2009&pid=institute%3DUCOP%26placeOfPublication%3DWallingford%252C%2BOxfordshire%26publisher%3DCABI%2BPub";
+    console.log("Checking that the pmid	and lccn are derived from an openurl 0.1 id field");
+    var query = "id=pmid:19889244&id=lccn:56789&sid=UCLinks-Entrez:PubMed&aulast=Spadafranca&month=11&atitle=Effect of dark chocolate on plasma epicatechin levels, DNA resistance to oxidative stress and total antioxidant activity in healthy subjects.&amp;spage=1&issn=0007-1145&genre=article&auinit=A&epage=7&title=The British Journal of Nutrition&year=2009&pid=institute%3DUCOP%26placeOfPublication%3DWallingford%252C%2BOxfordshire%26publisher%3DCABI%2BPub";
     var item = specializeItem(query);
     assert.equal(item.getAttribute('pmid'), '19889244'); 
+    assert.equal(item.getAttribute('lccn'), '56789');
   });
 
 

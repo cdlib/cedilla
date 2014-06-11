@@ -33,7 +33,7 @@ error_log_name: 'error.log'
 # must also be defined in services.yaml and be listed in the dispatch_always section
 # of the rules.yaml file
 # ---------------------------------------------------------------------------------
-default_content_service: true
+#default_content_service: true
 
 # ---------------------------------------------------------------------------------
 # Socket settings

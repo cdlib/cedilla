@@ -3,9 +3,12 @@
 #
 # This mapping file is used by ./lib/translator.js to turn incoming OpenURLs from the client request into 
 # Citation and Author data objects.
-#
+# 
 # values on the left are what they will be stored as within the citation/author object
 # values on the right are the possible names of the arguments passed in the openurl query string
+#
+# This file is limited to defining direct string-to-string mappings. Quite often the value in the openurl
+# is not a direct mapping and requires other processing to extract.
 #
 # This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
 # changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
@@ -25,42 +28,43 @@
   isbn: ['rft.isbn', 'rfe.isbn', 'isbn', 'rft.isbn_13', 'rfe.isbn_13', 'rft.isbn_additional', 'rfe.isbn_additional', 'isbn_13', 'isbn_additional']
   eisbn: ['rft.eisbn', 'rfe.eisbn', 'eisbn', 'rft.eisbn_additional', 'rfe.eisbn_additional', 'eisbn_additional']
 
-  oclc: ['rft.oclcnum', 'rfe.oclcnum', 'oclc', 'oclcnum']
-  lccn: ['rft.lccn', 'rfe.lccn', 'lccn']
-  doi: ['rft.doi', 'rfe.doi', 'doi']
-  pmid: ['rft.pmid', 'rfe.pmid', 'pmid']
-  coden: ['rft.coden', 'rfe.coden', 'coden']
-  sici: ['rft.sici', 'rfe.sici', 'sici']
-  bici: ['rft.bici', 'rfe.bici', 'bici']
+# generally these identifiers will not be direct mappings as shown here
+  oclc: ['rft.oclcnum', 'oclc', 'oclcnum']
+  lccn: ['rft.lccn', 'lccn']
+  doi: ['rft.doi', 'doi']
+  pmid: ['rft.pmid', 'pmid']
+  coden: ['rft.coden', 'coden']
+  sici: ['rft.sici', 'sici']
+  bici: ['rft.bici', 'bici']
+  
+  title: ['rft.title', 'title']
+  book_title: ['rft.btitle', 'btitle']
+  journal_title: ['rft.jtitle', 'jtitle']
+  article_title: ['rft.atitle', 'atitle']
+  short_titles: ['rft.stitle', 'stitle']
 
-  title: ['rft.title', 'rfe.title', 'title']
-  book_title: ['rft.btitle', 'rfe.btitle', 'btitle']
-  journal_title: ['rft.jtitle', 'rfe.jtitle', 'jtitle']
-  article_title: ['rft.atitle', 'rfe.atitle', 'atitle']
-  short_titles: ['rft.stitle', 'rfe.stitle', 'stitle']
+  publisher: ['rft.pub', 'rft.publisher', 'publisher', 'pub']
+  publication_date: ['rft.date', 'rft.pubdate', 'pubdate', 'date']
+  publication_place: ['rft.place', 'place']
+  year: ['rft.year', 'rft.pubyear', 'year', 'pubyear']
+  month: ['rft.month', 'rft.pubmonth', 'month', 'pubmonth']
+  day: ['rft.day', 'rft.pubday', 'day', 'pubday']
 
-  publisher: ['rft.pub', 'rfe.pub', 'rft.publisher', 'rfe.publisher', 'publisher', 'pub']
-  publication_date: ['rft.date', 'rfe.date', 'rft.pubdate', 'rfe.pubdate', 'pubdate', 'date']
-  publication_place: ['rft.place', 'rfe.place', 'place']
-  year: ['rft.year', 'rfe.year', 'rft.pubyear', 'rfe.pubyear', 'year', 'pubyear']
-  month: ['rft.month', 'rfe.month', 'rft.pubmonth', 'rfe.pubmonth', 'month', 'pubmonth']
-  day: ['rft.day', 'rfe.day', 'rft.pubday', 'rfe.pubday', 'day', 'pubday']
-
-  volume: ['rft.volume', 'rfe.volume', 'volume']
-  issue: ['rft.issue', 'rfe.issue', 'issue']
-  article_number: ['rft.artnum', 'rfe.artnum', 'artnum']
-  enumeration: ['rft.chron', 'rfe.chron', 'chron']
+  volume: ['rft.volume', 'volume']
+  issue: ['rft.issue', 'issue']
+  article_number: ['rft.artnum', 'artnum']
+  enumeration: ['rft.chron', 'chron']
   part: ['rft.part', 'rfe.part', 'part']
-  season: ['rft.ssn', 'rfe.ssn', 'rft.season', 'rfe.season', 'ssn', 'season']
-  quarter: ['rft.quarter', 'rfe.quarter', 'quarter']
-  series: ['rft.series', 'rfe.series', 'series']
-  institute: ['rft.inst', 'rfe.inst', 'inst']
-  subject: ['rft.subject', 'rfe.subject', 'subject']
-  text_language: ['rft.dcLanguage', 'rfe.dcLanguage', 'dcLanguage']
+  season: ['rft.ssn', 'rft.season', 'ssn', 'season']
+  quarter: ['rft.quarter', 'quarter']
+  series: ['rft.series', 'series']
+  institute: ['rft.inst', 'inst']
+  subject: ['rft.subject', 'subject']
+  text_language: ['rft.dcLanguage', 'dcLanguage']
 
-  start_page: ['rft.spage', 'rfe.spage', 'spage']
-  end_page: ['rft.epage', 'rfe.epage', 'epage']
-  pages: ['rft.pages', 'rfe.pages', 'pages']
+  start_page: ['rft.spage', 'spage']
+  end_page: ['rft.epage', 'epage']
+  pages: ['rft.pages', 'pages']
 
 
 # ---------------------------------------------------------------------------------
