@@ -1,15 +1,16 @@
 # See bottom of this file for an explanation of these values!
 tiers:
   1:
-    default:
+    consortial:
       enabled: true
       max_attempts: 1
       timeout: 30000
-      display_name: 'Default Data'
+      display_name: 'IP Service'
 
-      target: 'http://localhost:9900/default'
+      target: 'http://cdla-api-stg.cdlib.org:3106/consortial'
 
-      item_types_returned: ['citation', 'author', 'resource']
+      include_additional_attributes: true
+      item_types_returned: ['citation']
 
     # ------------------------------------
     oclc_xid:
@@ -18,22 +19,9 @@ tiers:
       timeout: 30000
       display_name: 'Oclc Xid'
 
-      target: 'http://localhost:3101/xid'
+      target: 'http://cdla-api-stg.cdlib.org:3101/xid'
 
       item_types_returned: ['citation']
-
-    # ------------------------------------
-    sfx:
-      enabled: true
-      max_attempts: 1
-      timeout: 30000
-      display_name: 'ExLibris SFX'
-
-      target: 'http://localhost:3102/sfx'
-
-      include_additional_attributes: true
-      item_types_returned: ['citation', 'author', 'resource']
-      do_not_call_if_referrer_from: ['my.domain.org', 'books.google.com', 'scholar.google.com']
 
     # ------------------------------------
     worldcat_discovery:
@@ -42,19 +30,33 @@ tiers:
       timeout: 15000
       display_name: 'Worldcat Discovery'
 
-      target: 'http://localhost:3103/worldcat_discovery'
+      target: 'http://cdla-api-stg.cdlib.org:3103/worldcat_discovery'
 
       item_types_returned: ['citation', 'author']
 
 # -------------------------------------------------------------------------------
   2:
+    sfx:
+      enabled: true
+      max_attempts: 1
+      timeout: 30000
+      display_name: 'ExLibris SFX'
+
+      target: 'http://cdla-api-stg.cdlib.org:3102/sfx'
+
+      include_additional_attributes: true
+      item_types_returned: ['citation', 'author', 'resource']
+      do_not_call_if_referrer_from: ['ucelinks.cdlib.org', 'books.google.com', 'scholar.google.com']
+
+# -------------------------------------------------------------------------------
+  3:
     internet_archive:
       enabled: true
       max_attempts: 3
       timeout: 30000
       display_name: 'Internet Archive'
 
-      target: 'http://0.0.0.0:3104/internet_archive'
+      target: 'http://cdla-api-stg.cdlib.org:3104/internet_archive'
 
       item_types_returned: ['resource']
       do_not_call_if_referrer_from: ['archive.org/']
@@ -66,7 +68,7 @@ tiers:
       timeout: 30000
       display_name: 'LibraryThing'
 
-      target: 'http://0.0.0.0:3105/cover_thing'
+      target: 'http://cdla-api-stg.cdlib.org:3105/cover_thing'
 
       item_types_returned: ['citation']
 
