@@ -137,6 +137,16 @@ describe('broker_additional_test.js', function(){
     var always = {},
         items = [];
     
+		var defined = [];
+    
+    _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
+      _.forEach(svcs, function(def, svc){
+        if(def['enabled']){
+          defined.push(svc);
+        }
+      });
+    });
+				
     var buildItems = function(rules, type){
       var options = {},
           ret = [];
@@ -208,7 +218,9 @@ describe('broker_additional_test.js', function(){
         
         // Throw the always dispatch services into the list
         _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
-          svcs.push(service);
+					if(_.contains(defined, service)){
+          	svcs.push(service);
+					}
         });
         
         //console.log(paramSet['genre'] + ', ' + paramSet['content_type'] + ' --> ' + svcs);
@@ -234,20 +246,21 @@ describe('broker_additional_test.js', function(){
       
       return ret;
     };
-    // -------------------------------------------------------
     
+    // -------------------------------------------------------
     // Count the number of items that can be returned for each of the services (mock tier will only return 1 of each item)
     _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
-      _.forEach(CONFIGS['services']['tiers'], function(defs, tier){
-        _.forEach(defs, function(def, svc){
-          if(svc == service){
-            
-            _.forEach(def['items_types_returned'], function(type){
-              always[type] = (typeof always[type] == 'undefined' ? 1 : (always[type] + 1))
-            });
-          }
+      if(_.contains(defined, service)){
+        _.forEach(CONFIGS['services']['tiers'], function(defs, tier){
+          _.forEach(defs, function(def, svc){
+            if(svc == service){    
+              _.forEach(def['items_types_returned'], function(type){
+                always[type] = (typeof always[type] == 'undefined' ? 1 : (always[type] + 1))
+              });
+            }
+          });
         });
-      });
+      }
     });
     
     var complete = 1;
@@ -263,7 +276,7 @@ describe('broker_additional_test.js', function(){
           
             socket = new Socket(function(){
               console.log('checking services responding to: genre: ' + items[index].getAttribute('genre') + ', content_type: ' + items[index].getAttribute('content_type'));
-//              console.log(results);
+              //console.log(results);
         
               // Make sure the right number of responses were fired
               assert.equal(responses, _.size(results));

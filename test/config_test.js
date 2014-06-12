@@ -1,8 +1,6 @@
-var CONFIGS = undefined;
+require('../init.js');
 
-var assert = require("assert"),
-    fs = require('fs'),
-    _ = require('underscore');
+var assert = require("assert");
     
 describe('config.js testing', function(){
   this.timeout(10000);
@@ -340,15 +338,27 @@ describe('config.js testing', function(){
       });
     });
   
+    var defined = [];
+    
+    _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
+      _.forEach(svcs, function(def, svc){
+        if(def['enabled']){
+          defined.push(svc);
+        }
+      });
+    });
+  
     // Check the dispatch always
     _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
-      var passed = _.contains(_services, service);
+      if(_.contains(defined, service)){
+        var passed = _.contains(_services, service);
       
-      if(!passed){
-        console.log('.... "' + service + '" was referenced in dispatch_always was not defined in /config/services.yaml');
+        if(!passed){
+          console.log('.... "' + service + '" was referenced in dispatch_always was not defined in /config/services.yaml');
+        }
+      
+        assert(passed);
       }
-      
-      assert(passed);
     });
     
     // Check each item-attribute-value association

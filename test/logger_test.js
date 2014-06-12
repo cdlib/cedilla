@@ -1,9 +1,6 @@
-var LOGGER = undefined;
+require('../init.js');
 
-var yaml = require('js-yaml'),
-    fs = require('fs'),
-    assert = require("assert"),
-    _ = require('underscore');
+var assert = require("assert");
 
 var config = undefined;
 
