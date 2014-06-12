@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "socket.io": "latest",
+    "socket.io-client": "latest",
     "js-yaml": "latest",
     "node-html-encoder": "latest",
     "node-uuid": "latest",
