@@ -7,7 +7,6 @@ var delayStartup = setInterval(function(){
 		
 		var server = require('http').createServer(onRequest),
 	    	io = require('socket.io').listen(server),
-		    fs = require('fs'),
 		    url = require('url'),
 		    defaultServiceRunning = false;
 

@@ -1,9 +1,23 @@
-var fs = require('fs'),
-    yaml = require('js-yaml');
-    
+// Load up all of our modules once
+
+// These modules are used throughout (Broker, Tier, Service, etc.)
+module.exports = fs = require('fs');
+module.exports = yaml = require('js-yaml');
+module.exports = _ = require('underscore');
+module.exports = util = require('util');  
+module.exports = events = require('events');
+
 module.exports = CONFIGS = require("./lib/config.js");
 
-module.exports = _ = require('underscore');
+// Used by Tier
+module.exports = Encoder = require('node-html-encoder').Encoder;
+
+// Used by Service
+module.exports = url = require('url');
+module.exports = uuid = require('node-uuid');
+
+// Used in helper
+module.exports = querystring = require('querystring');
 
 var i = 0;
 
