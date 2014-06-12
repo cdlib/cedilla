@@ -10,7 +10,6 @@ var delayStartup = setInterval(function(){
 		    url = require('url'),
 		    defaultServiceRunning = false;
 
-
 		server.listen(CONFIGS['application']['port']);
 		console.log(CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port']);
 
