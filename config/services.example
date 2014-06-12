@@ -1,6 +1,16 @@
 # See bottom of this file for an explanation of these values!
 tiers:
   1:
+    default:
+      enabled: true
+      max_attempts: 1
+      timeout: 30000
+      display_name: 'Default Service'
+
+      target: 'http://localhost:9900/default'
+
+      item_types_returned: ['citation', 'author', 'resource']
+
     consortial:
       enabled: true
       max_attempts: 1
