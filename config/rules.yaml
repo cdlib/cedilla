@@ -124,6 +124,6 @@ minimum_item_groups:
     - ['authors']
   sfx:
     - ['title', 'journal_title', 'book_title', 'article_title', 'issn', 'eissn', 'isbn', 'eisbn', 'oclc', 'lccn', 'doi', 'coden', 'sici', 'bici', 'document_id']
-    - ['campus']
+    - ['ip']
   cover_thing:
     - ['isbn', 'eisbn']
