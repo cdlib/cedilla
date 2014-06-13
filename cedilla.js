@@ -148,7 +148,11 @@ var delayStartup = setInterval(function(){
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
       map['original_citation'] = queryString;
       var item = helper.flattenedMapToItem('citation', true, map);
-      newSpecializer('openurl', item).specialize();
+      LOGGER.log('debug', 'item before specialization: ' + JSON.stringify(item));
+      specializers.newSpecializer('openurl', item).specialize();
+      LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
+
+      return item;
       
     }
   }
