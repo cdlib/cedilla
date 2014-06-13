@@ -224,20 +224,8 @@ describe('tier.js', function(){
     
     _complete++;
     
-  });
-
-  // ---------------------------------------------------------------------------------------------------
-  it('should not be able to dispatch any services due to minimum item attribute rules!', function(done){
-    console.log('.. TIER: ensuring no services are called when item does not have enough info.');
-    
-    processTier({}, 0, new Item(rootItem, false, {}), function(items){
-      // The number of leftover services should match the number of services with minimum item attribute rules!
-      assert.equal(_.size(CONFIGS['rules']['minimum_item_groups']), tiers[_.size(tiers) - 1].getServiceCount());
-      
-      done();
-    });
-  
   }); 
+
   
   // ---------------------------------------------------------------------------------------------------
   it('should properly augment the item', function(done){

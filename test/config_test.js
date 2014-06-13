@@ -221,7 +221,7 @@ describe('config.js testing', function(){
         var passed = true;
         
         // Exclude checks for the temporary default service line
-        if(!_.contains(ref, 'default_content_service')){
+        if(!_.contains(ref, 'default_content_service') && !_.contains(ref, 'default_content_service_port')){
           // Warning, can only currently chek up to 4 levels deep
           switch(ref.length){
           case 1:

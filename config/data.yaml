@@ -86,6 +86,7 @@ objects:
 
     attributes:
       - campus
+      - ip
       - genre
       - content_type
       - issn
