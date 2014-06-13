@@ -145,12 +145,11 @@ var delayStartup = setInterval(function(){
 
       var translator = new Translator('openurl');
       var map = translator.translateMap(qs, false);
-
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
-
       map['original_citation'] = queryString;
-
-      return helper.flattenedMapToItem('citation', true, map);
+      var item = helper.flattenedMapToItem('citation', true, map);
+      newSpecializer('openurl', item).specialize();
+      
     }
   }
 });

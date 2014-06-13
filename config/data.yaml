@@ -105,6 +105,7 @@ objects:
       - oai
       - nbn
       - hdl
+      - dissertation_number
       - title
       - book_title
       - journal_title

@@ -65,12 +65,15 @@ describe('Specializer', function(){
       assert.equal(item.getAdditionalVal('ourl_version'), '0.1');
    });
 
-  it('should derive the pmid from an openurl 0.1', function() {
-    console.log("Checking that the pmid	and lccn are derived from an openurl 0.1 id field");
+  it('should derive the pid values from an openurl 0.1', function() {
+    console.log("Checking that the pid values are derived from an openurl 0.1 id field");
     var query = "id=pmid:19889244&id=lccn:56789&sid=UCLinks-Entrez:PubMed&aulast=Spadafranca&month=11&atitle=Effect of dark chocolate on plasma epicatechin levels, DNA resistance to oxidative stress and total antioxidant activity in healthy subjects.&amp;spage=1&issn=0007-1145&genre=article&auinit=A&epage=7&title=The British Journal of Nutrition&year=2009&pid=institute%3DUCOP%26placeOfPublication%3DWallingford%252C%2BOxfordshire%26publisher%3DCABI%2BPub";
     var item = specializeItem(query);
     assert.equal(item.getAttribute('pmid'), '19889244'); 
     assert.equal(item.getAttribute('lccn'), '56789');
+    assert.equal(item.getAttribute('institute', 'UCOP'));
+    assert.equal(item.getAttribute('publication_place'), 'Wallingford, Oxfordshire');
+    assert.equal(item.getAttribute('publisher'), 'CABI Pub');
   });
 
 
