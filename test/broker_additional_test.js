@@ -137,7 +137,7 @@ describe('broker_additional_test.js', function(){
     var always = {},
         items = [];
     
-		var defined = [];
+    var defined = [];
     
     _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
       _.forEach(svcs, function(def, svc){
@@ -146,7 +146,7 @@ describe('broker_additional_test.js', function(){
         }
       });
     });
-				
+        
     var buildItems = function(rules, type){
       var options = {},
           ret = [];
@@ -218,9 +218,9 @@ describe('broker_additional_test.js', function(){
         
         // Throw the always dispatch services into the list
         _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
-					if(_.contains(defined, service)){
-          	svcs.push(service);
-					}
+          if(_.contains(defined, service)){
+            svcs.push(service);
+          }
         });
         
         //console.log(paramSet['genre'] + ', ' + paramSet['content_type'] + ' --> ' + svcs);

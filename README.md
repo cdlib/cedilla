@@ -132,3 +132,6 @@ The default service is there just to help you verify that your installation work
 
 The Wiki contains detailed information about configuring Cedilla, building client applications for the system, and creating services.
 
+### License
+
+Cedilla adheres to the [BSD 3 Clause](./LICENSE.md) license agreement. 
