@@ -107,20 +107,21 @@ The default service is there just to help you verify that your installation work
 
 * install and start your own services (instructions for rolling your own services can be found on this project's Wiki)
 
-* update your services.yaml (make sure the 'target' is correct and that each one is enabled!)
+* update your config/services.yaml (make sure the 'target' is correct and that each one is enabled!)
 
-* update the rules.yaml (make sure your service appears in the dispatch_always OR in the data --> object --> item type --> attribuute --> value section)
+* update the config/rules.yaml (make sure your service appears in the dispatch_always OR in the data --> object --> item type --> attribuute --> value section)
 
 * see the Wiki or configuration file comments for further instructions on configuring your setup.
 
 * restart Cedilla if it does not pick up your configuration file changes
 
-* node cedilla.js
+* > node cedilla.js
 
 #####Make sure you turn off the Default Service!!
 
-The default service is there just to help you verify that your installation worked properly. You can turn it off by commenting out the following line in application.yaml
-  > server_default_content: true
+The default service is there just to help you verify that your installation worked properly. You can turn it off by commenting out the following lines in the  config/application.yaml file.
+  > default_content_service: true
+  > default_content_service_port: 9900
 
 ### Testing
 
