@@ -58,6 +58,17 @@ tiers:
       item_types_returned: ['citation', 'author', 'resource']
       do_not_call_if_referrer_from: ['ucelinks.cdlib.org', 'books.google.com', 'scholar.google.com']
 
+    holdings:
+      enabled: true
+      max_attempts: 1
+      timeout: 30000
+      display_name: 'Local Holdings Service'
+
+      target: 'http://localhost:3107/holdings'
+
+      flatten_json_to_service: true
+      item_types_returned: ['citation', 'resource']
+
 # -------------------------------------------------------------------------------
   3:
     internet_archive:
@@ -117,5 +128,18 @@ tiers:
   #                                                      This is to prevent creating circular wormholes for end users. For example if the citation 
   #                                                      came into the aggregator from your local catalog you would not want to present them with links 
   #                                                      back to that catalog!
+  #  
+  #    include_additional_attributes: [boolean] <-- Tells the system whether or not the attributes that were stuffed inside the 'additional' hash for the
+  #                                             items should be passed to the service. The additional attribute is a catchall for any umapped information
+  #                                             information that came in from the client's request. For example, if the config/data.yaml does not have a
+  #                                             mapping for the incoming paramater 'foo=bar', the information gets stuffed into the additional attribute
+  #                                             of the root item. If you wish to pass those values along to the service you must specify this parameter.
+  #
+  #    flatten_json_to_service: [boolean]   <-- (default is false) Tells the system that it should collapse any attributes whose value is an array or 
+  #                                             hash and simply pass the first item in that attribute back as a string. All child items will be treated 
+  #                                             in the same manner. For example if the root item, itemA, has 3 child items of type itemB, this flag will 
+  #                                             force the system to collapse the first child item into the root item's list of attributes so that something
+  #                                             like the following is sent to the service:  
+  #                                                  {"itemA": {"itemA_attr1":"ABC","itemA_attr2":"123","itemB_attr1":"XYZ","itemB_attr2":"789"}}.
   #
   # -------------------------------------------------------------------------------------------------------------------------

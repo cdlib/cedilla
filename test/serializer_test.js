@@ -100,7 +100,7 @@ describe("serializer.js", function(){
     
     console.log('SERIALIZER: checking item to JSON for services');
     
-    var json = JSON.parse(serializer.itemToJsonForService(transId, item, false));
+    var json = JSON.parse(serializer.itemToJsonForService(transId, item, false, false));
     
     assert.equal('undefined', (typeof json['foo']));
     assert.equal('string', (typeof json['time']));
@@ -117,7 +117,7 @@ describe("serializer.js", function(){
       });
     });
     
-    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, false));
+    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, false, false));
   
     assert.equal('undefined', (typeof json['foo']));
     assert.equal('string', (typeof json['time']));
@@ -137,7 +137,7 @@ describe("serializer.js", function(){
     });
     
     itemWithKids.addAttribute('foo', 'bar');
-    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, false));
+    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, false, false));
   
     assert.equal('undefined', (typeof json['foo']));
     assert.equal('string', (typeof json['time']));
@@ -147,6 +147,73 @@ describe("serializer.js", function(){
     _.first(json[rootItem + 's'], function(item){
       assert.equal(1, _.size(item.getAttribute('additional')));
 
+      _.forEach(item.getAttributes(), function(value, key){
+        if(value instanceof Array){
+          assert.equal(_.size(value), _.size(item[key]));
+        }else{
+          assert.equal(value, item[key]);
+        }
+      });
+    });
+
+    // Flattened JSON without child items
+    var json = JSON.parse(serializer.itemToJsonForService(transId, item, false, true));
+    
+    assert.equal('undefined', (typeof json['foo']));
+    assert.equal('string', (typeof json['time']));
+    assert.equal(service_api_ver, json['api_ver']);
+    assert.equal(transId, json['id']);
+    
+    _.first(json[rootItem + 's'], function(item){
+      _.forEach(item.getAttributes(), function(value, key){
+        if(value instanceof Array){
+          assert.equal(_.size(value), _.size(item[key]));
+        }else{
+          assert.equal(value, item[key]);
+        }
+      });
+    });
+
+
+    // Flattened JSON ouput with child items AND additional attribute hash
+    itemWithKids.addAttribute('foo', 'bar');
+    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, false, true));
+  
+    assert.equal('undefined', (typeof json['foo']));
+    assert.equal('string', (typeof json['time']));
+    assert.equal(service_api_ver, json['api_ver']);
+    assert.equal(transId, json['id']);
+    
+    _.first(json[rootItem + 's'], function(item){
+      assert.equal(1, _.size(item.getAttribute('additional')));
+
+      _.forEach(item.getAttributes(), function(value, key){
+        if(value instanceof Array){
+          assert.equal(_.size(value), _.size(item[key]));
+        }else{
+          assert.equal(value, item[key]);
+        }
+      });
+    });
+
+    // Flattened JSON ouput with child items and NO additional attribute hash
+    itemWithKids.addAttribute('foo', 'bar');
+    json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, true, true));
+  
+
+console.log(json)
+
+    assert.equal('string', (typeof json['time']));
+    assert.equal(service_api_ver, json['api_ver']);
+    assert.equal(transId, json['id']);
+    
+    _.first(json[rootItem + 's'], function(item){
+      assert.equal(2, _.size(item.getAttribute('additional')));
+
+      _.forEach(CONFIGS['data']['objects'][rootItem]['children'], function(child){
+        assert('undefined', (typeof item.getAttribute(child)));
+      });
+      
       _.forEach(item.getAttributes(), function(value, key){
         if(value instanceof Array){
           assert.equal(_.size(value), _.size(item[key]));
