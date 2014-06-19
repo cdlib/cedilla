@@ -23,7 +23,6 @@ tiers:
       item_types_returned: ['resource']
       do_not_call_if_referrer_from: ['archive.org/']
 
-
   # Explanation of the tiers definition
   # ------------------------------------------------------------------------------------------------------------------------- 
   #    tiers: 
