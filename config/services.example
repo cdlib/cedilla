@@ -11,87 +11,17 @@ tiers:
 
       item_types_returned: ['citation', 'author', 'resource']
 
-    consortial:
-      enabled: true
-      max_attempts: 1
-      timeout: 30000
-      display_name: 'IP Service'
-
-      target: 'http://cdla-api-stg.cdlib.org:3106/consortial'
-
-      include_additional_attributes: true
-      item_types_returned: ['citation']
-
-    # ------------------------------------
-    oclc_xid:
-      enabled: true
-      max_attempts: 1
-      timeout: 30000
-      display_name: 'Oclc Xid'
-
-      target: 'http://cdla-api-stg.cdlib.org:3101/xid'
-
-      item_types_returned: ['citation']
-
-    # ------------------------------------
-    worldcat_discovery:
-      enabled: true
-      max_attempts: 1
-      timeout: 15000
-      display_name: 'Worldcat Discovery'
-
-      target: 'http://cdla-api-stg.cdlib.org:3103/worldcat_discovery'
-
-      item_types_returned: ['citation', 'author']
-
-# -------------------------------------------------------------------------------
-  2:
-    sfx:
-      enabled: true
-      max_attempts: 1
-      timeout: 30000
-      display_name: 'ExLibris SFX'
-
-      target: 'http://cdla-api-stg.cdlib.org:3102/sfx'
-
-      include_additional_attributes: true
-      item_types_returned: ['citation', 'author', 'resource']
-      do_not_call_if_referrer_from: ['ucelinks.cdlib.org', 'books.google.com', 'scholar.google.com']
-
-    holdings:
-      enabled: true
-      max_attempts: 1
-      timeout: 30000
-      display_name: 'Local Holdings Service'
-
-      target: 'http://localhost:3107/holdings'
-
-      flatten_json_to_service: true
-      item_types_returned: ['citation', 'resource']
-
-# -------------------------------------------------------------------------------
-  3:
+    # ------------------------------------------------------
     internet_archive:
       enabled: true
       max_attempts: 3
       timeout: 30000
       display_name: 'Internet Archive'
 
-      target: 'http://cdla-api-stg.cdlib.org:3104/internet_archive'
+      target: 'http:/localhost:3104/internet_archive'
 
       item_types_returned: ['resource']
       do_not_call_if_referrer_from: ['archive.org/']
-
-    # ------------------------------------
-    cover_thing:
-      enabled: true
-      max_attempts: 3
-      timeout: 30000
-      display_name: 'LibraryThing'
-
-      target: 'http://cdla-api-stg.cdlib.org:3105/cover_thing'
-
-      item_types_returned: ['citation']
 
 
   # Explanation of the tiers definition

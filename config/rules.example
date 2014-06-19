@@ -1,0 +1,112 @@
+# -------------------------------------------------------------------------------------------------------------------------
+# This file allows you to define the business rules the aggregator will use when determining which services are called for
+# the request.
+#
+# You specify which data object, which data element, and the values (value coming in on the left and the translation 
+# on the right)
+#
+# This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
+# changes. This means that once you add a service here, it will be available to the next incoming request (The Aggregator will
+# not dispatch to the new service(s) though until after you add it them to the rules.yaml)
+#
+# Because the system will auto reload this file make sure that there are no <tab> characters before you save. Tab characters
+# break the YAML parser and will cause the Aggregator to shutdown!
+# -------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you define services that should be called every time a request is received. 
+#
+# These services will skip the logic check in the next section but will adhere to the minimum_item_groups in the last section. 
+# For example if you place the cover_thing service into this section it will be dispatched regardless of the genre and 
+# content_type of the citation but if the citation has no isbn it will still be placed in the holding queue.
+#
+# -------------------------------------------------------------------------------------------------------------------------
+dispatch_always:
+  - default              # Delete this one ONLY if youo no longer have a need for the default service which returns stub data
+
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you categorize services into groups that are then tied to specific data elements values.
+#
+# For example:
+#    given the following configuration:
+#
+#        objects:
+#          citation:
+#            genre:
+#              journal:
+#                - sfx
+#                - pubmed
+#                - cover_open_library
+#              book:
+#                - sfx
+#                - cover_thing
+#            content_type:
+#              full_text:
+#                - sfx
+#                - cover_open_library
+#                - cover_thing
+#
+#     Then if an openUrl request came in with the following ?rft.genre=journal&rft.content=full_text the system would
+#     dispatch sfx and cover_open_library. It would not call pubmed because pubmed does not support full_text (in this example!)
+#     and it would not call cover_thing because that service does not support the journal genre.
+# -------------------------------------------------------------------------------------------------------------------------
+objects:
+  citation:
+    # Group services into the genres they can search
+    # When a citation comes in from a client the rules engine will use this list to determine what
+    # services the broker will dispatch. For example the cover_open_library service can only provide
+    # results for books so it should only appear in the book and bookitem genre types
+    genre:
+      journal:
+        - internet_archive
+      book:
+        - internet_archive
+
+      bookitem:
+        - internet_archive
+
+    # Group services into the type of content they can provide
+    # When a citation comes in from a client the rules engine will use this list to determine what
+    # services the broker will dispatch. For example the internet_archive service can only provide
+    # results for electronic and audio copies of an item so it should NOT be found in the holdings
+    # category!
+    content_type:
+      electronic:
+        - internet_archive
+
+      full_text:
+        - internet_archive
+
+      audio:
+        - internet_archive
+
+      video:
+        - internet_archive
+
+
+# -------------------------------------------------------------------------------------------------------------------------
+# In this section you categorize services into groups that are then tied to specific data elements values.
+#
+# Define the minimum amount of citation information required to process a service. The options MUST match attributes on the Citation object!
+# Items within an array indicate an OR relationship and items on different lines indicate an AND relationship so:
+#
+#    some_journal:
+#      - 'article_title'
+#      - ['title', 'journal_title']
+#
+#   Translates to:  citation includes -> an Article Title AND (a Title OR a Journal Title)
+#
+# You may also use the names of children to have the system verify that the citation has at least one child
+#
+#    internet_archive:
+#      - ['title', 'book_title']
+#      - ['authors']
+#
+#   Translates to: citation includes -> (a Title OR book_title) AND at least 1 author
+#
+# -------------------------------------------------------------------------------------------------------------------------
+minimum_item_groups:
+  internet_archive:
+    - ['title', 'book_title']
+    - ['authors']

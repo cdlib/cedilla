@@ -4,7 +4,7 @@ log/**/*
 
 config/application.yaml
 config/services.yaml
-config/test.yaml
+config/rules.yaml
 
 bin/**/*
 *.out
