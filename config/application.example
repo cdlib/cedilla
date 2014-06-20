@@ -51,3 +51,27 @@ tier_timeout: 20000
 # ---------------------------------------------------------------------------------
 service_max_response_length: 30000 # bytes
 service_api_version: 1.0
+
+# ---------------------------------------------------------------------------------
+# Consortial Service to assist in determining client's affiliation (e.g. which campus they're on)
+# Just comment this out if you do not need to determine the client's affiliation
+#
+# If your institution consists of a consortium of campuses, libraries, or schools and
+# you have a webservice available that can translate codes <--> ips then you can use the
+# consortial_service block below to have the system attempt to translate a code passed 
+# in during the client request into an IP address or vice versa. The code
+# and ip are then passed along to the services at the top level of the JSON data as:
+#
+#     "requestor_affiliation":"CAMPUS-A",
+#     "requestor_ip":"127.0.0.1"
+#
+# If you use a code, it should be passed in as 'affiliation' in the request. For example
+# if the request is an openURL, it should have '&cedilla:affiliation=CAMPUS-A' in the URL.
+# if its an xml post then you would have <cedilla:affiliation>CAMPUS-A</cedilla:affiliation>
+# Otherwise the system will just use the ip in the client request.
+#
+# The system will swap out the '?' in the URLs with the specific code or ip address
+# ---------------------------------------------------------------------------------
+#consortial_service:
+#  translate_from_code: 'http://localhost:3106/campus/?'
+#  translate_from_ip: 'http://localhost:3106/ip/?'

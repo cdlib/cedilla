@@ -30,7 +30,7 @@ describe("consortial.js", function(){
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it('testing affiliation <--> ip transaltions', function(done){
+  it('testing affiliation <--> ip translations', function(done){
     var ip = '127.0.0.1';
   
     // Skip the test if the consortial_service is turned off in the application.yaml config!
