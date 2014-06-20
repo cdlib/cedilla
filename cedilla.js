@@ -16,7 +16,7 @@ var delayStartup = setInterval(function(){
 
     // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
     if(CONFIGS['application']['default_content_service'] && !defaultServiceRunning){
-      defaultService = require('./lib/default_service');
+      defaultService = require('./lib/util/default_service');
 
       defaultService.startDefaultService(CONFIGS['application']['default_content_service_port']);
       defaultServiceRunning = true;
@@ -116,39 +116,31 @@ var delayStartup = setInterval(function(){
         LOGGER.log('debug', 'dispatching services for: ' + data);
     
         try{
-          _request.setType('openurl');
           _request.setRequest(data.toString());
           
-          var item = buildInitialItemsFromOpenUrl(data.toString());
-
-          if(item instanceof Item){
-            var unmapped = '';
+          buildInitialItemsFromOpenUrl(data.toString(), function(format, item, leftovers){
             
-            _.forEach(item.getAttribute('additional'), function(attr){
-              _.forEach(attr, function(value, key){
-                unmapped += key + '=' + value + '&';
-              });
-            });
-
-            if(unmapped.length > 0){ unmapped = unmapped.slice(0, -1); }
-            item.removeAttribute('additional');
+            if(item instanceof Item){
+              _request.setType(format);
+              
+              processUnmappedInformation(_request, leftovers, item);
+              
+              _request.addMappedItem(item);
             
-            _request.setUnmapped(unmapped);
-            _request.addMappedItem(item);
+              LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
-            LOGGER.log('debug', 'translated openurl into: ' + item.toString());
-
-            // Send the socket, and request object over to the Broker for processing
-            var broker = new Broker(socket, _request);
+              // Send the socket, and request object over to the Broker for processing
+              var broker = new Broker(socket, _request);
+                
+            }else{
+              // Warn about invalid item
+              LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
         
-          }else{
-            // Warn about invalid item
-            LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
-        
-            var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
-            socket.emit(serializer.itemToJsonForClient('cedilla', err));
-          }
-      
+              var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+              socket.emit(serializer.itemToJsonForClient('cedilla', err));
+            }
+          });
+          
         }catch(e){
           LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
           LOGGER.log('error', e.stack);
@@ -163,19 +155,69 @@ var delayStartup = setInterval(function(){
     });
 
     // -------------------------------------------------------------------------------------------
-    function buildInitialItemsFromOpenUrl(queryString){
+    function buildInitialItemsFromOpenUrl(queryString, callback){
       var qs = helper.queryStringToMap(queryString);
 
       var translator = new Translator('openurl');
+      
       var map = translator.translateMap(qs, false);
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
+      
       var item = helper.flattenedMapToItem('citation', true, map);
       LOGGER.log('debug', 'item before specialization: ' + JSON.stringify(item));
-      specializers.newSpecializer('openurl', item).specialize();
+      
+      var format = specializers.newSpecializer('openurl', item).specialize();
       LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
 
-      return item;
+      // Capture all of the unmappable information and pass it back in the callback for processing
+      var unmappable = {};
       
+      _.forEach(map, function(value, key){
+        if(!wasMapped(item, key)){
+          unmappable[key] = value;
+        }
+      });
+      
+      callback(format, item, unmappable);
+      
+    }
+
+    // -------------------------------------------------------------------------------------------
+    function processUnmappedInformation(request, unmappedItems, item){
+      var unmapped = "";
+      
+      _.forEach(unmappedItems, function(value, key){
+        // If a consortial affiliation was passed in, assign it!
+        if(key == 'cedilla:affiliation'){
+          request.setAffiliation(value);
+          
+        }else{
+          unmapped += key + '=' + value + '&';
+        }  
+      });
+
+      if(unmapped.length > 0){ unmapped = unmapped.slice(0, -1); }
+      
+      request.setUnmapped(unmapped);
+    }
+    
+    // -------------------------------------------------------------------------------------------
+    function wasMapped(item, key){
+      if(typeof item.getAttribute(key) == 'undefined'){
+        unmapped = false;
+        
+        // Make sure its not mapped to one of the child items
+        _.forEach(CONFIGS['data']['objects'][item.getType()]['children'], function(child){
+          _.forEach(item.getAttribute(child + 's'), function(kid){
+            unmapped = wasMapped(kid, key);
+          });
+        });
+        
+        return unmapped;
+        
+      }else{
+        return true;
+      }
     }
   }
 });
