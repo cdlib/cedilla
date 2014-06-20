@@ -26,19 +26,18 @@ var waitForConfigs = setInterval(function(){
   if(typeof CONFIGS['application'] != 'undefined' || i == 2000){
     clearInterval(waitForConfigs);
  
-    module.exports = LOGGER = require('./lib/logger.js');
-    module.exports = augmenter = require("./lib/augmenter.js");
-    module.exports = helper = require("./lib/helper.js");
-    module.exports = serializer = require("./lib/serializer.js");
-    module.exports = specializers = require("./lib/specializer.js");
+    module.exports = helper = require("./lib/util/helper.js");
+    module.exports = serializer = require("./lib/util/serializer.js");
+    module.exports = specializers = require("./lib/util/specializer.js");
+    module.exports = Translator = require("./lib/util/translator.js");
+    module.exports = Consortial = require("./lib/util/consortial.js");
     
-    module.exports = Request = require("./lib/request.js");
-    module.exports = Transaction = require("./lib/transaction.js");
-    module.exports = Item = require("./lib/item.js");
+    module.exports = Request = require("./lib/model/request.js");
+    module.exports = Transaction = require("./lib/model/transaction.js");
+    module.exports = Item = require("./lib/model/item.js");
 
+    module.exports = LOGGER = require('./lib/logger.js');
     module.exports = Broker = require("./lib/broker.js");
-    module.exports = Translator = require("./lib/translator.js");
-    module.exports = Consortial = require("./lib/consortial.js");
     module.exports = Tier = require("./lib/tier.js");
     module.exports = Service = require("./lib/service.js");
 
