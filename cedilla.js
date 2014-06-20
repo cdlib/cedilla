@@ -158,6 +158,13 @@ var delayStartup = setInterval(function(){
     function buildInitialItemsFromOpenUrl(queryString, callback){
       var qs = helper.queryStringToMap(queryString);
 
+      // Toss any parameters that had a blank value!
+      _.forEach(qs, function(v, k){
+        if(v == ''){
+          delete qs[k];
+        }
+      });
+
       var translator = new Translator('openurl');
       
       var map = translator.translateMap(qs, false);
