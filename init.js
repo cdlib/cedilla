@@ -31,12 +31,16 @@ var waitForConfigs = setInterval(function(){
     module.exports = helper = require("./lib/helper.js");
     module.exports = serializer = require("./lib/serializer.js");
     module.exports = specializers = require("./lib/specializer.js");
+    
+    module.exports = Request = require("./lib/request.js");
+    module.exports = Transaction = require("./lib/transaction.js");
+    module.exports = Item = require("./lib/item.js");
 
     module.exports = Broker = require("./lib/broker.js");
-    module.exports = Item = require("./lib/item.js");
-    module.exports = Service = require("./lib/service.js");
-    module.exports = Tier = require("./lib/tier.js");
     module.exports = Translator = require("./lib/translator.js");
+    module.exports = Consortial = require("./lib/consortial.js");
+    module.exports = Tier = require("./lib/tier.js");
+    module.exports = Service = require("./lib/service.js");
 
     // Should be for TEST only!
     module.exports = assert = require("assert");

@@ -85,8 +85,6 @@ objects:
       - resource
 
     attributes:
-      - campus
-      - ip
       - genre
       - content_type
       - issn
@@ -137,7 +135,6 @@ objects:
       - abstract_text
       - sample_cover_image
       - subject
-      - original_citation
 
   # ----------------------------------------------------------
   author:                

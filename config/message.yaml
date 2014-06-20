@@ -41,3 +41,7 @@ service_unknown_item: '? returned an unknown item type.'
 service_server_error: '? was unable to process the request.'
 service_server_error_fatal: 'The ? service could not respond to your request.'
 service_buffer_overflow: 'The response from ? was too large!'
+
+# Consortial Affiliation Service
+consortial_error: 'Unable to determine the affiliation of the client do to an error!'
+consortial_too_large: 'Response from the consortial service was too large!'

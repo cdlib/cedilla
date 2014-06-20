@@ -104,19 +104,42 @@ var delayStartup = setInterval(function(){
      * Handles the openurl event that is emitted by the client
      * ------------------------------------------------------------------------------------------- */
     io.sockets.on('connection', function (socket) {
-      var self = this;
-  
+      var self = this,
+          _request = new Request({'referrer': socket.handshake.headers['referer'],
+                                  'ip': socket.handshake.address['address'],
+                                  'agent': socket.handshake.headers['user-agent'],
+                                  'language': socket.handshake.headers['accept-language'],
+                                  'service_api_version': CONFIGS['application']['service_api_version'],
+                                  'client_api_version': CONFIGS['application']['client_api_version']});
+
       socket.on('openurl', function (data) {
         LOGGER.log('debug', 'dispatching services for: ' + data);
     
         try{
+          _request.setType('openurl');
+          _request.setRequest(data.toString());
+          
           var item = buildInitialItemsFromOpenUrl(data.toString());
 
           if(item instanceof Item){
+            var unmapped = '';
+            
+            _.forEach(item.getAttribute('additional'), function(attr){
+              _.forEach(attr, function(value, key){
+                unmapped += key + '=' + value + '&';
+              });
+            });
+
+            if(unmapped.length > 0){ unmapped = unmapped.slice(0, -1); }
+            item.removeAttribute('additional');
+            
+            _request.setUnmapped(unmapped);
+            _request.addMappedItem(item);
+
             LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
-            // Send the socket, configuration manager, and the item to the broker for processing
-            var broker = new Broker(socket, item);
+            // Send the socket, and request object over to the Broker for processing
+            var broker = new Broker(socket, _request);
         
           }else{
             // Warn about invalid item
@@ -146,7 +169,6 @@ var delayStartup = setInterval(function(){
       var translator = new Translator('openurl');
       var map = translator.translateMap(qs, false);
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
-      map['original_citation'] = queryString;
       var item = helper.flattenedMapToItem('citation', true, map);
       LOGGER.log('debug', 'item before specialization: ' + JSON.stringify(item));
       specializers.newSpecializer('openurl', item).specialize();
