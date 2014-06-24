@@ -105,7 +105,8 @@ var delayStartup = setInterval(function(){
      * ------------------------------------------------------------------------------------------- */
     io.sockets.on('connection', function (socket) {
       var self = this,
-          _request = new Request({'referrer': socket.handshake.headers['referer'],
+          _request = new Request({'referrers': [socket.handshake.headers['referer']],
+                                  'content_type': socket.handshake.headers['content-type'],
                                   'ip': socket.handshake.address['address'],
                                   'agent': socket.handshake.headers['user-agent'],
                                   'language': socket.handshake.headers['accept-language'],
@@ -118,14 +119,17 @@ var delayStartup = setInterval(function(){
         try{
           _request.setRequest(data.toString());
           
-          buildInitialItemsFromOpenUrl(data.toString(), function(format, item, leftovers){
+          buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
             
             if(item instanceof Item){
-              _request.setType(format);
-              
               processUnmappedInformation(_request, leftovers, item);
               
-              _request.addMappedItem(item);
+              // Call the openurl specializer to parse ids out of the weird openUrl identifier fields
+              var format = specializers.newSpecializer('openurl', item, _request).specialize();
+              LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
+              
+              _request.setType(format);
+              _request.addReferent(item);
             
               LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
@@ -167,15 +171,14 @@ var delayStartup = setInterval(function(){
 
       var translator = new Translator('openurl');
       
+      // Translate the openUrl keys to ones usable by our items
       var map = translator.translateMap(qs, false);
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
       
+      // Create an item hierarchy based on the FLAT openUrl
       var item = helper.flattenedMapToItem('citation', true, map);
       LOGGER.log('debug', 'item before specialization: ' + JSON.stringify(item));
       
-      var format = specializers.newSpecializer('openurl', item).specialize();
-      LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
-
       // Capture all of the unmappable information and pass it back in the callback for processing
       var unmappable = {};
       
@@ -185,8 +188,7 @@ var delayStartup = setInterval(function(){
         }
       });
       
-      callback(format, item, unmappable);
-      
+      callback(item, unmappable);
     }
 
     // -------------------------------------------------------------------------------------------
@@ -196,7 +198,7 @@ var delayStartup = setInterval(function(){
       _.forEach(unmappedItems, function(value, key){
         // If a consortial affiliation was passed in, assign it!
         if(key == 'cedilla:affiliation'){
-          request.setAffiliation(value);
+          request.getRequestor().setAffiliation(value);
           
         }else{
           unmapped += key + '=' + value + '&';

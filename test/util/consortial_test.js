@@ -1,4 +1,4 @@
-require('../init.js');
+require('../../init.js');
     
 describe("consortial.js", function(){
   //this.timeout(120000);

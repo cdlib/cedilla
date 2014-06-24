@@ -33,7 +33,7 @@ var waitForConfigs = setInterval(function(){
     module.exports = Consortial = require("./lib/util/consortial.js");
     
     module.exports = Request = require("./lib/model/request.js");
-    module.exports = Transaction = require("./lib/model/transaction.js");
+		module.exports = Requestor = require("./lib/model/requestor.js");
     module.exports = Item = require("./lib/model/item.js");
 
     module.exports = LOGGER = require('./lib/logger.js');
