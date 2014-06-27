@@ -1,99 +1,65 @@
 require("../init.js");
+require("./prep.js");
 
 var events = require('events'),
-    util = require('util'),
-    mockery = require('./mock_services.js');
-
+    util = require('util');
 
 // ---------------------------------------------------------------------------------------------------
 describe('broker.js', function(){
   this.timeout(10000);
   
-  var item = undefined,
-      rootItem = '',
-      Socket = undefined,
-      results = [];
+  var Socket = undefined,
+      _request = undefined,
+      _results = [];
   
-  var oldTierProcessMethod = undefined,
-      oldTierHasMinimumCitationMethod = undefined;
+  var _oldTierProcessMethod = undefined,
+      _oldTierHasMinimumCitationMethod = undefined;
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    var self = this;
-    
     // Wait for the config file and init.js have finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
         
-        oldTierProcessMethod = Tier.prototype.process;
-        oldTierHasMinimumCitationMethod = Tier.prototype._hasMinimumCitation;
+        _oldTierProcessMethod = Tier.prototype.process;
+        _oldTierHasMinimumCitationMethod = Tier.prototype._hasMinimumCitation;
     
         // Mock the Tier's process routine to simply send back stub messages
+        // ---------------------------------------------------------------------------------------------------
         Tier.prototype.process = function(headers, item){
-          var buildItemMap = function(itemType){
-            var map = {};
+          var _self = this,
+              _items = undefined;
 
-            _.forEach(CONFIGS['data']['objects'][itemType]['attributes'], function(attribute){
-              map[attribute] = 'blah';
-            });
+          _.forEach(_self._queue, function(service){
+            if(item.getAttribute('title') == 'full_stack'){
+              console.log(fullItemWithChildren.getAttribute('authors'));
+              _items = [helper.mapToItem(rootItemType, true, fullItemWithChildren)];
+            }else{
+              _items = [helper.mapToItem(rootItemType, true, fullItem)];
+            }
 
-            _.forEach(CONFIGS['data']['objects'][itemType]['children'], function(child){
-              map[child + 's'] = [buildItemMap(child)];
-            });
+            if(service instanceof Service){
+              _self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': _items});
+            }
+          });
 
-            return map;
-          };
+          _self.emit('message', serializer.itemToJsonForClient('Cedilla', new Item('error', false, 
+                                                          {'level':'warning', 
+                                                           'message': CONFIGS['message']['tier_unknown_item_type']})));
 
-          if(headers['error']){
-            this.emit('response', {'service': headers['service'], 'original': item, 'new': new Item('error', true, {'message': 'got an error!'})});
-
-          }else if(headers['undefined']){
-            var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
-
-            this.emit('response', {'service': headers['service'], 'original': {'foo':'bar'}, 'new': items});
-
-          }else if(headers['fatal']){
-            this.emit('error', new Item('error', false, {'level':'fatal','message':'A fatal tier error occurred!'}));
-
-          }else{
-            var self = this;
-
-            _.forEach(self._queue, function(service){
-              var items = [helper.mapToItem(item.getType(), true, buildItemMap(item.getType()))];
-
-              if(service instanceof Service){
-                self.emit('response', {'service': service.getDisplayName(), 'original': item, 'new': items});
-              }
-            });
-
-            self.emit('complete', 'We are done here!');
-          }
+          _self.emit('complete', 'We are done here!');
         };
         // ---------------------------------------------------------------------------------------------------
-        // Override Tier level rules checks that do not apply to this test
+        // Override Tier level rules checks so that we don't have to worry about them being filtered out
         Tier.prototype._hasMinimumCitation = function(rules, item){ return true; }
 
         // ---------------------------------------------------------------------------------------------------
+        // Add some methods to store the services that should respond for the item so we can check them in tests
         Item.prototype.setServices = function(services){ this._services = services };
         // ---------------------------------------------------------------------------------------------------
         Item.prototype.getServices = function(services){ return this._services };
-    
-    
-        _.forEach(CONFIGS['data']['objects'], function(def, type){
-          if(def['root']){
-            var params = {};
-        
-            rootItem = type;
-        
-            _.forEach(def['validation'], function(attribute){
-              params[attribute] = 'got it';
-            })
-        
-            item = new Item(type, false, params);
-          }
-        });
-    
+      
         done();
       }
     });
@@ -101,9 +67,9 @@ describe('broker.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   after(function(done){
-    // Remove all monkey patches and set Tier and Item back to original state!
-    Tier.prototype.process = oldTierProcessMethod;
-    Tier.prototype._hasMinimumCitation = oldTierHasMinimumCitationMethod;
+    // Return the Tier and Service objects back to their original state
+    Tier.prototype.process = _oldTierProcessMethod;
+    Tier.prototype._hasMinimumCitation = _oldTierHasMinimumCitationMethod;
     
     Item.prototype.getServices = undefined;
     Item.prototype.setServices = undefined;
@@ -113,23 +79,24 @@ describe('broker.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   beforeEach(function(done){
-    results = [];
+    _results = [];
     
+    // Construct a socket to mock sending messages back to the client
     Socket = function(callback){
-      var self = this;
+      var _self = this;
       
       // Call the constructor for EventEmitter
-      events.EventEmitter.call(self);
+      events.EventEmitter.call(_self);
       
-      self.handshake = self.buildHandshake();
+      _self.handshake = _self.buildHandshake();
 
-      self.on('complete', function(message){
+      _self.on('complete', function(message){
         callback();
       });
       
       _.forEach(CONFIGS['data']['objects'], function(def, type){
-        self.on(type, function(json){
-          results.push(json);
+        _self.on(type, function(json){
+          _results.push(json);
         });
       });
     };
@@ -147,18 +114,29 @@ describe('broker.js', function(){
       };
     };
     
+    _request = new Request({'referrers': ['my.domain.org'],
+                      'content_type': 'text/plain',
+                      'ip': '127.0.0.1',
+                      'agent': 'Chrome',
+                      'language': 'en',
+                      'identifiers': ['jdoe@domain.org'],
+                      'service_api_version': '1.1',
+                      'client_api_version': '1.0',
+                      'request': 'testing - item built manually',
+                      'type': 'test'});
+    
     done();
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it("should throw an error if the socket or item is missing.", function(done){
-    socket = new Socket(done);
+  it("should throw an error if the request or socket is missing.", function(done){
+    var _socket = new Socket(function(){});
     
     console.log('BROKER: checking errors are thrown for bad socket/item.');
     
-    assert.throws(function(){ new Broker(undefined, undefined); });
-    assert.throws(function(){ new Broker(undefined, item); });
-    assert.throws(function(){ new Broker(socket, undefined); });
+    assert.throws(function(){ new Broker(undefined, undefined); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
+    assert.throws(function(){ new Broker(undefined, _request); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_socket']); return true; });
+    assert.throws(function(){ new Broker(_socket, undefined); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
     
     done();
   });
@@ -167,114 +145,306 @@ describe('broker.js', function(){
   it("should return bad item errors for unknown item types or invalid items", function(done){
     console.log('BROKER: check invalid item handling.');
     
-    socket = new Socket(function(){
-      assert.equal(0, _.size(results));
+    var _socket = new Socket(function(){});
 
-      done();
-    });
-    socket.handshake.headers['referer'] = 'http://www/google.com';
+    var _invalidItem = new Item(rootItemType, false, {'foo':'bar'});
+        
+    _request.addReferent(_invalidItem);
+  
+    var _broker = new Broker(_socket, _request);
+  
+    assert.equal(_.size(_request.getErrors()), 1);
+    assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_bad_item_message']);
     
-    var broker = new Broker(socket, new Item(rootItem, false, {'foo':'bar'}));
+    done();
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it("should always include the 'always_dispatch' services", function(done){
-    var self = this;
-  
-    console.log('BROKER: checking that the services in rules.yaml -> dispatch_always are always called.');
-  
-    self.responses = 0;
-    self.types = {};
+  it('should return a no services error', function(done){
+    var _socket = new Socket(function(){});
     
-    // Count the number of items that can be returned for each of the services (mock tier will only return 1 of each item)
-    _.forEach(CONFIGS['rules']['dispatch_always'], function(service){
-      _.forEach(CONFIGS['services']['tiers'], function(defs, tier){
-        _.forEach(defs, function(def, svc){
-          if(svc == service){
+    var _gas = Broker.prototype._getAvailableServices,
+        _aars = Broker.prototype._addAlwaysRunServices,
+        _fsfcl = Broker.prototype._filterServicesForClientList;
+      
+    // Override the basic service construction methods
+    Broker.prototype._getAvailableServices = function(item){ return []; };
+    Broker.prototype._addAlwaysRunServices = function(services){ return []; };
+    Broker.prototype._filterServicesForClientList = function(services, clientList){ return []; };
+  
+    _request.addReferent(fullItem);
+    
+    var _broker = new Broker(_socket, _request);
+  
+    assert.equal(1, _.size(_request.getErrors()));
+    assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_no_services_available']);
+  
+    // Set the Broker service construction methods back to their original state
+    Broker.prototype._getAvailableServices = _gas;
+    Broker.prototype._addAlwaysRunServices = _aars;
+    Broker.prototype._filterServicesForClientList = _fsfcl;
+    
+    done();
+  });
+  
+  // ---------------------------------------------------------------------------------------------------
+  it('checking consortial logic bubbles errors to request properly', function(done){
+    
+    if(CONFIGS['application']['consortial_service']){      
+      console.log('BROKER: checking consortial logic error handling.');
+      
+      // Handles consortial errors properly
+      // Override the consortial functions to force an error
+      var _tc = Consortial.prototype.translateCode,
+          _ti = Consortial.prototype.translateIp;
+      
+      Consortial.prototype.translateCode = function(code, callback){ throw new Error('Error!!'); }
+      Consortial.prototype.translateIp = function(ip, callback){ throw new Error('Error!!'); }
+    
+      var _socket = new Socket(function(){});
+    
+      _request.addReferent(fullItem);
+      
+      new Broker(_socket, _request);
+      
+      assert.equal(_.size(_request.getErrors()), 1);
+      assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_consortial_error']);
+      
+      // Set the consortial object back to normal
+      Consortial.prototype.translateCode = _tc;
+      Consortial.prototype.translateIp = _ti;
+    }else{
+      console.log('BROKER: consortial logic diabled, skipping test.');
+    }
+    
+    done();
+  });
+  
+  // ---------------------------------------------------------------------------------------------------
+  it("checking available service construction", function(done){
+    var _socket = new Socket(function(){});
+  
+    console.log('BROKER: testing available service construction for specified rules.');
+    
+    _request.addReferent(fullItem);
+
+    var _broker = new Broker(_socket, _request);
+    
+    assert.equal(_.size(_broker._getAvailableServices(emptyItem)), 0);
+    
+    var _options = {},
+        _service = '';
+    
+    // Get a set of valid attribute values from rules.yaml
+    _.forEach(CONFIGS['rules']['objects'][bareMinimumItem.getType()], function(rules, attribute){
+      // This is the first attribute so grab its last value and services 
+      if(_service == ''){ 
+        _.forEach(rules, function(services, value){
+          _service = services;
+          _options[attribute] = value;
+        });
+        
+      }else{
+        // This isn't the first item attribute so just see if it can respond to the first attribute's services
+        _.forEach(rules, function(services, value){
+          if(_.contains(services, _.first(_service))){
+            _options[attribute] = value;
             
-            _.forEach(def['item_types_returned'], function(type){
-              self.types[type] = (typeof self.types[type] == 'undefined' ? 1 : (self.types[type] + 1))
-              self.responses++;
+            // Remove any of the other services if they aren't a match for this attribute's value
+            _.forEach(_service, function(svc){
+              if(!_.contains(services, svc)){
+                _service.splice(_service.indexOf(svc), 1);
+              }
             });
           }
         });
-      });
+      }
     });
     
-    socket = new Socket(function(){
-      // Make sure the right number of responses were fired
-      assert.equal(self.responses, _.size(results));
-      
-      // Make sure the right types of items were sent by counting down each type
-      _.forEach(results, function(result){
-        var json = JSON.parse(result);
-        
-        _.forEach(self.types, function(count, type){
-          if(typeof json[type] != 'undefined'){
-            self.types[type]--;
-          }
-        })
-      });
-      
-      // All item types should have been checked off
-      _.forEach(self.types, function(count, type){
-        assert.equal(0, count);
-      });
-      
-      done();
-    });
-    socket.handshake.headers['referer'] = 'http://www/google.com';
+    var _params = bareMinimumItem.getAttributes(),
+        _item = new Item(bareMinimumItem.getType(), false, _params);
     
-    var broker = new Broker(socket, item);
+    
+    _.forEach(_options, function(value, attribute){
+      _item.addAttribute(attribute, value);
+    });
+    
+    assert.equal(_.size(_broker._getAvailableServices(_item)), _.size(_service));
+    
+    done();
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it("should remove services that belong to the current referer", function(done){
-    var referer = {},
-        self = this;
-        
-    console.log('BROKER: Making sure that services are removed if the referer matches those defined in services.yaml');
+  it("checking allocation of dispatch_always services", function(done){
+    var _socket = new Socket(function(){});
+  
+    console.log('BROKER: testing allocation of dispatch_always designated services.');
     
-    // Find services that has referer restrictions
-    _.forEach(CONFIGS['services']['tiers'], function(svcs, tier){
-      _.forEach(svcs, function(def, svc){
-        if(typeof def['do_not_call_if_referrer_from'] != 'undefined'){
-          referer[svc] = _.first(def['do_not_call_if_referrer_from']);
-        }
-      });
-    });
+    _request.addReferent(fullItem);
+
+    var _broker = new Broker(_socket, _request),
+        _services = _broker._getAvailableServices(emptyItem);
     
-    var count = _.size(referer);
+    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
     
-    _.forEach(referer, function(referer, service){
-    
-      socket = new Socket(function(){      
-        var passed = true;
-        
-        // Make sure the right types of items were sent by counting down each type
-        _.forEach(results, function(result){
-          var json = JSON.parse(result);
-        
-          if(json['service'] == self.service){
-            passed = false;
-          }
-        });
-        
-        if(!passed) console.log('referer, ' + referer + ', check should have blocked ' + service + ' from returning results!');
-        assert(passed);
-        if(count <= 1){
-          done();
-        }
-      
-        count--;
-      });
-      
-      socket.handshake.headers['referer'] = (referer.indexOf('http://') >= 0 ? referer : 'http://' + referer);
-    
-      var broker = new Broker(socket, item);
-      
-    });
+    done();
   });
   
+  // ---------------------------------------------------------------------------------------------------
+  it("_filterServicesForClientList", function(done){
+    // This feature has not yet been implemented
+    
+    done();
+  });
   
+  // ---------------------------------------------------------------------------------------------------
+  it("checking that service referer blocks are working", function(done){
+    var _socket = new Socket(function(){});
+  
+    console.log('BROKER: testing removal of services that call back out to the referer.');
+    
+    _request.addReferent(fullItem);
+
+    var _broker = new Broker(_socket, _request),
+        _blocks = {},
+        _item = new Item(bareMinimumItem.getType(), false, bareMinimumItem.getAttributes());
+    
+    _.forEach(tierServices, function(services, tier){
+      _.forEach(services, function(service){
+          if(CONFIGS['services']['tiers'][tier][service]['do_not_call_if_referrer_from']){
+            _blocks[service] = CONFIGS['services']['tiers'][tier][service]['do_not_call_if_referrer_from'];
+          }
+      });
+    });
+    
+    // Get a set of valid attribute values for the service!
+    _.forEach(_blocks, function(domains, service){
+      if(!_.contains(dispatchAlwaysServices, service)){
+        _.forEach(CONFIGS['rules']['objects'][bareMinimumItem.getType()], function(rules, attribute){
+          _.forEach(rules, function(services, value){
+            if(_.contains(services, service)){
+              _item.addAttribute(attribute, value);
+            }
+          });
+        });
+      }
+      
+      _.forEach(domains, function(domain){
+        assert(_broker._removeServiceForReferer(getTierNameForService(service), service, [domain]));
+        assert(!_broker._removeServiceForReferer(getTierNameForService(service), service, ['blah.edu']));
+      });
+    });
+    
+
+    
+    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
+    
+    done();
+  });
+  
+  // ---------------------------------------------------------------------------------------------------
+  it("checking tier preparation", function(done){
+    var _socket = new Socket(function(){});
+  
+    console.log('BROKER: testing assignment of services to their appropriate tier.');
+    
+    _request.addReferent(fullItem);
+    
+    var _broker = new Broker(_socket, _request),
+        _services = [];
+    
+    _.forEach(allServices, function(name){
+      _services.push(new Service(name));
+    });
+    
+    _broker._prepareTiers(_services, _request.getReferrers());
+    
+    _.forEach(_broker._tiers, function(tier){
+      _.forEach(tier._queue, function(service){
+        assert(_.contains(tierServices[tier.getName()], service.getName()));
+      });
+    });
+    
+    done();
+  });
+  
+  // ---------------------------------------------------------------------------------------------------
+  it("checking processing of responses from tiers", function(done){
+    console.log('BROKER: testing handling of tier responses.');
+    
+    _processed = 0;
+    
+    var interval = setInterval(function(){
+      // Make sure each tier completes
+      if(_processed >= _.size(tierServices)){
+        clearInterval(interval);
+        done();
+      }
+    }, 100);
+    
+    var _socket = new Socket(function(){
+      // Make sure all of the results are in the client JSON format
+      _.forEach(_results, function(result){
+        if(result.indexOf('"error":') >= 0){
+          assert(result.indexOf(CONFIGS['message']['tier_unknown_item_type']) >= 0);
+        
+        }else{
+          assert(result.indexOf('"time":') >= 0);
+          assert(result.indexOf('"api_ver":') >= 0);
+          assert(result.indexOf('"service":') >= 0);
+          assert(result.indexOf('"' + rootItemType + '":') >= 0);
+        }
+      });
+      
+      _processed++;
+    });
+    
+    _request.addReferent(fullItem);
+  
+    var _broker = new Broker(_socket, _request);
+  });
+  
+  // ---------------------------------------------------------------------------------------------------
+  it("checking messaging to client", function(done){
+    console.log('BROKER: testing item to JSON for client serialization.');
+    
+    var _processed = 0,
+        _total = 0;
+    
+    var interval = setInterval(function(){
+      // Make sure each tier completes
+      if(_processed >= _total){
+        _.forEach(_results, function(result){
+          var json = JSON.parse(result),
+              svc = new Service(serviceDisplayNameToName(json.service));
+              
+          _.forEach(CONFIGS['data']['objects'], function(def, type){
+            if(json[type]){
+              assert(svc.returnsItemType(type));
+            }
+          });
+        });
+        
+        clearInterval(interval);
+        done();
+      }
+    }, 100);
+    
+    var _socket = new Socket(function(){});
+    
+    _request.addReferent(bareMinimumItem);
+  
+    var _broker = new Broker(_socket, _request);
+
+    _results = [];
+    _total = _.size(_broker._services);
+
+    _.forEach(_broker._services, function(service){
+      var _item = new Item(fullItemWithChildren.getType(), false, fullItemWithChildren.getAttributes());
+      _broker._sendItemToClient(service.getDisplayName(), _item);
+      _processed++;
+    });
+    
+  });
+
 });

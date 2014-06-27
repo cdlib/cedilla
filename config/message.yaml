@@ -19,6 +19,9 @@ undefined_item_type: '? is either an unknown data type or you did not supply the
 missing_translator_mapping_file: 'The translator mapping file specified, ?, could not be found in ./config/'
 
 #Broker
+broker_bad_request: 'Invalid request!'
+broker_bad_socket: 'Unable to connect to client socket!'
+broker_consortial_error: 'Unable to determine user affiliation!'
 broker_no_services_available: 'No services could fulfill your request.'
 broker_bad_item_message: 'Invalid citation genre and/or content_type'
 broker_response_success: 'All services have responded.'
@@ -26,7 +29,7 @@ broker_response_success: 'All services have responded.'
 # Tier 
 tier_not_a_service: '? is not a valid service!'
 tier_no_original_item: 'The original citation is undefined!'
-tier_unknown_item_type: 'The information returned from ? could not be processed!'
+tier_unknown_item_type: 'The information returned from one of the services could not be processed!'
 tier_timeout: 'Tier ? timed out while contacting its services!'
 
 # Service
