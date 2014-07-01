@@ -1,5 +1,5 @@
 require("../../init.js");
-require("../prep.js");
+require("../../test/prep.js");
 
 describe('openurl tests to validate translation of incoming openurl requests into the JSON that gets sent to services', function(){
   this.timeout(10000);
@@ -31,7 +31,7 @@ describe('openurl tests to validate translation of incoming openurl requests int
         };
   
         // Load the tests file
-        _tests = yaml.load(fs.readFileSync(process.cwd() + '/test/openurl/openurls.yaml', 'utf8'));
+        _tests = yaml.load(fs.readFileSync(process.cwd() + '/json_api_tests/openurls/openurls.yaml', 'utf8'));
           
         done();
       }

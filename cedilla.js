@@ -121,9 +121,6 @@ var delayStartup = setInterval(function(){
                                   
           _request.setRequest(data.toString());
           
-          _request.addReferrer('http://cdla-api-stg.cdlib.org/blah');
-          _request.addReferrer('http://192.168.0.1:3005/path/to');
-          
           if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
           if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
           
@@ -210,7 +207,7 @@ var delayStartup = setInterval(function(){
       
       _.forEach(unmappedItems, function(value, key){
         // If a consortial affiliation was passed in, assign it!
-        if(key == 'cedilla:affiliation'){
+        if(key == CONFIGS['application']['openurl_client_affiliation']){
           request.getRequestor().setAffiliation(value);
           
         }else{
