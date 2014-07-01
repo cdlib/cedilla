@@ -19,7 +19,8 @@ describe('tier.js', function(){
       item = undefined,
       mockServer = undefined;
       
-  var oldServiceCallMethod = undefined; 
+  var oldServiceCallMethod = undefined,
+      oldServiceGetRequestInformation = undefined; 
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
@@ -29,6 +30,7 @@ describe('tier.js', function(){
         clearInterval(delayStartup);
         
         oldServiceCallMethod = Service.prototype.call;
+        oldServiceGetRequestInformation = Service.prototype.getRequestInformation;
     
         // Add a new setter so we can send all HTTP service calls to our mock server!
         // These MUST be set inside the before() method so that the Service.call() method is not overriden in
@@ -62,6 +64,16 @@ describe('tier.js', function(){
     
             this.emit('response', [helper.mapToItem(type, false, map)]);
           }
+        };
+        // ---------------------------------------------------------------------------------------------------
+        Service.prototype.getRequestInformation = function(){
+          return {"api_ver": CONFIGS['application']['service_api_version'],
+                  "referrers": ["domain.org"],
+                  "requestor_affiliation": "CAMPUS-A",
+                  "requestor_ip": "127.0.0.1",
+                  "requestor_language": "en",
+                  "unmapped": "foo=bar",
+                  "original_request": "foo=bar&genre=book&title=Test%20Book&au_last=Riley"};
         };
     
         Tier.prototype.setTimeout = function(value){ this._timeout = value; };
@@ -116,6 +128,7 @@ describe('tier.js', function(){
     
     // Remove monkey patches and set Service back to its original state
     Service.prototype.call = oldServiceCallMethod;
+    Service.prototype.getRequestInformation = oldServiceGetRequestInformation;
     Service.prototype.setTarget = undefined;
     Tier.prototype.setTimeout = undefined;
     

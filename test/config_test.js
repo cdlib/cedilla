@@ -79,6 +79,8 @@ describe('config.js testing', function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('should have loaded ALL of the YAML files!', function(){
+    console.log('CONFIG: verifying that all yaml configs were loaded!');
+    
     loadConfigs(function(){
     
       // Switch to the config directory and loop through the files
@@ -142,7 +144,7 @@ describe('config.js testing', function(){
   // ---------------------------------------------------------------------------------------------------
   it('attributes referenced in validation and default must appear in attributes list!', function(){
     
-    console.log('Verifying that all item defaults and validation referenced in /config/data.yaml are also listed in the items attributes section.');
+    console.log('CONFIG: Verifying that all item defaults and validation referenced in /config/data.yaml are also listed in the items attributes section.');
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       var _attributes = [];
@@ -183,6 +185,8 @@ describe('config.js testing', function(){
   it('children defined for an item must also have a definition!', function(){
     var _types = [];
     
+    console.log('CONFIG: verifying that all children defined for each data type are themselves defined in data.yaml');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       _types.push(type);
     });
@@ -201,6 +205,8 @@ describe('config.js testing', function(){
   it('must have at least one root item!', function(){
     var rootCount = 0;
     
+    console.log('CONFIG: verifying that at least item is designated as the root item!');
+    
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(def['root']) rootCount++;
     });
@@ -212,7 +218,7 @@ describe('config.js testing', function(){
 
   // ---------------------------------------------------------------------------------------------------
   it('each reference to a config value should have a vlaue in a config!', function(){
-    console.log('Validating configuration file references');
+    console.log('CONFIG: Validating configuration file references');
     
     // Loop through each config file reference
     _.forEach(_config_refs, function(refs, config){
@@ -220,8 +226,8 @@ describe('config.js testing', function(){
       _.forEach(refs, function(ref){
         var passed = true;
         
-        // Exclude checks for the temporary default service line
-        if(!_.contains(ref, 'default_content_service') && !_.contains(ref, 'default_content_service_port')){
+        // Exclude checks for the temporary default service line and the optional consortial service
+        if(!_.contains(ref, 'default_content_service') && !_.contains(ref, 'default_content_service_port') && !_.contains(ref, 'consortial_service')){
           // Warning, can only currently chek up to 4 levels deep
           switch(ref.length){
           case 1:
@@ -263,7 +269,7 @@ describe('config.js testing', function(){
   it('should have services defined in /config/services.yaml', function(){
     var _services = [];
     
-    console.log('Verifying that at least one service is defined in /config/services.yaml');
+    console.log('CONFIG: Verifying that at least one service is defined in /config/services.yaml');
     
     // Make sure that the services are set under the tiers structure
     assert(typeof CONFIGS['services']['tiers'] != 'undefined');
@@ -281,6 +287,8 @@ describe('config.js testing', function(){
   // Validate service targets
   // ---------------------------------------------------------------------------------------------------
   it('should have valid URL targets for each service in /config/services.yaml', function(){
+    console.log('CONFIG: verifying that valid targets are defined for each service');
+    
     var pattern = new RegExp('^(https?:\/\/)?'+ // protocol
                              '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|'+ // domain name
                              '((\d{1,3}\.){3}\d{1,3}))'+ // OR ip (v4) address
@@ -303,6 +311,8 @@ describe('config.js testing', function(){
   // Validate service item_types_returned
   // ---------------------------------------------------------------------------------------------------
   it('each item_type_returned for a service defined in /config/services.yaml should match an item type defined in /config/data.yaml!', function(){
+    console.log('CONFIG: verifying that each item type specified in services.yaml exists in data.yaml');
+    
     var _items = [];
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
@@ -330,7 +340,7 @@ describe('config.js testing', function(){
   it('each service referenced in /config/rules.yaml should exist in /config/services.yaml!', function(){
     var _services = [];
     
-    console.log('Verifying that all services referenced in /config/rules.yaml are defined in /config/services.yaml');
+    console.log('CONFIG: Verifying that all services referenced in /config/rules.yaml are defined in /config/services.yaml');
     
     _.forEach(CONFIGS['services']['tiers'], function(services, tier){
       _.forEach(services, function(def, service){
@@ -395,7 +405,7 @@ describe('config.js testing', function(){
   it('each item referenced in /config/rules.yaml should be defined in /config/data.yaml!', function(){
     var _items = [];
     
-    console.log('Verifying that all item types referenced in /config/rules.yaml is defined in /config/data.yaml.');
+    console.log('CONFIG: Verifying that all item types referenced in /config/rules.yaml is defined in /config/data.yaml.');
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(!_.contains(_items, type)) _items.push(type);
@@ -414,7 +424,7 @@ describe('config.js testing', function(){
     var _attributes = {},
         _rootItem = '';
     
-    console.log('Verifying that all item types referenced in /config/rules.yaml is defined in /config/data.yaml.');
+    console.log('CONFIG: Verifying that all item types referenced in /config/rules.yaml is defined in /config/data.yaml.');
     
     _.forEach(CONFIGS['data']['objects'], function(def, type){
       if(def['root']) _rootItem = type;
@@ -449,14 +459,14 @@ describe('config.js testing', function(){
         
         if(andRule instanceof Array){
           _.forEach(andRule, function(orRule){
-            var passed = _.contains(_attributes[_rootItem], orRule);
+            var passed = _.contains(_attributes[_rootItem], orRule) || orRule == 'CONSORTIAL';
             
             if(!passed) console.log('.... service ' + service + ' references attribute ' + orRule + ' but that attribute is not defined in /config/data.yaml!')
             assert(passed);
           });
           
         }else{
-          var passed = _.contains(_attributes[_rootItem], andRule);
+          var passed = _.contains(_attributes[_rootItem], andRule) || andRule == 'CONSORTIAL';
           
           if(!passed) console.log('.... service ' + service + ' references attribute ' + andRule + ' but that attribute is not defined in /config/data.yaml!')
           assert(passed);

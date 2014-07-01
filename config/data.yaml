@@ -58,8 +58,7 @@
 #   Establishes hierarchy between the objects. 
 #
 # ATTRIBUTES:
-#   The individual data elements for each object. If an attribute comes in from a client request or response from a service 
-#   that does not appear in the root object or one of its children, then it is added to a hash map called 'additional'
+#   The individual data elements for each object. DO NOT use 'type' or 'id', these are reserved keywords that Cedilla uses internally!
 #
 # ---------------------------------------------------------------------------------
 # This and all other YAML files in the ./config directory will be reloaded by the Delivery Aggregator as soon as you save your
@@ -85,8 +84,6 @@ objects:
       - resource
 
     attributes:
-      - campus
-      - ip
       - genre
       - content_type
       - issn
@@ -137,7 +134,6 @@ objects:
       - abstract_text
       - sample_cover_image
       - subject
-      - original_citation
 
   # ----------------------------------------------------------
   author:                

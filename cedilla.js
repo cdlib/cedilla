@@ -16,7 +16,7 @@ var delayStartup = setInterval(function(){
 
     // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
     if(CONFIGS['application']['default_content_service'] && !defaultServiceRunning){
-      defaultService = require('./lib/default_service');
+      defaultService = require('./lib/util/default_service');
 
       defaultService.startDefaultService(CONFIGS['application']['default_content_service_port']);
       defaultServiceRunning = true;
@@ -91,12 +91,14 @@ var delayStartup = setInterval(function(){
       var query = url.parse(request.url).query;
       LOGGER.log('debug', 'parsed query into key/value array: ' + JSON.stringify(query));
   
-      var item = buildInitialItemsFromOpenUrl(query);
-      LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
+      buildInitialItemsFromOpenUrl(query, function(item, leftovers){
+	      LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
   
-      response.setHeader('Content-Type', 'application/json');
-      response.writeHead(200);
-      response.end(JSON.stringify(helper.itemToMap(item)));    
+	      response.setHeader('Content-Type', 'application/json');
+	      response.writeHead(200);
+	      response.end(JSON.stringify(helper.itemToMap(item)));    
+      });
+      
     }
 
     /* -------------------------------------------------------------------------------------------
@@ -105,27 +107,54 @@ var delayStartup = setInterval(function(){
      * ------------------------------------------------------------------------------------------- */
     io.sockets.on('connection', function (socket) {
       var self = this;
-  
+
       socket.on('openurl', function (data) {
         LOGGER.log('debug', 'dispatching services for: ' + data);
     
         try{
-          var item = buildInitialItemsFromOpenUrl(data.toString());
+          _request = new Request({'content_type': (socket.handshake.headers ? socket.handshake.headers['content-type'] : 'text/html'),
+                                  'ip': (socket.handshake.address ? socket.handshake.address['address'] : ''),
+                                  'agent': (socket.handshake.headers ? socket.handshake.headers['user-agent'] : ''),
+                                  'language': (socket.handshake.headers ? socket.handshake.headers['accept-language'] : 'en'),
+                                  'service_api_version': CONFIGS['application']['service_api_version'],
+                                  'client_api_version': CONFIGS['application']['client_api_version']});
+                                  
+          _request.setRequest(data.toString());
+          
+          if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
+          if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
+          
+          buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
+            
+            if(item instanceof Item){
+              processUnmappedInformation(_request, leftovers, item);
+              
+              // Call the openurl specializer to parse ids out of the weird openUrl identifier fields
+              var format = specializers.newSpecializer('openurl', item, _request).specialize();
+              LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
+              
+              _request.setType(format);
+              _request.addReferent(item);
+            
+              LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
-          if(item instanceof Item){
-            LOGGER.log('debug', 'translated openurl into: ' + item.toString());
-
-            // Send the socket, configuration manager, and the item to the broker for processing
-            var broker = new Broker(socket, item);
+              // Send the socket, and request object over to the Broker for processing
+              var broker = new Broker(socket, _request);
+                
+              // Process each requested item 
+              _.forEach(_request.getReferents(), function(item){
+                broker.processRequest(item);
+              });
+              
+            }else{
+              // Warn about invalid item
+              LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
         
-          }else{
-            // Warn about invalid item
-            LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
-        
-            var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
-            socket.emit(serializer.itemToJsonForClient('cedilla', err));
-          }
-      
+              var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+              socket.emit(serializer.itemToJsonForClient('cedilla', err));
+            }
+          });
+          
         }catch(e){
           LOGGER.log('error', 'cedilla.js socket.on("openurl"): ' + e.message);
           LOGGER.log('error', e.stack);
@@ -140,20 +169,74 @@ var delayStartup = setInterval(function(){
     });
 
     // -------------------------------------------------------------------------------------------
-    function buildInitialItemsFromOpenUrl(queryString){
+    function buildInitialItemsFromOpenUrl(queryString, callback){
       var qs = helper.queryStringToMap(queryString);
 
+      // Toss any parameters that had a blank value!
+      _.forEach(qs, function(v, k){
+        if(v == ''){
+          delete qs[k];
+        }
+      });
+
       var translator = new Translator('openurl');
+      
+      // Translate the openUrl keys to ones usable by our items
       var map = translator.translateMap(qs, false);
       LOGGER.log('debug', 'translated flat map: ' + JSON.stringify(map));
-      map['original_citation'] = queryString;
+      
+      // Create an item hierarchy based on the FLAT openUrl
       var item = helper.flattenedMapToItem('citation', true, map);
       LOGGER.log('debug', 'item before specialization: ' + JSON.stringify(item));
-      specializers.newSpecializer('openurl', item).specialize();
-      LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
-
-      return item;
       
+      // Capture all of the unmappable information and pass it back in the callback for processing
+      var unmappable = {};
+      
+      _.forEach(map, function(value, key){
+        if(!wasMapped(item, key)){
+          unmappable[key] = value;
+        }
+      });
+      
+      callback(item, unmappable);
+    }
+
+    // -------------------------------------------------------------------------------------------
+    function processUnmappedInformation(request, unmappedItems, item){
+      var unmapped = "";
+      
+      _.forEach(unmappedItems, function(value, key){
+        // If a consortial affiliation was passed in, assign it!
+        if(key == CONFIGS['application']['openurl_client_affiliation']){
+          request.getRequestor().setAffiliation(value);
+          
+        }else{
+          unmapped += key + '=' + value + '&';
+        }  
+      });
+
+      if(unmapped.length > 0){ unmapped = unmapped.slice(0, -1); }
+      
+      request.setUnmapped(unmapped);
+    }
+    
+    // -------------------------------------------------------------------------------------------
+    function wasMapped(item, key){
+      if(typeof item.getAttribute(key) == 'undefined'){
+        unmapped = false;
+        
+        // Make sure its not mapped to one of the child items
+        _.forEach(CONFIGS['data']['objects'][item.getType()]['children'], function(child){
+          _.forEach(item.getAttribute(child + 's'), function(kid){
+            unmapped = wasMapped(kid, key);
+          });
+        });
+        
+        return unmapped;
+        
+      }else{
+        return true;
+      }
     }
   }
 });

@@ -1,4 +1,4 @@
-require('../init.js');
+require('../../init.js');
         
 describe('item.js', function(){
   var attributes = {},
@@ -72,6 +72,24 @@ describe('item.js', function(){
     });
   });
   
+  // ------------------------------------------------------------------------------------------------------    
+  // defaults on returns object with only defaults
+  it('should have a unique identifier', function(){
+    var ids = [];
+    
+    console.log('ITEM: Making sure items receive a unique identifier on creation');
+    
+    _.forEach(CONFIGS['data']['objects'], function(def, type){
+      for(var i = 0; i < 20; i++){
+        var it = new Item(type, false, {});
+        
+        assert(!_.contains(ids, it.getId()));
+        
+        ids.push(it.getId());
+      }
+    });
+  });
+
   // ------------------------------------------------------------------------------------------------------    
   // defaults on returns object with only defaults
   it('should have an attribute for each default defined in ./config/data.yaml!', function(){
@@ -302,9 +320,8 @@ describe('item.js', function(){
   });
     
   
-// ------------------------------------------------------------------------------------------------------
-// to String
-// ------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------
+  // to String
   it('testing toString()', function(){
     
     console.log('ITEM: checking toString');
@@ -318,6 +335,23 @@ describe('item.js', function(){
       });
     
       assert(item.toString().trim() == test.slice(0, -2).trim());
+    });
+  });
+
+  // ------------------------------------------------------------------------------------------------------
+  // checking Transaction management
+  it('testing getTransactions() and addTransaction()', function(){
+    
+    console.log('ITEM: checking getTransactions() and addTransaction()');
+    
+    _.forEach(CONFIGS['data']['objects'], function(def, type){
+      var item = new Item(type, false, {});
+    
+      for(var i = 0; i < 5; i++){
+        item.addTransaction({'foo':'bar','val': i.toString()});
+      }
+      
+      assert.equal(5, _.size(item.getTransactions()));
     });
   });
 

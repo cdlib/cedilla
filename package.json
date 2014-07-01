@@ -35,7 +35,8 @@
     "mocha": "*"
   },
   "scripts": {
-     "test": "node_modules/.bin/mocha"
+     "test": "node_modules/.bin/mocha ./test/ --recursive",
+     "json-api-test": "node_modules/.bin/mocha ./json_api_tests/ --recursive"
    },
   "preferGlobal": true,
   "private": true,

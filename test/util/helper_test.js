@@ -1,4 +1,4 @@
-require('../init.js');
+require('../../init.js');
     
 describe("helper.js", function(){
   
