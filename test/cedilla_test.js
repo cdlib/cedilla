@@ -3,8 +3,7 @@ require('../init.js');
 describe('cedilla.js testing', function(){
   this.timeout(10000);
   
-  var cedilla = undefined,
-      item = undefined,
+  var item = undefined,
       oldServiceCallMethod = undefined;
   
   // ----------------------------------------------------------------------------------------
@@ -26,12 +25,39 @@ describe('cedilla.js testing', function(){
           }
         });
     
-        cedilla = require('../cedilla.js');
+        require('../cedilla.js');
+        
+        setTimeout(function(){
+          console.log('.... pausing to wait for Cedilla startup.');
+          
+          // Capture the original Service.call so that we can set it back after its been overriden
+          oldServiceCallMethod = Service.prototype.call;
     
-        // Capture the original Service.call so that we can set it back after its been overriden
-        oldServiceCallMethod = Service.prototype.call;
+          // Override the actual service call and return a stub item
+          Service.prototype.call = function(item, headers){
+            var map = {},
+                type = item.getType();
+
+            if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+              _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+                map[attribute] = 'foo';
+              });
+        
+              _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
+                var param = {};
+                param[CONFIGS['data']['objects'][child]['attributes'][0]] = 'yadda';
+          
+                map[child + 's'] = [new Item(child, true, param)];
+              });
+            }
+     
+            this.emit('response', [helper.mapToItem(type, false, map)]);
+          };
     
-        done();
+          done();
+          
+        }, 1000);
+    
       }
     });
   });
@@ -41,7 +67,7 @@ describe('cedilla.js testing', function(){
   });
   
   // ----------------------------------------------------------------------------------------
-  it('verifyin that the default_content_service starts up if the config says to do so', function(done){
+  it('verifying that the default_content_service starts up if the config says to do so', function(done){
     
     console.log('CEDILLA: verifying that default_content_service starts up if its enabled in config/application.yaml');
     
@@ -83,7 +109,7 @@ describe('cedilla.js testing', function(){
     
     console.log('CEDILLA: should properly echo back the openURL as a citation item (as JSON)');
     
-    sendRequest(url.parse(target), serializer.itemToJsonForService('ABCD123', item, false), function(status, headers, body){
+    sendRequest(url.parse(target), serializer.itemToJsonForService('ABCD123', item, {}), function(status, headers, body){
       assert.equal(status, 200);
       assert.equal('application/json', headers['content-type']);
     
@@ -109,27 +135,6 @@ describe('cedilla.js testing', function(){
                    'force new connection': true};
     
     console.log('CEDILLA: should establish a socket.io connection and return at least one item type (except error)');
-    
-    // Override the actual service call and return a stub item
-    Service.prototype.call = function(item, headers){
-      var map = {},
-          type = item.getType();
-
-      if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
-        _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
-          map[attribute] = 'foo';
-        });
-        
-        _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
-          var param = {};
-          param[CONFIGS['data']['objects'][child]['attributes'][0]] = 'yadda';
-          
-          map[child + 's'] = [new Item(child, true, param)];
-        });
-      }
-     
-      this.emit('response', [helper.mapToItem(type, false, map)]);
-    };
     
     // -----------------------------------
     var client = io.connect('http://localhost:' + CONFIGS['application']['port'] + '/'),
@@ -177,7 +182,6 @@ describe('cedilla.js testing', function(){
                               'Accept': 'text/json',
                               'Accept-Charset': 'utf-8',
                               'Cache-Control': 'no-cache'}};
-    
     try{
       var _request = _http.request(_options, function(response){
         var _data = '';

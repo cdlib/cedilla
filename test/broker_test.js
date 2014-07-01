@@ -153,6 +153,8 @@ describe('broker.js', function(){
   
     var _broker = new Broker(_socket, _request);
   
+    _broker.processRequest(_request.getReferents()[0]);
+  
     assert.equal(_.size(_request.getErrors()), 1);
     assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_bad_item_message']);
     
@@ -175,6 +177,8 @@ describe('broker.js', function(){
     _request.addReferent(fullItem);
     
     var _broker = new Broker(_socket, _request);
+  
+    _broker.processRequest(_request.getReferents()[0]);
   
     assert.equal(1, _.size(_request.getErrors()));
     assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_no_services_available']);
@@ -205,7 +209,9 @@ describe('broker.js', function(){
     
       _request.addReferent(fullItem);
       
-      new Broker(_socket, _request);
+      var _broker = new Broker(_socket, _request);
+      
+      _broker.processRequest(_request.getReferents()[0]);
       
       assert.equal(_.size(_request.getErrors()), 1);
       assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_consortial_error']);
@@ -402,6 +408,8 @@ describe('broker.js', function(){
     _request.addReferent(fullItem);
   
     var _broker = new Broker(_socket, _request);
+    
+    _broker.processRequest(_request.getReferents()[0]);
   });
   
   // ---------------------------------------------------------------------------------------------------

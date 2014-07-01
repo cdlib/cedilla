@@ -3,7 +3,9 @@ require('../../init.js');
 describe("consortial.js", function(){
   //this.timeout(120000);
   
-  var consortial = undefined;
+  var consortial = undefined,
+      oldTranslateCode = undefined,
+      oldTranslateIp = undefined;
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
@@ -12,10 +14,23 @@ describe("consortial.js", function(){
       if(typeof Consortial != 'undefined'){
         clearInterval(delayStartup);
 
+        oldTranslateCode = Consortial.prototype.translateCode;
+        oldTranslateIp = Consortial.prototype.translateIp;
+
+        Consortial.prototype.translateCode = function(code, callback){ callback('127.0.0.1'); }
+        Consortial.prototype.translateIp = function(ip, callback){ callback('CAMPUS-A'); }
+
         consortial = new Consortial();
         done();
       }
     });
+  });
+  
+	// ---------------------------------------------------------------------------------------------------
+  after(function(done){
+    Consortial.prototype.translateCode = oldTranslateCode;
+    Consortial.prototype.translateIp = oldTranslateIp;
+    done();
   });
   
   // ---------------------------------------------------------------------------------------------------
@@ -39,8 +54,7 @@ describe("consortial.js", function(){
       consortial.translateIp(ip, function(val){
         var code = val;
 
-        assert(code != undefined);
-        assert(code.length > 0);
+        assert(code == 'CAMPUS-A');
 
         // Get the IP for the specified code and make sure they match!
         consortial.translateCode(code, function(val){

@@ -198,38 +198,38 @@ describe("serializer.js", function(){
 
   // ---------------------------------------------------------------------------------------------------
   it('testing requestorToJson()', function(){
-		console.log("SERIALIZER: checking requestor to JSON for reports");
-		
+    console.log("SERIALIZER: checking requestor to JSON for reports");
+    
     var requestor = new Requestor();
     
     var json = JSON.parse(serializer.requestorToJson(requestor));
     
     assert.equal('undefined', typeof json.affiliation);
-		assert.equal('undefined', typeof json.ip);
-		assert.equal('undefined', typeof json.language);
-		assert.equal('undefined', typeof json.agent);
-		assert(_.size(json.identifiers) <= 0);
-		
+    assert.equal('undefined', typeof json.ip);
+    assert.equal('undefined', typeof json.language);
+    assert.equal('undefined', typeof json.agent);
+    assert(_.size(json.identifiers) <= 0);
+    
     requestor = new Requestor({"affiliation": "CAMPUS-A",
-			                          "ip": "127.0.0.1",
-			                          "agent": "Chrome",
-			                          "language": "en",
-			                          "identifiers": ["ABC","123"]});
-		
-		var json = JSON.parse(serializer.requestorToJson(requestor));
-		
+                                "ip": "127.0.0.1",
+                                "agent": "Chrome",
+                                "language": "en",
+                                "identifiers": ["ABC","123"]});
+    
+    var json = JSON.parse(serializer.requestorToJson(requestor));
+    
     assert.equal('CAMPUS-A', json.affiliation);
-		assert.equal('127.0.0.1', json.ip);
-		assert.equal('en', json.language);
-		assert.equal('Chrome', json.agent);
-		assert.equal(2, _.size(json.identifiers));
-	});
-	
+    assert.equal('127.0.0.1', json.ip);
+    assert.equal('en', json.language);
+    assert.equal('Chrome', json.agent);
+    assert.equal(2, _.size(json.identifiers));
+  });
+  
 
   // ---------------------------------------------------------------------------------------------------
   it('testing requestToJson()', function(){
-		console.log("SERIALIZER: checking request to JSON for reports");
-		
+    console.log("SERIALIZER: checking request to JSON for reports");
+    
     var request = new Request();
     
     var json = JSON.parse(serializer.requestToJson(request));
@@ -273,7 +273,7 @@ describe("serializer.js", function(){
     assert.equal('0.2', json.service_api_ver);
     assert.equal('0.1', json.client_api_ver);
     assert(_.size(json.referrers) == 1);
-    assert.equal('www.domain.org', json.referrers[0]);
+    assert.equal('domain.org', json.referrers[0]);
     assert.equal('CAMPUS-A', json.requestor.affiliation);
     assert.equal('127.0.0.1', json.requestor.ip);
     assert.equal('en', json.requestor.language);
@@ -294,7 +294,7 @@ describe("serializer.js", function(){
     
     assert.equal(1, _.size(json.errors));
     assert.equal(1, _.size(json.referents));
-    assert.equal(2, _.size(json.referrers));
+    assert.equal(1, _.size(json.referrers));
   });
   
 });

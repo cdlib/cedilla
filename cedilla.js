@@ -91,12 +91,14 @@ var delayStartup = setInterval(function(){
       var query = url.parse(request.url).query;
       LOGGER.log('debug', 'parsed query into key/value array: ' + JSON.stringify(query));
   
-      var item = buildInitialItemsFromOpenUrl(query);
-      LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
+      buildInitialItemsFromOpenUrl(query, function(item, leftovers){
+	      LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
   
-      response.setHeader('Content-Type', 'application/json');
-      response.writeHead(200);
-      response.end(JSON.stringify(helper.itemToMap(item)));    
+	      response.setHeader('Content-Type', 'application/json');
+	      response.writeHead(200);
+	      response.end(JSON.stringify(helper.itemToMap(item)));    
+      });
+      
     }
 
     /* -------------------------------------------------------------------------------------------
@@ -104,20 +106,26 @@ var delayStartup = setInterval(function(){
      * Handles the openurl event that is emitted by the client
      * ------------------------------------------------------------------------------------------- */
     io.sockets.on('connection', function (socket) {
-      var self = this,
-          _request = new Request({'referrers': [socket.handshake.headers['referer']],
-                                  'content_type': socket.handshake.headers['content-type'],
-                                  'ip': socket.handshake.address['address'],
-                                  'agent': socket.handshake.headers['user-agent'],
-                                  'language': socket.handshake.headers['accept-language'],
-                                  'service_api_version': CONFIGS['application']['service_api_version'],
-                                  'client_api_version': CONFIGS['application']['client_api_version']});
+      var self = this;
 
       socket.on('openurl', function (data) {
         LOGGER.log('debug', 'dispatching services for: ' + data);
     
         try{
+          _request = new Request({'content_type': (socket.handshake.headers ? socket.handshake.headers['content-type'] : 'text/html'),
+                                  'ip': (socket.handshake.address ? socket.handshake.address['address'] : ''),
+                                  'agent': (socket.handshake.headers ? socket.handshake.headers['user-agent'] : ''),
+                                  'language': (socket.handshake.headers ? socket.handshake.headers['accept-language'] : 'en'),
+                                  'service_api_version': CONFIGS['application']['service_api_version'],
+                                  'client_api_version': CONFIGS['application']['client_api_version']});
+                                  
           _request.setRequest(data.toString());
+          
+          _request.addReferrer('http://cdla-api-stg.cdlib.org/blah');
+          _request.addReferrer('http://192.168.0.1:3005/path/to');
+          
+          if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
+          if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
           
           buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
             
@@ -136,6 +144,11 @@ var delayStartup = setInterval(function(){
               // Send the socket, and request object over to the Broker for processing
               var broker = new Broker(socket, _request);
                 
+              // Process each requested item 
+              _.forEach(_request.getReferents(), function(item){
+                broker.processRequest(item);
+              });
+              
             }else{
               // Warn about invalid item
               LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')

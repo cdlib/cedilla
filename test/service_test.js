@@ -212,7 +212,7 @@ describe('service.js', function(){
         assert.equal(true, _params['isArray']);
         assert.equal(true, _params['isItem']);
         assert.equal(1, _params['count']);
-        assert.equal(2, _params['attributeCount']);
+        assert.equal(1, _params['attributeCount']);
           
         done();
       }        

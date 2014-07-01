@@ -95,7 +95,7 @@ describe('request.js', function(){
     assert(request.getRequestor().getLanguage() == 'en');
     
     assert(request.getType() == 'test');
-    assert(request.getReferrers()[0] == 'www.domain.org');
+    assert(request.getReferrers()[0] == 'domain.org');
     assert(request.getRequest() == 'foo=bar&yadda=yadda&blah=blah&abc=123');
     assert(request.getServiceApiVersion() == '0.2');
     assert(request.getClientApiVersion() == '0.1');
@@ -136,7 +136,7 @@ describe('request.js', function(){
     assert.equal(request.getRequestor().getLanguage(), 'en');
     
     assert.equal(request.getType(), 'test');
-    assert.equal(request.getReferrers()[0], 'www.domain.org');
+    assert.equal(request.getReferrers()[0], 'domain.org');
     assert.equal(request.getRequest(), 'foo=bar&yadda=yadda&blah=blah&abc=123');
     assert.equal(request.getServiceApiVersion(), '0.2');
     assert.equal(request.getClientApiVersion(), '0.1');
@@ -150,7 +150,7 @@ describe('request.js', function(){
     request.setUnmapped('foo=BAR&yadda=AAA');
     
     assert.equal(request.getType(), 'foo');
-    assert.equal(request.getReferrers()[0], 'www.domain.org');
+    assert.equal(request.getReferrers()[0], 'domain.org');
     assert.equal(request.getReferrers()[1], 'google.com');
     assert.equal(request.getRequest(), 'foo=BAR&yadda=AAA&blah=BLAH&ABC=123');
     assert.equal(request.getServiceApiVersion(), '1.2');
@@ -182,7 +182,7 @@ describe('request.js', function(){
 
     assert.equal(2, _.size(request.getErrors()));
     assert.equal(2, _.size(request.getReferents()));
-    assert.equal(2, _.size(request.getReferrers()));
+    assert.equal(1, _.size(request.getReferrers()));
     
     request.setReferents([{"foo":"bar"},{"yadda":"yadda"},{"blah":"blah"}]);
     request.setErrors([new Error('test 1'), new Error('test 2'), new Error('test 3')]);
@@ -196,4 +196,46 @@ describe('request.js', function(){
     assert.equal(3, _.size(request.getReferrers()));
   });
   
+  // ------------------------------------------------------------------------------------------------------
+  it('should be able to parse out the domain or ip of the referer!', function(){
+    console.log('REQUEST: verifying parsing of referer information.');
+  
+    var request = new Request(params);
+  
+    assert.equal(_.size(request.getReferrers()), 1);
+  
+    // Should parse out the domain
+    request.addReferrer('http://www.domain.org/path/to/page?query=sting');
+    request.addReferrer('www.domain.org');
+    request.addReferrer('https://www.domain.org/path/');
+    request.addReferrer('http://www.domain.org');
+    request.addReferrer('domain.org');
+    
+    assert.equal(_.size(request.getReferrers()), 6);
+    for(var i = 1; i < 6; i++){
+      assert.equal(request.getReferrers()[i], 'domain.org');
+    }
+    
+    // Should parse out the IP
+    request.addReferrer('http://127.0.0.1:3005/path/to/page?query=sting');
+    request.addReferrer('127.0.0.1:3005');
+    request.addReferrer('https://127.0.0.1:3005/path/');
+    request.addReferrer('http://127.0.0.1:3005');
+    request.addReferrer('127.0.0.1');
+    
+    assert.equal(_.size(request.getReferrers()), 11);
+    for(var i = 6; i < 11; i++){
+      assert.equal(request.getReferrers()[i], '127.0.0.1');
+    }
+    
+    // Should be ignored
+    request.addReferrer('localhost');
+    request.addReferrer('localhost:3005');
+    request.addReferrer('ejkrngle3nglk3nglk3nglng');
+    request.addReferrer(undefined);
+    request.addReferrer('');
+    
+    assert.equal(_.size(request.getReferrers()), 11);
+  });
+
 });
