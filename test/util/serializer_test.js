@@ -139,7 +139,7 @@ describe("serializer.js", function(){
 
     // With request params
     var json = JSON.parse(serializer.itemToJsonForService(transId, item, {"api_ver": service_api_ver, 
-                                                                          "referrer": "google.com", 
+                                                                          "referrers": ['google.com'], 
                                                                           "requestor_ip": "127.0.0.1",
                                                                           "requestor_affiliation": "CAMPUS-A",
                                                                           "unmapped": "foo=bar&yadda=yadda"}));
@@ -147,7 +147,7 @@ describe("serializer.js", function(){
     assert.equal('undefined', (typeof json['foo']));
     assert.equal('string', (typeof json['time']));
     assert.equal(service_api_ver, json['api_ver']);
-    assert.equal("google.com", json['referrer']);
+    assert.equal("google.com", json['referrers'][0]);
     assert.equal("127.0.0.1", json['requestor_ip']);
     assert.equal("CAMPUS-A", json['requestor_affiliation']);
     assert.equal("foo=bar&yadda=yadda", json['unmapped']);
@@ -167,7 +167,7 @@ describe("serializer.js", function(){
     // Flattened JSON ouput with child items AND additional attribute hash
     itemWithKids.addAttribute('foo', 'bar');
     json = JSON.parse(serializer.itemToJsonForService(transId, itemWithKids, {"api_ver": service_api_ver, 
-                                                                              "referrer": "google.com", 
+                                                                              "referrers": ["google.com", "domain.org"], 
                                                                               "requestor_ip": "127.0.0.1",
                                                                               "requestor_affiliation": "CAMPUS-A",
                                                                               "unmapped": "foo=bar&yadda=yadda"}));
@@ -175,7 +175,7 @@ describe("serializer.js", function(){
     assert.equal('undefined', (typeof json['foo']));
     assert.equal('string', (typeof json['time']));
     assert.equal(service_api_ver, json['api_ver']);
-    assert.equal("google.com", json['referrer']);
+    assert.equal("google.com", json['referrers'][0]);
     assert.equal("127.0.0.1", json['requestor_ip']);
     assert.equal("CAMPUS-A", json['requestor_affiliation']);
     assert.equal("foo=bar&yadda=yadda", json['unmapped']);
