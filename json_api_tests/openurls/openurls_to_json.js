@@ -24,7 +24,7 @@ describe('openurl tests to validate translation of incoming openurl requests int
 
           if(_unmapped['testing_for'] == 'holdings'){
       
-            _results[_unmapped['testing_name']] = serializer.itemToJsonForService(unmapped['testing_id'], item, this._requestorParams);;
+            _results[_unmapped['testing_name']] = serializer.itemToJsonForService(_unmapped['testing_id'], item, this._requestorParams);;
           }
           
           this.emit('response', [new Item(rootItemType, false, {})]);
