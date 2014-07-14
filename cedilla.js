@@ -119,7 +119,7 @@ var delayStartup = setInterval(function(){
                                   'service_api_version': CONFIGS['application']['service_api_version'],
                                   'client_api_version': CONFIGS['application']['client_api_version']});
                                   
-          _request.setRequest(data.toString());
+          _request.setRequest(data.toString().replace('"', '&quot;'));
           
           if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
           if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
@@ -217,7 +217,7 @@ var delayStartup = setInterval(function(){
 
       if(unmapped.length > 0){ unmapped = unmapped.slice(0, -1); }
       
-      request.setUnmapped(unmapped);
+      request.setUnmapped(unmapped.replace('"', '\\"'));
     }
     
     // -------------------------------------------------------------------------------------------
