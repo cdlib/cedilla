@@ -18,7 +18,7 @@ tiers:
       timeout: 30000
       display_name: 'Internet Archive'
 
-      target: 'http:/localhost:3104/internet_archive'
+      target: 'http://localhost:3104/internet_archive'
 
       item_types_returned: ['resource']
       do_not_call_if_referrer_from: ['archive.org/']
