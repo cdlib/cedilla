@@ -55,7 +55,7 @@ service_api_version: 1.0
 # ---------------------------------------------------------------------------------
 # Cedilla specific parameters coming in on client requests
 # ---------------------------------------------------------------------------------
-openurl_client_affiliation: 'cedilla.affiliation'
+openurl_client_affiliation: 'cedilla:affiliation'
 
 # ---------------------------------------------------------------------------------
 # Consortial Service to assist in determining client's affiliation (e.g. which campus they're on)
