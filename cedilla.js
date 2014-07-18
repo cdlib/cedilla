@@ -92,11 +92,11 @@ var delayStartup = setInterval(function(){
       LOGGER.log('debug', 'parsed query into key/value array: ' + JSON.stringify(query));
   
       buildInitialItemsFromOpenUrl(query, function(item, leftovers){
-	      LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
+        LOGGER.log('debug', 'built item: ' + JSON.stringify(helper.itemToMap(item)));
   
-	      response.setHeader('Content-Type', 'application/json');
-	      response.writeHead(200);
-	      response.end(JSON.stringify(helper.itemToMap(item)));    
+        response.setHeader('Content-Type', 'application/json');
+        response.writeHead(200);
+        response.end(JSON.stringify(helper.itemToMap(item)));    
       });
       
     }
@@ -113,7 +113,6 @@ var delayStartup = setInterval(function(){
     
         try{
           _request = new Request({'content_type': (socket.handshake.headers ? socket.handshake.headers['content-type'] : 'text/html'),
-                                  'ip': (socket.handshake.address ? socket.handshake.address['address'] : ''),
                                   'agent': (socket.handshake.headers ? socket.handshake.headers['user-agent'] : ''),
                                   'language': (socket.handshake.headers ? socket.handshake.headers['accept-language'] : 'en'),
                                   'service_api_version': CONFIGS['application']['service_api_version'],
@@ -124,35 +123,37 @@ var delayStartup = setInterval(function(){
           if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
           if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
           
-          buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
+          handleConsortialRecognition(_request, (socket.handshake.address ? socket.handshake.address['address'] : ''), function(request){
+            buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
             
-            if(item instanceof Item){
-              processUnmappedInformation(_request, leftovers, item);
+              if(item instanceof Item){
+                processUnmappedInformation(request, leftovers, item);
               
-              // Call the openurl specializer to parse ids out of the weird openUrl identifier fields
-              var format = specializers.newSpecializer('openurl', item, _request).specialize();
-              LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
+                // Call the openurl specializer to parse ids out of the weird openUrl identifier fields
+                var format = specializers.newSpecializer('openurl', item, request).specialize();
+                LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
               
-              _request.setType(format);
-              _request.addReferent(item);
+                request.setType(format);
+                request.addReferent(item);
             
-              LOGGER.log('debug', 'translated openurl into: ' + item.toString());
+                LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
-              // Send the socket, and request object over to the Broker for processing
-              var broker = new Broker(socket, _request);
+                // Send the socket, and request object over to the Broker for processing
+                var broker = new Broker(socket, request);
                 
-              // Process each requested item 
-              _.forEach(_request.getReferents(), function(item){
-                broker.processRequest(item);
-              });
+                // Process each requested item 
+                _.forEach(_request.getReferents(), function(item){
+                  broker.processRequest(item);
+                });
               
-            }else{
-              // Warn about invalid item
-              LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
+              }else{
+                // Warn about invalid item
+                LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
         
-              var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
-              socket.emit(serializer.itemToJsonForClient('cedilla', err));
-            }
+                var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+                socket.emit(serializer.itemToJsonForClient('cedilla', err));
+              }
+            });
           });
           
         }catch(e){
@@ -167,6 +168,59 @@ var delayStartup = setInterval(function(){
       });
   
     });
+
+    // -------------------------------------------------------------------------------------------
+    function handleConsortialRecognition(request, ip, callback){
+      var done = false;
+      
+      // If the configuration is setup to retrieve consortial information
+      if(CONFIGS['application']['consortial_service']){
+        // Get the affiliation for the client
+        try{
+          var consortial = new Consortial();
+      
+          if(!request.getRequestor().getAffiliation()){
+            if(!request.getRequestor().getIp()){
+              // No campus affiliation OR IP was specified, so trying to translate the incoming IP
+              consortial.translateIp(ip, function(code){
+                consortial.translateCode(code, function(ip){
+                  if(ip != 'unknown'){
+                    request.getRequestor().setIp(ip);
+                  }
+                  done = true;
+                });
+                request.getRequestor().setAffiliation(code);
+              });
+              
+            }else{
+              // IP was specified so get the code
+              consortial.translateIp(request.getRequestor().getIp(), function(code){
+                request.getRequestor().setAffiliation(code);
+                done = true;
+              });
+            }
+            
+          }else{
+            // A campus affilition was specified so get the generic VPN IP
+            consortial.translateCode(request.getRequestor().getAffiliation(), function(ip){
+              request.getRequestor().setIp(ip);
+              done = true;
+            });
+          }
+      
+        }catch(err){
+          LOGGER.log('error', err.message);
+          request.addError(CONFIGS['message']['broker_consortial_error']);
+        }
+      }
+
+      var waitUntilDone = setInterval(function(){
+        if(done){
+          clearInterval(waitUntilDone);
+          callback(request);
+        }
+      }, 50);
+    }
 
     // -------------------------------------------------------------------------------------------
     function buildInitialItemsFromOpenUrl(queryString, callback){
