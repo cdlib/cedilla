@@ -13,7 +13,8 @@ describe('broker.js', function(){
       _results = [];
   
   var _oldTierProcessMethod = undefined,
-      _oldTierHasMinimumCitationMethod = undefined;
+      _oldTierHasMinimumCitationMethod = undefined,
+      _oldTierTimeout = 1000;
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
@@ -22,8 +23,12 @@ describe('broker.js', function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
         
+        _oldTierTimeout = CONFIGS['application']['tier_timeout']
+        
         _oldTierProcessMethod = Tier.prototype.process;
         _oldTierHasMinimumCitationMethod = Tier.prototype._hasMinimumCitation;
+    
+        CONFIGS['application']['tier_timeout'] = 100
     
         // Mock the Tier's process routine to simply send back stub messages
         // ---------------------------------------------------------------------------------------------------
@@ -73,6 +78,8 @@ describe('broker.js', function(){
     
     Item.prototype.getServices = undefined;
     Item.prototype.setServices = undefined;
+    
+    CONFIGS['application']['tier_timeout'] = _oldTierTimeout
     
     done();
   });
@@ -187,41 +194,6 @@ describe('broker.js', function(){
     Broker.prototype._getAvailableServices = _gas;
     Broker.prototype._addAlwaysRunServices = _aars;
     Broker.prototype._filterServicesForClientList = _fsfcl;
-    
-    done();
-  });
-  
-  // ---------------------------------------------------------------------------------------------------
-  it('checking consortial logic bubbles errors to request properly', function(done){
-    
-    if(CONFIGS['application']['consortial_service']){      
-      console.log('BROKER: checking consortial logic error handling.');
-      
-      // Handles consortial errors properly
-      // Override the consortial functions to force an error
-      var _tc = Consortial.prototype.translateCode,
-          _ti = Consortial.prototype.translateIp;
-      
-      Consortial.prototype.translateCode = function(code, callback){ throw new Error('Error!!'); }
-      Consortial.prototype.translateIp = function(ip, callback){ throw new Error('Error!!'); }
-    
-      var _socket = new Socket(function(){});
-    
-      _request.addReferent(fullItem);
-      
-      var _broker = new Broker(_socket, _request);
-      
-      _broker.processRequest(_request.getReferents()[0]);
-      
-      assert.equal(_.size(_request.getErrors()), 1);
-      assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_consortial_error']);
-      
-      // Set the consortial object back to normal
-      Consortial.prototype.translateCode = _tc;
-      Consortial.prototype.translateIp = _ti;
-    }else{
-      console.log('BROKER: consortial logic diabled, skipping test.');
-    }
     
     done();
   });
@@ -378,11 +350,11 @@ describe('broker.js', function(){
   it("checking processing of responses from tiers", function(done){
     console.log('BROKER: testing handling of tier responses.');
     
-    _processed = 0;
+    _processed = false;
     
     var interval = setInterval(function(){
       // Make sure each tier completes
-      if(_processed >= _.size(tierServices)){
+      if(_processed){
         clearInterval(interval);
         done();
       }
@@ -401,11 +373,10 @@ describe('broker.js', function(){
           assert(result.indexOf('"' + rootItemType + '":') >= 0);
         }
       });
-      
-      _processed++;
+      _processed = true;
     });
     
-    _request.addReferent(fullItem);
+    _request.addReferent(bareMinimumItem);
   
     var _broker = new Broker(_socket, _request);
     
@@ -416,12 +387,12 @@ describe('broker.js', function(){
   it("checking messaging to client", function(done){
     console.log('BROKER: testing item to JSON for client serialization.');
     
-    var _processed = 0,
+    var _processed = false,//0,
         _total = 0;
     
     var interval = setInterval(function(){
       // Make sure each tier completes
-      if(_processed >= _total){
+      if(_processed){//} >= _total){
         _.forEach(_results, function(result){
           var json = JSON.parse(result),
               svc = new Service(serviceDisplayNameToName(json.service));
@@ -443,14 +414,28 @@ describe('broker.js', function(){
     _request.addReferent(bareMinimumItem);
   
     var _broker = new Broker(_socket, _request);
+    var _item = new Item(fullItemWithChildren.getType(), false, fullItemWithChildren.getAttributes());
+
+    var i = 0,
+        services = [];
+        
+    _.forEach(tierServices, function(svcs){
+      if(i == 0){
+        _.forEach(svcs, function(svc){
+          services.push(new Service(svc));
+        });
+      }
+      i++;
+    });
+    
+    _broker._services = services;
 
     _results = [];
     _total = _.size(_broker._services);
 
     _.forEach(_broker._services, function(service){
-      var _item = new Item(fullItemWithChildren.getType(), false, fullItemWithChildren.getAttributes());
       _broker._sendItemToClient(service.getDisplayName(), _item);
-      _processed++;
+      _processed = true;//++;
     });
     
   });

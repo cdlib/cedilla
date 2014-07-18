@@ -214,11 +214,13 @@ var delayStartup = setInterval(function(){
         }
       }
 
+      var j = 0; // Safety check in case the consortial service is enabled in config but happens to be offline
       var waitUntilDone = setInterval(function(){
-        if(done){
+        if(done || j >= CONFIGS['application']['consortial_service']['timeout']){
           clearInterval(waitUntilDone);
           callback(request);
         }
+        j++;
       }, 50);
     }
 

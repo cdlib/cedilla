@@ -227,7 +227,8 @@ describe('config.js testing', function(){
         var passed = true;
         
         // Exclude checks for the temporary default service line and the optional consortial service
-        if(!_.contains(ref, 'default_content_service') && !_.contains(ref, 'default_content_service_port') && !_.contains(ref, 'consortial_service')){
+        if(!_.contains(ref, 'default_content_service') && !_.contains(ref, 'default_content_service_port') && 
+                                  !_.contains(ref, 'consortial_service') && !_.contains(ref, 'consortial_service[timeout]')){
           // Warning, can only currently chek up to 4 levels deep
           switch(ref.length){
           case 1:
