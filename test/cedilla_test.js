@@ -131,15 +131,18 @@ describe('cedilla.js testing', function(){
   // ----------------------------------------------------------------------------------------
   it('should establish a socket.io connection', function(done){
     var io = require('socket.io-client'),
-        options = {transports: ['websocket'],
-                   'force new connection': true};
+        options = {transports: ['websocket'], 'force new connection': true};
     
     console.log('CEDILLA: should establish a socket.io connection and return at least one item type (except error)');
     
     // -----------------------------------
-    var client = io.connect('http://localhost:' + CONFIGS['application']['port'] + '/'),
+    var client = io.connect('http://localhost:' + CONFIGS['application']['port'] + '/', options),
         message = false, error = false;
   
+    client.on('connect_error', function(err){ console.log('err: ' + err); });
+    client.on('reconnect_error', function(err){ console.log('reconnect err: ' + err); });
+    client.on('connect_timeout', function(err){ console.log('timed out!'); });
+
     client.on('connect', function(data){
       client.emit('openurl', 'rft.isbn=9780300177619&rft.genre=book');
     
@@ -160,12 +163,12 @@ describe('cedilla.js testing', function(){
       client.on('complete', function (data) {
         assert(message);
         assert(!error);
-      
+
         client.disconnect();
         done();
       });
     });
-    
+   
   });
   
   

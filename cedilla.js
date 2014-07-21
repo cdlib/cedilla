@@ -220,6 +220,9 @@ var delayStartup = setInterval(function(){
           }
           j++;
         }, 50);
+        
+      }else{
+        callback(request);
       }
 
     }
@@ -253,7 +256,7 @@ var delayStartup = setInterval(function(){
           unmappable[key] = value;
         }
       });
-      
+
       callback(item, unmappable);
     }
 
