@@ -228,9 +228,10 @@ describe('broker.js', function(){
           if(_.contains(services, _.first(_service))){
             _options[attribute] = value;
             
-            // Remove any of the other services if they aren't a match for this attribute's value
+            // Remove any of the other services if they aren't a match for this attribute's value OR its not one
+            // of the defined services (e.g. its not enabled in the config)
             _.forEach(_service, function(svc){
-              if(!_.contains(services, svc)){
+              if(!_.contains(services, svc) || !_.contains(allServices, svc)){
                 _service.splice(_service.indexOf(svc), 1);
               }
             });

@@ -75,12 +75,14 @@ var delayStartup = setInterval(function(){
     
     _.forEach(CONFIGS['services']['tiers'], function(services, tier){
       _.forEach(services, function(def, name){
-        _definedServices.push(name);
+        if(def['enabled']){
+          _definedServices.push(name);
         
-        _serviceNameToDisplayName[name] = def['display_name'] || name;
+          _serviceNameToDisplayName[name] = def['display_name'] || name;
         
-        if(!_tierServices[tier]){ _tierServices[tier] = []; };
-        _tierServices[tier].push(name);
+          if(!_tierServices[tier]){ _tierServices[tier] = []; };
+          _tierServices[tier].push(name);
+        }
       });
     });
 
