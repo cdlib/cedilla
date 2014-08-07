@@ -112,48 +112,55 @@ var delayStartup = setInterval(function(){
         LOGGER.log('debug', 'dispatching services for: ' + data);
     
         try{
+          // Construct Request object based on the app config and the incoming HTTP Request info
           _request = new Request({'content_type': (socket.handshake.headers ? socket.handshake.headers['content-type'] : 'text/html'),
                                   'agent': (socket.handshake.headers ? socket.handshake.headers['user-agent'] : ''),
                                   'language': (socket.handshake.headers ? socket.handshake.headers['accept-language'] : 'en'),
                                   'service_api_version': CONFIGS['application']['service_api_version'],
                                   'client_api_version': CONFIGS['application']['client_api_version']});
                                   
+          // Record the original request
           _request.setRequest(data.toString().replace('"', '&quot;'));
           
+          // Collect the Referrers
           if(socket.handshake.headers['host']) _request.addReferrer(socket.handshake.headers['host']);
           if(socket.handshake.headers['referer']) _request.addReferrer(socket.handshake.headers['referer']);
           
-          handleConsortialRecognition(_request, (socket.handshake.address ? socket.handshake.address['address'] : ''), function(request){
-            buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
+          // Build the initial items from the incoming openurl (Should result in a Citation and one or more authors)
+          buildInitialItemsFromOpenUrl(data.toString(), function(item, leftovers){
             
-              if(item instanceof Item){
-                processUnmappedInformation(request, leftovers, item);
-              
-                // Call the openurl specializer to parse ids out of the weird openUrl identifier fields
+            if(item instanceof Item){
+              // Any data that could not be mapped to specified attributes on the items can be processed here
+              processUnmappedInformation(_request, leftovers, item);
+            
+              // Do the consortial check here to map IP address to campus/consortial code and vice versa
+              handleConsortialRecognition(_request, (socket.handshake.address ? socket.handshake.address['address'] : ''), function(request){
+                // Call the openurl specializer to parse ids out of the weird openUrl identifier fields, 
+                // deal with multiple authors, and attempt to detect the appropriate genre
                 var format = specializers.newSpecializer('openurl', item, request).specialize();
                 LOGGER.log('debug', 'item specialization: ' + JSON.stringify(item));
-              
+            
                 request.setType(format);
                 request.addReferent(item);
-            
+          
                 LOGGER.log('debug', 'translated openurl into: ' + item.toString());
 
                 // Send the socket, and request object over to the Broker for processing
                 var broker = new Broker(socket, request);
-                
+              
                 // Process each requested item 
                 _.forEach(_request.getReferents(), function(item){
                   broker.processRequest(item);
                 });
-              
-              }else{
-                // Warn about invalid item
-                LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
-        
-                var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
-                socket.emit(serializer.itemToJsonForClient('cedilla', err));
-              }
-            });
+              });
+            
+            }else{
+              // Warn about invalid item
+              LOGGER.log('warn', 'unable to build initial item from the openurl passed: ' + data.toString() + ' !')
+      
+              var err = new Item('error', false, {'level':'error','message':CONFIGS['message']['broker_bad_item_message']});
+              socket.emit(serializer.itemToJsonForClient('cedilla', err));
+            }
           });
           
         }catch(e){
