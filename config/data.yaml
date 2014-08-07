@@ -103,6 +103,7 @@ objects:
       - oai
       - nbn
       - hdl
+      - naxos
       - dissertation_number
       - title
       - book_title
