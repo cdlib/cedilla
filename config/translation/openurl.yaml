@@ -36,6 +36,12 @@
   coden: ['rft.coden', 'coden']
   sici: ['rft.sici', 'sici']
   bici: ['rft.bici', 'bici']
+  bibcode: ['rft.bibcode', 'bibcode']
+  eric: ['rft.eric', 'eric']
+  oai: ['rft.oai', 'oai']
+  nbn: ['rft.nbn', 'nbn']
+  hdl: ['rft.hdl', 'hdl']
+  dissertation_number: ['rft.dissertationNumber', 'dissertationNumber']
   
   title: ['rft.title', 'title']
   book_title: ['rft.btitle', 'btitle']

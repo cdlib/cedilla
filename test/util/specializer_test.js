@@ -135,6 +135,120 @@ describe('Specializer', function(){
      assert.equal(item.getAttribute('publisher'), 'CABI Pub');
    });
 
+	 // -------------------------------------------------------------------------------------------
+	 it('should correctly auto-detect genre', function(){
+		 console.log("SPECIALIZER: Checking genre auto-correct functionality for unknown genres");
+		 
+		 // ---------------------------------------------------------------------
+		 // IDENTIFIER PRESENT for JOURNAL/ISSUE/ARTICLE
+		 // ---------------------------------------------------------------------
+		 _.forEach(['issn', 'eissn', 'coden', 'eric', 'sici'], function(identifier){
+			 _.forEach(['unknown', '', undefined], function(genre){
+				 // Article title present (ARTICLE)
+				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft." + identifier + 
+				 																																													"=12345&rft.au=John%20Doe";
+         var result = specializeItem(query)[1];
+				 assert.equal(result.getAttribute('genre'), 'article');
+				 
+				 // No article title but does have an issue identifier (ISSUE)
+				 _.forEach(['issue', 'volume', 'season', 'quarter'], function(issueId){
+					 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe&rft." + 
+					 																																												issueId + "=ABCD:" + identifier;
+		       var result = specializeItem(query)[1];
+		 			 assert.equal(result.getAttribute('genre'), 'issue');
+				 });
+				 
+				 // No article title and no issue identifiers (JOURNAL)
+				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
+         var result = specializeItem(query)[1];
+				 assert.equal(result.getAttribute('genre'), 'journal');
+			 });
+		 });
+
+		 // ---------------------------------------------------------------------
+		 // IDENTIFIER PRESENT for BOOK/BOOKITEM
+		 // ---------------------------------------------------------------------
+		 _.forEach(['isbn', 'eisbn', 'bici'], function(identifier){
+			 _.forEach(['unknown', '', undefined], function(genre){
+				 // Chapter title is present (BOOKITEM)
+				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Chapter%20Title&rft." + identifier + 
+				 																																													"=12345&rft.au=John%20Doe";
+         var result = specializeItem(query)[1];
+				 assert.equal(result.getAttribute('genre'), 'bookitem');
+			
+				 // No chapter title (BOOK)
+				 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
+         result = specializeItem(query)[1];
+				 assert.equal(result.getAttribute('genre'), 'book');
+			 });
+		 });
+		 
+		 // ---------------------------------------------------------------------
+		 // DISSERTATION ID PRESENT
+		 // ---------------------------------------------------------------------
+		 _.forEach(['unknown', '', undefined], function(genre){
+			 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.dissertationNumber=ABC123";
+			 var result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'dissertation');
+		 });
+		 
+		 // ---------------------------------------------------------------------
+		 // TITLES ONLY
+		 // ---------------------------------------------------------------------
+		 _.forEach(['unknown', '', undefined], function(genre){
+			 // article alone
+			 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft.au=John%20Doe";
+	     var result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'article');
+			 
+			 // journal alone
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'journal');
+			 
+			 // book alone
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'book');
+			 
+			 // title alone
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Article%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'article');
+			 
+			 // article and title available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'article');
+			 
+			 // journal and title available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'journal');
+			 
+			 // book and title available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.btitle=Book%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'book');
+		 
+			 // article and journal available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'article');
+			 
+			 // article, journal, and title available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'article');
+			 
+			 // chapter and book available
+			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.atitle=Chapter%20Title&rft.au=John%20Doe";
+	     result = specializeItem(query)[1];
+			 assert.equal(result.getAttribute('genre'), 'bookitem');
+
+		 });
+	 });
+	 
   });
 
 });
