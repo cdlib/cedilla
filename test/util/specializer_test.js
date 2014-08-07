@@ -97,6 +97,17 @@ describe('Specializer', function(){
    });
 
    // -------------------------------------------------------------------------------------------
+   it('should derive the naxos id from the pid field', function(){
+      console.log("SPECIALIZER: Checking the specializer derives naxos id from pid field");
+      var query = "req.ip=169.229.0.98&sid=SCP:SCP&genre=article&pid=<naxos>EUCD2045</naxos>";
+      var results = specializeItem(query);
+      var item = results[1];
+      
+      assert(item instanceof Item);
+      assert.equal(item.getAttribute('naxos'), 'EUCD2045');
+   });
+
+   // -------------------------------------------------------------------------------------------
    it('should derive the oclc number, isbn, and pmid from the rft_id field', function(){
       console.log("SPECIALIZER: Checking that specializer derives oclc number, pmid and isbn from rft_id field");
       var query = "url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_id=info:oclcnum/12345&rft_id=urn:ISBN:12345&rft_id=info:pmid/56789&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=The impact of forest use and reforestation on soil hydraulic conductivity in the Western Ghats of India: Implications for surface and sub-surface hydrology&rft.aufirst=M.&rft.aulast=Bonell&rft.date=2010&rft.epage=64&rft.genre=article&rft.issn=0022-1694&rft.issue=1-2&rft.jtitle=JOURNAL OF HYDROLOGY&rft.pages=49-64&rft.spage=49&rft.stitle=J HYDROL&rft.volume=391&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Purandara, B. K.&rft.au=Venkatesh, B.&rft.au=Krishnaswamy, Jagdish&rft.au=Acharya, H. A. K.&rft_id=info:doi/10.1016/j.jhydrol.2010.07.004";
@@ -135,120 +146,120 @@ describe('Specializer', function(){
      assert.equal(item.getAttribute('publisher'), 'CABI Pub');
    });
 
-	 // -------------------------------------------------------------------------------------------
-	 it('should correctly auto-detect genre', function(){
-		 console.log("SPECIALIZER: Checking genre auto-correct functionality for unknown genres");
-		 
-		 // ---------------------------------------------------------------------
-		 // IDENTIFIER PRESENT for JOURNAL/ISSUE/ARTICLE
-		 // ---------------------------------------------------------------------
-		 _.forEach(['issn', 'eissn', 'coden', 'eric', 'sici'], function(identifier){
-			 _.forEach(['unknown', '', undefined], function(genre){
-				 // Article title present (ARTICLE)
-				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft." + identifier + 
-				 																																													"=12345&rft.au=John%20Doe";
+   // -------------------------------------------------------------------------------------------
+   it('should correctly auto-detect genre', function(){
+     console.log("SPECIALIZER: Checking genre auto-correct functionality for unknown genres");
+     
+     // ---------------------------------------------------------------------
+     // IDENTIFIER PRESENT for JOURNAL/ISSUE/ARTICLE
+     // ---------------------------------------------------------------------
+     _.forEach(['issn', 'eissn', 'coden', 'eric', 'sici'], function(identifier){
+       _.forEach(['unknown', '', undefined], function(genre){
+         // Article title present (ARTICLE)
+         var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft." + identifier + 
+                                                                                                   "=12345&rft.au=John%20Doe";
          var result = specializeItem(query)[1];
-				 assert.equal(result.getAttribute('genre'), 'article');
-				 
-				 // No article title but does have an issue identifier (ISSUE)
-				 _.forEach(['issue', 'volume', 'season', 'quarter'], function(issueId){
-					 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe&rft." + 
-					 																																												issueId + "=ABCD:" + identifier;
-		       var result = specializeItem(query)[1];
-		 			 assert.equal(result.getAttribute('genre'), 'issue');
-				 });
-				 
-				 // No article title and no issue identifiers (JOURNAL)
-				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
+         assert.equal(result.getAttribute('genre'), 'article');
+         
+         // No article title but does have an issue identifier (ISSUE)
+         _.forEach(['issue', 'volume', 'season', 'quarter'], function(issueId){
+           var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe&rft." + 
+                                                                                                   issueId + "=ABCD:" + identifier;
+           var result = specializeItem(query)[1];
+            assert.equal(result.getAttribute('genre'), 'issue');
+         });
+         
+         // No article title and no issue identifiers (JOURNAL)
+         var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
          var result = specializeItem(query)[1];
-				 assert.equal(result.getAttribute('genre'), 'journal');
-			 });
-		 });
+         assert.equal(result.getAttribute('genre'), 'journal');
+       });
+     });
 
-		 // ---------------------------------------------------------------------
-		 // IDENTIFIER PRESENT for BOOK/BOOKITEM
-		 // ---------------------------------------------------------------------
-		 _.forEach(['isbn', 'eisbn', 'bici'], function(identifier){
-			 _.forEach(['unknown', '', undefined], function(genre){
-				 // Chapter title is present (BOOKITEM)
-				 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Chapter%20Title&rft." + identifier + 
-				 																																													"=12345&rft.au=John%20Doe";
+     // ---------------------------------------------------------------------
+     // IDENTIFIER PRESENT for BOOK/BOOKITEM
+     // ---------------------------------------------------------------------
+     _.forEach(['isbn', 'eisbn', 'bici'], function(identifier){
+       _.forEach(['unknown', '', undefined], function(genre){
+         // Chapter title is present (BOOKITEM)
+         var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Chapter%20Title&rft." + identifier + 
+                                                                                                   "=12345&rft.au=John%20Doe";
          var result = specializeItem(query)[1];
-				 assert.equal(result.getAttribute('genre'), 'bookitem');
-			
-				 // No chapter title (BOOK)
-				 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
+         assert.equal(result.getAttribute('genre'), 'bookitem');
+      
+         // No chapter title (BOOK)
+         query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft." + identifier + "=12345&rft.au=John%20Doe";
          result = specializeItem(query)[1];
-				 assert.equal(result.getAttribute('genre'), 'book');
-			 });
-		 });
-		 
-		 // ---------------------------------------------------------------------
-		 // DISSERTATION ID PRESENT
-		 // ---------------------------------------------------------------------
-		 _.forEach(['unknown', '', undefined], function(genre){
-			 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.dissertationNumber=ABC123";
-			 var result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'dissertation');
-		 });
-		 
-		 // ---------------------------------------------------------------------
-		 // TITLES ONLY
-		 // ---------------------------------------------------------------------
-		 _.forEach(['unknown', '', undefined], function(genre){
-			 // article alone
-			 var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft.au=John%20Doe";
-	     var result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'article');
-			 
-			 // journal alone
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'journal');
-			 
-			 // book alone
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'book');
-			 
-			 // title alone
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Article%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'article');
-			 
-			 // article and title available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'article');
-			 
-			 // journal and title available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'journal');
-			 
-			 // book and title available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.btitle=Book%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'book');
-		 
-			 // article and journal available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'article');
-			 
-			 // article, journal, and title available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'article');
-			 
-			 // chapter and book available
-			 query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.atitle=Chapter%20Title&rft.au=John%20Doe";
-	     result = specializeItem(query)[1];
-			 assert.equal(result.getAttribute('genre'), 'bookitem');
+         assert.equal(result.getAttribute('genre'), 'book');
+       });
+     });
+     
+     // ---------------------------------------------------------------------
+     // DISSERTATION ID PRESENT
+     // ---------------------------------------------------------------------
+     _.forEach(['unknown', '', undefined], function(genre){
+       var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.dissertationNumber=ABC123";
+       var result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'dissertation');
+     });
+     
+     // ---------------------------------------------------------------------
+     // TITLES ONLY
+     // ---------------------------------------------------------------------
+     _.forEach(['unknown', '', undefined], function(genre){
+       // article alone
+       var query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.atitle=Article%20Title&rft.au=John%20Doe";
+       var result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'article');
+       
+       // journal alone
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'journal');
+       
+       // book alone
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'book');
+       
+       // title alone
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Article%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'article');
+       
+       // article and title available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'article');
+       
+       // journal and title available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'journal');
+       
+       // book and title available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Journal%20Title&rft.btitle=Book%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'book');
+     
+       // article and journal available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'article');
+       
+       // article, journal, and title available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.title=Title&rft.jtitle=Journal%20Title&rft.atitle=Article%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'article');
+       
+       // chapter and book available
+       query = (genre != undefined ? 'rft.genre=' + genre : '') + "&rft.btitle=Book%20Title&rft.atitle=Chapter%20Title&rft.au=John%20Doe";
+       result = specializeItem(query)[1];
+       assert.equal(result.getAttribute('genre'), 'bookitem');
 
-		 });
-	 });
-	 
+     });
+   });
+   
   });
 
 });
