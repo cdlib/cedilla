@@ -63,7 +63,7 @@ describe('Specializer', function(){
         }
       });
     });
-    
+
     // -------------------------------------------------------------------------------------------
     it('should correctly identify the openurl version', function(){
       console.log("SPECIALIZER: Checking that specializer correctly identifies openurl 1.0");
@@ -144,6 +144,54 @@ describe('Specializer', function(){
      assert.equal(item.getAttribute('institute', 'UCOP'));
      assert.equal(item.getAttribute('publication_place'), 'Wallingford, Oxfordshire');
      assert.equal(item.getAttribute('publisher'), 'CABI Pub');
+   });
+
+   // -------------------------------------------------------------------------------------------
+   it('should properly interpret multiple authors', function(){
+     console.log("SPECIALIZER: Verifying multiple authors are properly handled");
+     
+     // Empty authors (should result in no authors)
+     var query = 'rft.genre&rft.au=&rft.title=Testing'
+     var result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 0);
+     
+     query = 'rft.genre&rft.aufirst=&rft.aulast=&rft.title=Testing'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 0);
+         
+     query = 'rft.genre&rft.au=&rft.aufirst=&rft.aulast=&rft.title=Testing'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 0);
+     
+     // Single rft.au
+     query = 'rft.genre&rft.title=Testing&rft.au=John%20Doe'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 1);
+     
+     // Single rft.aulast + rft.aufirst
+     query = 'rft.genre&rft.title=Testing&rft.aufirst=John&rft.aulast=Doe'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 1);
+     
+     // Both rft.au, rft.aulast + rft.aufirst (same name - one real author)
+     query = 'rft.genre&rft.title=Testing&rft.aufirst=John&rft.aulast=Doerft.au=John%20Doe'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 1);
+     
+     // Multiple rft.au
+     query = 'rft.genre&rft.title=Testing&rft.au=John%20Doe&rft.au=Bobba%20Fett'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 2);
+     
+     // Multiple rft.aulast + rft.aufirst (should overwrite itself so we only have one because this should not come through in openurl)
+     query = 'rft.genre&rft.title=Testing&rft.aufirst=John&rft.aulast=Doe&rft.aufirst=Bobba&rft.aulast=Fett'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 1);
+
+     // Both rft.au, rft.aulast + rft.aufirst (different names - multiple authors)
+     query = 'rft.genre&rft.title=Testing&rft.au=John%20Doe&rft.aufirst=Bobba&rft.aulast=Fett&rft.au=John%20Smith'
+     result = specializeItem(query)[1];
+     assert.equal(result.getAttribute('authors').length, 3);
    });
 
    // -------------------------------------------------------------------------------------------
