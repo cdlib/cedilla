@@ -4,7 +4,7 @@ var mockery = require('./mock_services.js');
 
 // ---------------------------------------------------------------------------------------------------
 describe('service.js', function(){
-  this.timeout(10000);
+  this.timeout(20000);
   
   var item = undefined,
       returnField = undefined,

@@ -1,7 +1,7 @@
 require('../init.js');
     
 describe('cedilla.js testing', function(){
-  this.timeout(10000);
+  this.timeout(20000);
   
   var item = undefined,
       oldServiceCallMethod = undefined;
