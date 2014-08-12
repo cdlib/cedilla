@@ -1,7 +1,7 @@
 require('../../init.js');
     
 describe("helper.js", function(){
-//  this.timeout(120000);
+  this.timeout(10000);
 
   var getAttributeMap = undefined;
   
