@@ -263,26 +263,30 @@ describe("helper.js", function(){
     var root = '';
     
     console.log('HELPER: checking X-Ref lookups');
-		
-		assert (typeof CONFIGS['xref'] != 'undefined');
-		
-		_.forEach(CONFIGS['xref'], function(attributes, type){
-			_.forEach(attributes, function(xrefs, attr){
-				_.forEach(xrefs, function(vals, correctVal){
-					_.forEach(vals, function(val){
-						assert.equal(helper.getCrossReference(type, attr, val), correctVal);
-					});
-				});
-				
-				// Assert that no matching value returns the value passed in
-				assert.equal(helper.getCrossReference(type, attr, 'foo'), 'foo');
-			});
-			
-			// Assert an unknown attribute returns the value passed in
-			assert.equal(helper.getCrossReference(type, 'bar', 'foo'), 'foo');
-		});
-		
-		// Assert that an unknown item type or attribute return the value passed in
-		assert.equal(helper.getCrossReference('foo', 'bar', 'blah'), 'blah');
-	});
+    
+    assert (typeof CONFIGS['xref'] != 'undefined');
+    
+    _.forEach(CONFIGS['xref'], function(attributes, type){
+      _.forEach(attributes, function(xrefs, attr){
+        
+        // Only do a sampling because language has too many entries
+        keys = _.sample(_.keys(xrefs), 11);
+        
+        _.forEach(keys, function(correctVal){
+          _.forEach(xrefs[correctVal], function(val){
+            assert.equal(helper.getCrossReference(type, attr, val), correctVal);
+          });
+        });
+        
+        // Assert that no matching value returns the value passed in
+        assert.equal(helper.getCrossReference(type, attr, 'foo'), 'foo');
+      });
+      
+      // Assert an unknown attribute returns the value passed in
+      assert.equal(helper.getCrossReference(type, 'bar', 'foo'), 'foo');
+    });
+    
+    // Assert that an unknown item type or attribute return the value passed in
+    assert.equal(helper.getCrossReference('foo', 'bar', 'blah'), 'blah');
+  });
 });
