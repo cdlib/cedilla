@@ -1,7 +1,8 @@
 require('../../init.js');
     
 describe("helper.js", function(){
-  
+//  this.timeout(120000);
+
   var getAttributeMap = undefined;
   
   // ---------------------------------------------------------------------------------------------------
@@ -257,4 +258,31 @@ describe("helper.js", function(){
     assert.equal(root, helper.getRootItemType());
   });
   
+  // ---------------------------------------------------------------------------------------------------
+  it('testing getCrossReference()', function(){
+    var root = '';
+    
+    console.log('HELPER: checking X-Ref lookups');
+		
+		assert (typeof CONFIGS['xref'] != 'undefined');
+		
+		_.forEach(CONFIGS['xref'], function(attributes, type){
+			_.forEach(attributes, function(xrefs, attr){
+				_.forEach(xrefs, function(vals, correctVal){
+					_.forEach(vals, function(val){
+						assert.equal(helper.getCrossReference(type, attr, val), correctVal);
+					});
+				});
+				
+				// Assert that no matching value returns the value passed in
+				assert.equal(helper.getCrossReference(type, attr, 'foo'), 'foo');
+			});
+			
+			// Assert an unknown attribute returns the value passed in
+			assert.equal(helper.getCrossReference(type, 'bar', 'foo'), 'foo');
+		});
+		
+		// Assert that an unknown item type or attribute return the value passed in
+		assert.equal(helper.getCrossReference('foo', 'bar', 'blah'), 'blah');
+	});
 });

@@ -423,7 +423,7 @@ describe('tier.js', function(){
       i++;
     });
     
-    var heartbeat = setInterval(function(){
+    var tierTimeoutHB = setInterval(function(){
       if(_completed){
         
         console.log(_message);
@@ -432,6 +432,8 @@ describe('tier.js', function(){
         assert(_passed);
         assert.equal(helper.buildMessage(CONFIGS['message']['tier_timeout'], [tier.getName()]), _message);
         
+        clearInterval(tierTimeoutHB);
+
         done();
       }
     }, 500);

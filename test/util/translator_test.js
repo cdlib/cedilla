@@ -174,21 +174,4 @@ describe('translator.js', function(){
     
   });
   
-  // ------------------------------------------------------------------------------------------------------
-  it("translating attribute values should map out to the xref.yaml", function(){
-    var translator = new Translator(undefined);
-    var translatorOpenURL = new Translator('openurl');
-    
-    console.log('TRANSLATOR: checking translation xref.yaml translations are working');
-    
-    _.forEach(CONFIGS['xref'], function(def, item){
-      _.forEach(def, function(translations, attribute){
-        _.forEach(translations, function(valueOut, valueIn){
-          assert.equal(valueOut, translator.translateAttributeValue(item, attribute, valueIn));
-          assert.equal(valueOut, translatorOpenURL.translateAttributeValue(item, attribute, valueIn));
-        });
-      });
-    });
-  });
-      
 });
