@@ -56,9 +56,11 @@ Cedilla has no front end, and it does not include any service endpoints. This wa
 
 * Simple Web Client - https://github.com/cdlib/cedilla_web A very basic web site meant to get you up and running and able to test quickly.
 
-* Cedilla Service Suite (Ruby based) - https://github.com/cdlib/cedilla_services A collection of services in one project. Each of the services can be deployed and run independently on different ports or on different servers. Currently contains services for: Internet Archive, SFX, Oclc Xid, CoverThing, and the beta Worldcat Discovery API
+* Cedilla Service Suite (Ruby based) - https://github.com/cdlib/cedilla_services A collection of services in one project. Each of the services can be deployed and run independently on different ports or on different servers. Currently contains services for: Internet Archive, SFX, Oclc Xid, CoverThing, and Worldcat Discovery API (in alpha)
 
-* Cedilla Local Holdings Service (Java based) - https://github.com/cdlib/cedilla_holdings_circ An implementation of a service that communicates with Oclc's Availability Query (AQ) service.
+* Cedilla Service Suite (Java based) - https://github.com/cdlib/cedilla_jservices An implementation of services in Java on the Spring framework. Currently contains: OCLC Availability Query (AQ) Service
+
+* Cedilla Consortial Service (Ruby based) - https://github.com/cdlib/cedilla_consortial_service A service that can be used to allow your implementation of the Cedilla system to check the incoming user's IP address against an XML file to translate their location into a campus code that can be passed along to your services. It will also translate specified campus codes into VPN/IP addresses that can be passed to services like SFX.
 
 * Cedilla Service Gem (Ruby gem used by the Service Suite above) - https://github.com/cdlib/cedilla_ruby A ruby gem that handles the bulk of the code needed to marshal/unmarshal JSON to/from Cedilla. It allows you to focus all of your attention on simply parsing the respoonse from your service.
 
