@@ -26,20 +26,21 @@ var waitForConfigs = setInterval(function(){
   if(typeof CONFIGS['application'] != 'undefined' || i == 2000){
     clearInterval(waitForConfigs);
  
-    module.exports = helper = require("./lib/util/helper.js");
-    module.exports = serializer = require("./lib/util/serializer.js");
-    module.exports = specializers = require("./lib/util/specializer.js");
-    module.exports = Translator = require("./lib/util/translator.js");
-    module.exports = Consortial = require("./lib/util/consortial.js");
+    module.exports = helper = require("./lib/utils/helper.js");
+    module.exports = serializer = require("./lib/utils/serializer.js");
+    module.exports = Translator = require("./lib/utils/translator.js");
+    module.exports = Consortial = require("./lib/utils/consortial.js");
     
-    module.exports = Request = require("./lib/model/request.js");
-		module.exports = Requestor = require("./lib/model/requestor.js");
-    module.exports = Item = require("./lib/model/item.js");
+    module.exports = Request = require("./lib/models/request.js");
+		module.exports = Requestor = require("./lib/models/requestor.js");
+    module.exports = Item = require("./lib/models/item.js");
 
     module.exports = LOGGER = require('./lib/logger.js');
     module.exports = Broker = require("./lib/broker.js");
     module.exports = Tier = require("./lib/tier.js");
     module.exports = Service = require("./lib/service.js");
+		
+		module.exports = OpenUrlParser = require("./lib/parsers/openurl.js");
 
     // Should be for TEST only!
     module.exports = assert = require("assert");
