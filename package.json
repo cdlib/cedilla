@@ -26,6 +26,10 @@
   "dependencies": {
     "socket.io": "latest",
     "socket.io-client": "latest",
+    "express": "latest",
+    "body-parser": "latest",
+    "ejs": "latest",
+    "method-override": "latest",
     "js-yaml": "latest",
     "node-html-encoder": "latest",
     "node-uuid": "latest",

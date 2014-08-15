@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='./stylesheets/cedilla.css' />
+		
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	
+	<body>
+		<h1>Cedilla</h1>
+		<h4>Congratulations, your instance of the Cedilla delivery aggregator appears to be running!</h4>
+		
+		<div class="test_section">
+			<h4>Test an OpenUrl</h4>
+			<p>
+			You can test the system out by pasting openurls into the box provided.<br /><br />
+		
+			The openurl should then be passed off to Cedilla which will interpret the openurl and quickly display the information it found in the 'Initial Citation Interpretation' section. It will then dispatch to its avilable services and display the results from those services in the 'Results from Cedilla' section.
+			</p>
+		
+			<div id="search">
+				<textarea id="openurl" rows="10" cols="100"></textarea>
+				<button id="post-openurl">Submit</button>
+			</div>
+			
+			<div>
+				<h3>Initial Citation Interpretation:</h3>
+				<div id="initial" class="result"></div>
+			</div>
+			
+			<div>
+				<h3>Results from Cedilla:</h3>
+				<h4>Citation information found by services:</h4>
+				<div id="citation" class="result"><div id="first"></div></div>
+				<h4>Resources found by services:</h4>
+				<div id="resource" class="result"><div id="first"></div></div>
+			</div>
+		</div>
+		
+		<script>var host = '<%= host %>';</script>
+		<script src='./javascripts/index.js'></script>
+	</body>
+</html>

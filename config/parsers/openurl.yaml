@@ -1,0 +1,39 @@
+# Values to search for in the openurl to help identify the version.
+#    Use the value 'default' to mark one version as the default
+version_identifiers:
+  openurl_0_1: ['default']
+  openurl_1_0: ['url_ver=Z39.88-2004', 'rft.']
+
+# Extract identifiers from inside catchall/repeating parameters
+identifier_search:
+  openurl_0_1:
+    id:
+      pmid: ['pmid:(.*)']
+      doi:  ['doi:(.*)']
+      issn: ['issn:(.*)']
+      isbn: ['isbn:(.*)']
+      lccn: ['lccn:(.*)']
+
+    pid:
+      naxos: ['<naxos>(.*)<\/naxos>', '%3Cnaxos%3E(.*)%3C%2Fnaxos%3E']
+      dissertation_number: ['dissertationNumber=(.*)']
+      eric: ['ED_NUMBER=(.*)', 'EJ_NUMBER=(.*)']
+      institute: ['institute=(.*)']
+      oclc: ['OCLC=(.*)', 'oclcNumber=(.*)']
+      publisher: ['publisher=(.*)']
+      publication_place: ['place=(.*)', 'placeOfPublication=(.*)']
+
+  openurl_1_0:
+    rft_id:
+      oclc: ['info:oclcnum\/(.*)']
+      pmid: ['info:pmid\/(.*)']
+      lccn: ['info:lccn\/(.*)'] 
+      doi: ['info:doi\/(.*)'] 
+      bibcode: ['info:bibcode\/(.*)']
+      hdl: ['info:hdl\/(.*)']
+      eric: ['info:eric\/(.*)']
+      isbn: ['urn:ISBN:(.*)']
+      issn: ['urn:ISSN:(.*)']
+
+    rfe_dat:
+      oclc: ['<accessionnumber>(.*)<\/accessionnumber>', '%3Caccessionnumber%3E(.*)%3C%2Faccessionnumber%3E']

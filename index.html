@@ -1,13 +1,24 @@
-<html><body>
+<html>
+<head>
+	<title>Cedilla - Test Page</title>
+	<script src="/socket.io/socket.io.js"></script>
+<body>
 	
-<div id="test"></div>
+	<h1>Cedilla</h1>
+	<h3>Congratulations, your instance of the Cedilla delivery aggregator appears to be running!</h3>
+		
+	<h4>Test an OpenUrl</h4>
+	<div id="citation">
+		You can test the system out by pasting openurls into the box provided. The openurl should then be passed off to any services registered with Cedilla. The results from those services will appear below.
+	</div>
 	
-<script src="/socket.io/socket.io.js"></script>
+	<h4>Results:</h4>
+	<div id="results"></div>
 
-<script>
-  var socket = io.connect('http://localhost:3005/');
+	<script>
+  	var socket = io.connect('http://localhost:3005/');
   
-  socket.emit('openurl', 'cedilla:affiliation=UCB&url_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:dissertation&genre=dissertations+%26+theses&sid=ProQ:Sociological+Abstracts&atitle=&title=Reel+to+Real%3A+Gender%2C+Genre%2C+and+the+Hollywood+Romantic+Comedy&issn=&date=1997-08-01&volume=&issue=&spage=&au=Rubinfeld%2C+Mark+David&isbn=&jtitle=&btitle=&rft_id=info:eric/');
+  	socket.emit('openurl', 'cedilla:affiliation=UCB&url_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:dissertation&genre=dissertations+%26+theses&sid=ProQ:Sociological+Abstracts&atitle=&title=Reel+to+Real%3A+Gender%2C+Genre%2C+and+the+Hollywood+Romantic+Comedy&issn=&date=1997-08-01&volume=&issue=&spage=&au=Rubinfeld%2C+Mark+David&isbn=&jtitle=&btitle=&rft_id=info:eric/');
 	
 //'cedilla:affiliation=UCB&sid=SCP:SCP&genre=article&pid=%253Cnaxos%253EEUCD2045%253C%252Fnaxos%253E');
 

@@ -29,7 +29,7 @@
   eisbn: ['rft.eisbn', 'rfe.eisbn', 'eisbn', 'rft.eisbn_additional', 'rfe.eisbn_additional', 'eisbn_additional']
 
 # generally these identifiers will not be direct mappings as shown here
-  oclc: ['rft.oclcnum', 'oclc', 'oclcnum']
+  oclc: ['rft.oclcnum', 'oclc', 'oclcnum', 'oclcNumber']
   lccn: ['rft.lccn', 'lccn']
   doi: ['rft.doi', 'doi']
   pmid: ['rft.pmid', 'pmid']
@@ -37,12 +37,14 @@
   sici: ['rft.sici', 'sici']
   bici: ['rft.bici', 'bici']
   bibcode: ['rft.bibcode', 'bibcode']
-  eric: ['rft.eric', 'eric']
+  eric: ['rft.eric', 'eric', 'EJ_NUMBER', 'ED_NUMBER']
   oai: ['rft.oai', 'oai']
   nbn: ['rft.nbn', 'nbn']
   hdl: ['rft.hdl', 'hdl']
   dissertation_number: ['rft.dissertationNumber', 'dissertationNumber']
+  naxos: ['naxos']
   
+
   title: ['rft.title', 'title']
   book_title: ['rft.btitle', 'btitle']
   journal_title: ['rft.jtitle', 'jtitle']
@@ -51,7 +53,7 @@
 
   publisher: ['rft.pub', 'rft.publisher', 'publisher', 'pub']
   publication_date: ['rft.date', 'rft.pubdate', 'pubdate', 'date']
-  publication_place: ['rft.place', 'place']
+  publication_place: ['rft.place', 'place', 'placeOfPublication']
   year: ['rft.year', 'rft.pubyear', 'year', 'pubyear']
   month: ['rft.month', 'rft.pubmonth', 'month', 'pubmonth']
   day: ['rft.day', 'rft.pubday', 'day', 'pubday']
@@ -64,7 +66,7 @@
   season: ['rft.ssn', 'rft.season', 'ssn', 'season']
   quarter: ['rft.quarter', 'quarter']
   series: ['rft.series', 'series']
-  institute: ['rft.inst', 'inst']
+  institute: ['rft.inst', 'inst', 'institute']
   subject: ['rft.subject', 'subject']
   text_language: ['rft.dcLanguage', 'dcLanguage']
 
