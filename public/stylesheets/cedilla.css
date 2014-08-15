@@ -1,0 +1,50 @@
+body {
+	font-family:			helvetica, arial;
+}
+
+h1, h2, h3, h4 {color: black;}
+
+p {font-size: 10pt;}
+label, .group label {font-weight: bold;}
+
+.test_section h3, 
+.test_section h4,
+.test_section h5 {color: #000066; font-weight: normal;}
+
+.test_section {
+	background: -webkit-linear-gradient(#C2E0FF, #476BB2); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#C2E0FF, #476BB2); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#C2E0FF, #476BB2); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#C2E0FF, #476BB2); /* Standard syntax */
+	
+	border: 2px solid;
+	border-radius: 5px;
+	
+	padding: 0 25px 25px 25px;
+}
+
+.result {
+	background: -webkit-linear-gradient(white, #D6EBFF); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(white, #D6EBFF); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(white, #D6EBFF); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(white, #D6EBFF); /* Standard syntax */
+
+	border: 2px solid;
+	border-radius: 5px;
+
+	padding: 0 25px 25px 25px;
+}
+
+.group {
+	padding: 5px 10px 5px 10px;
+}
+
+.group li {
+	border: 1px solid;
+	border-radius: 5px;
+	margin-bottom: 5px;
+}
+
+.data {
+	padding: 5px 10px 5px 10px;
+}

@@ -6,110 +6,40 @@
 		
 		<script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
 		<script src="/socket.io/socket.io.js"></script>
-		
-		<script src='./javascripts/cedilla-client.js'></script>
 	</head>
 	
 	<body>
 		<h1>Cedilla</h1>
-		<h3>Congratulations, your instance of the Cedilla delivery aggregator appears to be running!</h3>
+		<h4>Congratulations, your instance of the Cedilla delivery aggregator appears to be running!</h4>
 		
-		<h4>Test an OpenUrl</h4>
-		<div id="search">
-			You can test the system out by pasting openurls into the box provided. The openurl should then be passed off to any services registered with Cedilla. The results from those services will appear below.
-			<textarea id="openurl" rows="10" cols="100"></textarea>
-			<button id="post-openurl">Submit</button>
+		<div class="test_section">
+			<h4>Test an OpenUrl</h4>
+			<p>
+			You can test the system out by pasting openurls into the box provided.<br /><br />
+		
+			The openurl should then be passed off to Cedilla which will interpret the openurl and quickly display the information it found in the 'Initial Citation Interpretation' section. It will then dispatch to its avilable services and display the results from those services in the 'Results from Cedilla' section.
+			</p>
+		
+			<div id="search">
+				<textarea id="openurl" rows="10" cols="100"></textarea>
+				<button id="post-openurl">Submit</button>
+			</div>
+			
+			<div>
+				<h3>Initial Citation Interpretation:</h3>
+				<div id="initial" class="result"></div>
+			</div>
+			
+			<div>
+				<h3>Results from Cedilla:</h3>
+				<h4>Citation information found by services:</h4>
+				<div id="citation" class="result"><div id="first"></div></div>
+				<h4>Resources found by services:</h4>
+				<div id="resource" class="result"><div id="first"></div></div>
+			</div>
 		</div>
-	
-		<h3>Initial Citation Interpretation:</h3>
-		<div id="initial"></div>
 		
-		<h3>Results from Cedilla:</h3>
-		<h4>Citations</h4>
-		<div id="citation"></div>
-		<h4>Resources</h4>
-		<div id="resource"></div>
-		
-		<script>
-			var socket = io.connect('<%= host %>');
-			
-		  socket.on('citation', function (data) {
-				alert(data);
-				$("#citation").after(buildDisplay(JSON.parse(data)));
-		  });
-
-		  socket.on('author', function (data) {
-		    $("#citation").after(buildDisplay(JSON.parse(data)));
-		  });
-
-		  socket.on('resource', function (data) {
-		    $("#resource").after(buildDisplay(JSON.parse(data)));
-		  });
-
-		  socket.on('error', function (data) {
-		    $("#resource").after(buildDisplay(JSON.parse(data)));
-		  });
-
-		  socket.on('complete', function (data) {
-				
-				socket.disconnect();
-		  });
-		
-			// -----------------------------------------------------------------------
-			$("#post-openurl").click(function(){
-				var openurl = $("#openurl").val();
-				
-				// Make the call to the Citation Webservice to see if the OpenUrl was properly translated
-				$.getJSON("<%= host %>/citation?" + openurl, function(data){
-					$("#initial").html(buildDisplay(data));
-				});
-				
-				$("#citation").html('');
-				$("#resource").html('');
-				
-				// Send the openurl to Cedilla
-				socket.emit('openurl', openurl);
-			});
-			
-			// -----------------------------------------------------------------------
-			function formatKeyValue(key, val){
-				return '<div class="data"><strong>' + key + ':</strong> => ' + val + '</div>';
-			}
-			
-			// -----------------------------------------------------------------------
-			function buildDisplay(data){
-				var ret = '';
-				
-				$.each(data, function(key, val){
-					if(val instanceof Array){
-						ret += '<div class="group"><strong>' + key + ':</strong> => <ul>';
-						
-						$.each(val, function(idx, item){
-							ret += '<li>';
-							$.each(item, function(k, v){
-								ret += formatKeyValue(k, v);
-							});
-							ret += '</li>';
-						});
-						
-						ret += '</ul></div>';
-						
-					}else if(typeof val != 'string'){
-						ret += '<div class="group"><strong>' + key + ':</strong> => <ul>';
-						
-						$.each(val, function(k, v){
-							ret += '<li>' + formatKeyValue(k, v) + '</li>';
-						});
-						ret += '</ul></div>';
-						
-					}else{
-						ret += formatKeyValue(key, val);
-					}
-				});
-				
-				return ret;
-			}
-			
-		</script>
+		<script>var host = '<%= host %>';</script>
+		<script src='./javascripts/index.js'></script>
 	</body>
 </html>
