@@ -16,6 +16,12 @@ identifier_search:
 
     pid:
       naxos: ['<naxos>(.*)<\/naxos>', '%3Cnaxos%3E(.*)%3C%2Fnaxos%3E']
+      dissertation_number: ['dissertationNumber=(.*)']
+      eric: ['ED_NUMBER=(.*)', 'EJ_NUMBER=(.*)']
+      institute: ['institute=(.*)']
+      oclc: ['OCLC=(.*)', 'oclcNumber=(.*)']
+      publisher: ['publisher=(.*)']
+      publication_place: ['place=(.*)', 'placeOfPublication=(.*)']
 
   openurl_1_0:
     rft_id:
@@ -26,8 +32,8 @@ identifier_search:
       bibcode: ['info:bibcode\/(.*)']
       hdl: ['info:hdl\/(.*)']
       eric: ['info:eric\/(.*)']
-      isbn: ['urn:ISBN:']
-      issn: ['urn:ISSN:']
+      isbn: ['urn:ISBN:(.*)']
+      issn: ['urn:ISSN:(.*)']
 
     rfe_dat:
       oclc: ['<accessionnumber>(.*)<\/accessionnumber>', '%3Caccessionnumber%3E(.*)%3C%2Faccessionnumber%3E']

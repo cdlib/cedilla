@@ -37,12 +37,11 @@
   sici: ['rft.sici', 'sici']
   bici: ['rft.bici', 'bici']
   bibcode: ['rft.bibcode', 'bibcode']
-  eric: ['rft.eric', 'eric']
+  eric: ['rft.eric', 'eric', 'EJ_NUMBER', 'ED_NUMBER']
   oai: ['rft.oai', 'oai']
   nbn: ['rft.nbn', 'nbn']
   hdl: ['rft.hdl', 'hdl']
   dissertation_number: ['rft.dissertationNumber', 'dissertationNumber']
-  eric: ['EJ_NUMBER', 'ED_NUMBER']
   naxos: ['naxos']
   
 
