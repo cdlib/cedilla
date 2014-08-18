@@ -104,13 +104,13 @@ describe('service.js', function(){
   // ---------------------------------------------------------------------------------------------------
   it('should throw an error if no name is supplied!', function(){
     assert.throws(function(){ new Service(); });
-    assert.throws(function(){ new Service(undefined); });
-    assert.throws(function(){ new Service(''); });
+    assert.throws(function(){ new Service(undefined, log); });
+    assert.throws(function(){ new Service('', log); });
   });
 
   // ---------------------------------------------------------------------------------------------------
   it('undefined service should return as empty service and disabled!', function(){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying that defaults are properly set');
     
@@ -136,7 +136,7 @@ describe('service.js', function(){
     // Test all of the services defined in the ./config/services.yaml to make sure they initialize
     _.forEach(CONFIGS['services']['tiers'], function(services, tier){
       _.forEach(services, function(config, service){
-        var svc = new Service(service);
+        var svc = new Service(service, log);
     
         assert(config['enabled'] == svc.isEnabled());
         assert.equal(service, svc.getName());
@@ -170,7 +170,7 @@ describe('service.js', function(){
 // Calling the service
 // ---------------------------------------------------------------------------------------------------  
   it('should throw an error when the connection to the service is refused!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying that error is thrown when service refuses connection');
     
@@ -197,7 +197,7 @@ describe('service.js', function(){
 
   // ---------------------------------------------------------------------------------------------------  
   it('should return a valid response from the service!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying that HTTP 200 is handled and items were returned');
     
@@ -223,7 +223,7 @@ describe('service.js', function(){
 
   // ---------------------------------------------------------------------------------------------------  
   it('should return a 404 not found from the service!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying that 404 not found returns an empty item');
     
@@ -249,7 +249,7 @@ describe('service.js', function(){
 
   // ---------------------------------------------------------------------------------------------------  
   it('should return a 400 bad request from the service!', function(done){  
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of 400 bad JSON sent to service');
     
@@ -274,7 +274,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return a 500 warning error from the service!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of 500 "warning" server error from service');
     
@@ -299,7 +299,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return a 500 error from the service!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of 500 "error" server error sent from service');
     
@@ -324,7 +324,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return a 500 fatal error from the service!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of 500 "fatal" error sent from service');
     
@@ -349,7 +349,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return an id mismatch!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of transaction id mismatches');
     
@@ -374,7 +374,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return an timeout!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of service timeouts');
     
@@ -399,7 +399,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return an error when the service returned an unknown item!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of undefined item types snet from service');
     
@@ -424,7 +424,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return an error when the service does NOT return JSON!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
 
     console.log('SERVICE: verifying handling of non JSON responses from service');
 
@@ -449,7 +449,7 @@ describe('service.js', function(){
   
   // ---------------------------------------------------------------------------------------------------  
   it('should return an error when the response overflows the buffer!', function(done){
-    var svc = new Service('tester');
+    var svc = new Service('tester', log);
     
     console.log('SERVICE: verifying handling of extremely large responses from service (prevent buffer overflow)');
     

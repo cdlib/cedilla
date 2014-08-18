@@ -97,8 +97,8 @@ var delayStartup = setInterval(function(){
       }
     });
     
-    
     // ------------------------------------------------------------------------------------------------
+    module.exports = log = log;
     module.exports = rootItemType = _rootItemType;
     module.exports = emptyItem = _emptyItem;
     module.exports = bareMinimumItem = _bareMinimumItem;

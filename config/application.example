@@ -18,10 +18,14 @@ application_description: 'Delivery aggregation service for library resources'
 
 port: 3005
 
-log_path: './log'
+# ---------------------------------------------------------------------------------
+# Log settings
+#
+# Comment out the log_name if you just want the system to write to stdout/stderr
+# ---------------------------------------------------------------------------------
 log_level: 'debug'
-access_log_name: 'access.log'
-error_log_name: 'error.log'
+log_path: './log/'
+#log_name: 'cedilla.log'
 
 # ---------------------------------------------------------------------------------
 # Turn this on to enable to built in default service so that you get data back when

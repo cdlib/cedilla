@@ -35,12 +35,15 @@ var waitForConfigs = setInterval(function(){
 		module.exports = Requestor = require("./lib/models/requestor.js");
     module.exports = Item = require("./lib/models/item.js");
 
-    module.exports = LOGGER = require('./lib/logger.js');
+    //module.exports = LOGGER = require('./lib/logger.js');
     module.exports = Broker = require("./lib/broker.js");
     module.exports = Tier = require("./lib/tier.js");
     module.exports = Service = require("./lib/service.js");
 		
 		module.exports = OpenUrlParser = require("./lib/parsers/openurl.js");
+
+		// Setup logger
+		module.exports = log = require('./lib/logger.js');
 
     // Should be for TEST only!
     module.exports = assert = require("assert");
