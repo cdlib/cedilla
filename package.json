@@ -33,7 +33,8 @@
     "js-yaml": "latest",
     "node-html-encoder": "latest",
     "node-uuid": "latest",
-    "underscore": "latest"
+    "underscore": "latest",
+    "bunyan": "latest"
   },
   "devDependencies": {
     "mocha": "*"
