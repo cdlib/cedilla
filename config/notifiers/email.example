@@ -5,6 +5,6 @@ service: ''
 username: ''
 password: ''
 
-from: 'cdla-dev@ucop.edu'
-to: 'brian.riley@ucop.edu; joe.ferrie@ucop.edu; stephanie.collett@ucop.edu'
+from: '[cedilla@your.org]'
+to: '[your.email@your.org]'
 subject: 'Cedilla has encountered a potentially fatal error!'

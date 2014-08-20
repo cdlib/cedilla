@@ -1,0 +1,7 @@
+code_location: 'slack_irc.js'
+
+webhook_url: 'https://cdlib.slack.com/services/hooks/incoming-webhook?token=[your token]'
+icon: ':bell:'
+username: 'cedilla'
+channel: '#cedilla'
+

@@ -1,7 +1,0 @@
-code_location: 'slack_irc.js'
-
-webhook_url: 'https://cdlib.slack.com/services/hooks/incoming-webhook?token=znLoojEKLHGZwp9JGnHQHQfP'
-icon: ':dog2:'
-username: 'cedilla-system'
-channel: '#cedilla'
-
