@@ -3,6 +3,8 @@ require('./prep.js');
     
 describe('cedilla.js testing', function(){
   this.timeout(10000);
+
+  var os = require('os');
   
   // ----------------------------------------------------------------------------------------
   before(function(done){
@@ -28,7 +30,7 @@ describe('cedilla.js testing', function(){
     console.log('CEDILLA: verifying that default_content_service starts up if its enabled in config/application.yaml');
     
     if(CONFIGS['application']['default_content_service']){
-      var defaultService = url.parse('http://localhost:' + CONFIGS['application']['default_content_service_port'] + '/default');
+      var defaultService = url.parse('http://' + os.hostname() + ':' + CONFIGS['application']['default_content_service_port'] + '/default');
     
       sendRequest(defaultService, serializer.itemToJsonForService('ABCD123', fullItem, false), function(status, headers, body){
         assert.equal(status, 200);

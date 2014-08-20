@@ -4,6 +4,8 @@ require("./prep.js");
 describe('router.js testing', function(){
   this.timeout(10000);
   
+	var os = require('os');
+	
   // ----------------------------------------------------------------------------------------
   before(function(done){
     // Wait for the config file and init.js have finished loading before starting up the server
@@ -23,10 +25,12 @@ describe('router.js testing', function(){
 
 	// ----------------------------------------------------------------------------------------
 	it('should return the index.ejs', function(done){
-	  var target = 'http://localhost:' + CONFIGS['application']['port'] + '/';
+	  var target = 'http://' + os.hostname() + ':' + CONFIGS['application']['port'] + '/';
   
 	  console.log('ROUTER: should return the index.ejs from ' + target);
   
+		console.log('host: ' + os.hostname());
+	
 	  sendRequest(url.parse(target), {}, function(status, headers, body){
 	    assert.equal(status, 200);
 			assert(body.indexOf('Test an OpenUrl') >= 0);
@@ -39,7 +43,7 @@ describe('router.js testing', function(){
 	it('should call the citation echo service', function(done){
 	  // This one gets a decent test of the OpenURL conversion as well
 	  var qs = helper.mapToQueryString(helper.itemToMap(fullItem)),
-	      target = 'http://localhost:' + CONFIGS['application']['port'] + '/citation?' + qs;
+	      target = 'http://' + os.hostname() + ':' + CONFIGS['application']['port'] + '/citation?' + qs;
   
 	  console.log('ROUTER: should properly echo back the openURL as a citation item (as JSON)');
   

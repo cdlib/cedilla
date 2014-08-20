@@ -4,7 +4,8 @@ describe('server.js testing', function(){
   this.timeout(20000);
   
   var item = undefined,
-      oldServiceCallMethod = undefined;
+      oldServiceCallMethod = undefined,
+      os = require('os');
   
   // ----------------------------------------------------------------------------------------
   before(function(done){
@@ -74,7 +75,7 @@ describe('server.js testing', function(){
 	  console.log('SERVER: should establish a socket.io connection and return at least one item type (except error)');
   
 	  // -----------------------------------
-	  var client = io.connect('http://localhost:' + CONFIGS['application']['port'] + '/', options),
+	  var client = io.connect('http://' + os.hostname() + ':' + CONFIGS['application']['port'] + '/', options),
 	      message = false, error = false;
 
 	  client.on('connect_error', function(err){ console.log('err: ' + err); });
