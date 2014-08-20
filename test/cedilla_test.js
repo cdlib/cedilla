@@ -2,7 +2,7 @@ require('../init.js');
 require('./prep.js');
     
 describe('cedilla.js testing', function(){
-  this.timeout(10000);
+  this.timeout(20000);
 
   // ----------------------------------------------------------------------------------------
   before(function(done){

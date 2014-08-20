@@ -70,9 +70,11 @@ describe('openurl tests to validate translation of incoming openurl requests int
             clearInterval(check);
           
             _.forEach(_results, function(json, name){
-              console.log(name);
-              console.log(json);
-              console.log('-----------------------------------');
+							var result = name + "\r\n" + json + "\r\n-----------------------------------\r\n";
+							
+							fs.appendFile(process.cwd() + '/json_api_tests/openurls/results.log', result, function(err){
+								if(err) console.log(err.message);
+							})
             });
           
             done();
@@ -82,8 +84,10 @@ describe('openurl tests to validate translation of incoming openurl requests int
         _.forEach(tests, function(openurl, test){
 					var _client = _io.connect('http://localhost:' + CONFIGS['application']['port'] + '/', _options);
 					
+					openurl += '&cedilla:affiliation=UCB&testing_for=' + service + '&testing_id=' + i + '&testing_name=' + test;
+					
           _client.on('connect', function(){
-            _client.emit('openurl', unescape(openurl).replace(/&amp;/g, '&') + '&testing_for=' + service + '&testing_id=' + i + '&testing_name=' + test);
+            _client.emit('openurl', unescape(openurl).replace(/&amp;/g, '&'));
 
             _client.on('complete', function (data) {
               _completed++; 

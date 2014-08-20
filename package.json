@@ -28,6 +28,7 @@
     "socket.io-client": "latest",
     "express": "latest",
     "body-parser": "latest",
+    "method-override": "latest",
     "ejs": "latest",
     "js-yaml": "latest",
     "node-html-encoder": "latest",
