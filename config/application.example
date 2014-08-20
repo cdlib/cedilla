@@ -34,7 +34,7 @@ log_path: './log/'
 # Do not include the file extension when listing notifiers
 # ---------------------------------------------------------------------------------
 notifiers:
-  - email
+#  - email
 #  - slack_irc
 
 # ---------------------------------------------------------------------------------
