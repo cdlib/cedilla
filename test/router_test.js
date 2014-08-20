@@ -22,7 +22,7 @@ describe('router.js testing', function(){
 	});
 
 	// ----------------------------------------------------------------------------------------
-	it('should return the index.html', function(done){
+	it('should return the index.ejs', function(done){
 	  var target = 'http://localhost:' + CONFIGS['application']['port'] + '/';
   
 	  console.log('ROUTER: should return the index.ejs from ' + target);
@@ -94,6 +94,11 @@ var sendRequest = function(target, headers, callback){
       });
     });
     
+		_request.on('error', function(err){
+			console.log(err.message);
+			console.log(err.stack);
+		});
+		
     _request.end();
   
   }catch(Error){
