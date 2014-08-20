@@ -45,8 +45,43 @@ var waitForConfigs = setInterval(function(){
 		// Setup logger
 		module.exports = log = require('./lib/logger.js');
 
+		//Load registered notifiers
+		module.exports = notifiers = registerNotifiers();
+
     // Should be for TEST only!
     module.exports = assert = require("assert");
   }
   i++;
 }, 200);
+
+// -----------------------------------------------------------------------------------------
+function registerNotifiers(){
+	var notifiers = {};
+	
+	_.forEach(CONFIGS['application']['notifiers'], function(name){
+		fs.exists(process.cwd() + '/lib/notifiers/' + name + '.js', function(exists){
+			if(exists){
+				
+				fs.exists(process.cwd() + '/config/notifiers/' + name + '.yaml', function(exists){
+					if(exists){
+						var yml = require('js-yaml');
+						
+						var config = yml.load(fs.readFileSync(process.cwd() + '/config/notifiers/' + name + '.yaml', 'utf8'));
+						var Notifier = require('./lib/notifiers/' + name + '.js');
+						
+						notifiers[name] = new Notifier(config);
+						
+					}else{
+						log.warn('The notifier, ' + name + ', was registered in application.yaml, but its YAML file does not exist in ./config/notifiers!');
+					}
+				
+				});
+				
+			}else{
+				log.warn('The notifier, ' + name + ', was registered in application.yaml, but the JS file does not exist in ./notifiers!');
+			}
+		});
+	});
+	
+	return notifiers;
+}

@@ -29,12 +29,12 @@
     "express": "latest",
     "body-parser": "latest",
     "ejs": "latest",
-    "method-override": "latest",
     "js-yaml": "latest",
     "node-html-encoder": "latest",
     "node-uuid": "latest",
     "underscore": "latest",
-    "bunyan": "latest"
+    "bunyan": "latest",
+    "nodemailer": "latest"
   },
   "devDependencies": {
     "mocha": "*"

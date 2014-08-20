@@ -50,12 +50,19 @@ var delayStartup = setInterval(function(){
   }
 });
 
+// -----------------------------------------------------------------------------------------
 process.on('uncaughtException', function(err){
+  var msg = 'Node experienced an unhandled exception! Terminating the cedilla delivery aggregator: ' + err.message;
+  
   // Write out to the console incase the issue lies with the logger itself.
-  console.log('Node experienced an unhandled exception! Terminating the cedilla delivery aggregator: ' + err.message);
+  console.log(msg);
   console.log(err.stack);
   
   log.error({object: 'cedilla.js'}, err);
+  
+  helper.contactAllNotifiers(msg, function(resp){
+    helper.contactAllNotifiers(err.stack, function(resp){});
+  });
   
   process.exit(1);
 });

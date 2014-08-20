@@ -28,17 +28,14 @@ log_path: './log/'
 #log_name: 'cedilla.log'
 
 # ---------------------------------------------------------------------------------
-# Turn this on to enable to built in default service so that you get data back when
-# you want to verify that everything was properly installed and the system is working.
+# Notifier settings
 #
-# This will kick off an http server on port 9000
-#
-# The server returns one item (including one of each child item). The 'default' service
-# must also be defined in services.yaml and be listed in the dispatch_always section
-# of the rules.yaml file
+# Notifiers must exist in ./notifiers/ and have corresponding config files in ./config/notifiers/
+# Do not include the file extension when listing notifiers
 # ---------------------------------------------------------------------------------
-default_content_service: true
-default_content_service_port: 9900
+notifiers:
+  - email
+#  - slack_irc
 
 # ---------------------------------------------------------------------------------
 # Socket settings
@@ -85,3 +82,16 @@ openurl_client_affiliation: 'cedilla:affiliation'
 #  timeout: 10000
 #  translate_from_code: 'http://localhost:3106/campus/?'
 #  translate_from_ip: 'http://localhost:3106/ip/?'
+
+# ---------------------------------------------------------------------------------
+# Turn this on to enable to built in default service so that you get data back when
+# you want to verify that everything was properly installed and the system is working.
+#
+# This will kick off an http server on port 9000
+#
+# The server returns one item (including one of each child item). The 'default' service
+# must also be defined in services.yaml and be listed in the dispatch_always section
+# of the rules.yaml file
+# ---------------------------------------------------------------------------------
+default_content_service: true
+default_content_service_port: 9900
