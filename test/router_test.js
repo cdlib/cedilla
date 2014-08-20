@@ -2,10 +2,8 @@ require('../init.js');
 require("./prep.js");
     
 describe('router.js testing', function(){
-  this.timeout(10000);
+  this.timeout(20000);
   
-	var os = require('os');
-	
   // ----------------------------------------------------------------------------------------
   before(function(done){
     // Wait for the config file and init.js have finished loading before starting up the server
@@ -13,12 +11,16 @@ describe('router.js testing', function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
 		
-        require('../cedilla.js');
-        
-        setTimeout(function(){
-          console.log('.... pausing to wait for Cedilla startup.');
-					done();
-				}, 1000);
+	      var server = require('../lib/server.js');
+
+	      // Bind to the port specified in the config/application.yaml or the default 3000
+	      // ----------------------------------------------------------------------------------------------
+	      server.listen((CONFIGS['application']['port'] || 3000), function(){
+	        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port'];
+
+	        console.log(msg);
+	        done();
+	      });
 			}
 		}, 500);
 	});
@@ -29,8 +31,6 @@ describe('router.js testing', function(){
   
 	  console.log('ROUTER: should return the index.ejs from ' + target);
   
-		console.log('host: ' + os.hostname());
-	
 	  sendRequest(url.parse(target), {}, function(status, headers, body){
 	    assert.equal(status, 200);
 			assert(body.indexOf('Test an OpenUrl') >= 0);

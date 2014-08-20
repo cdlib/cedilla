@@ -1,5 +1,11 @@
 require('./init.js');
 
+var online = false;
+
+module.exports = {
+	isOnline: function(){ return online; }
+}
+
 // Wait for the config file and init.js have finished loading before starting up the server
 var delayStartup = setInterval(function(){
   if(typeof helper != 'undefined'){
@@ -20,11 +26,23 @@ var delayStartup = setInterval(function(){
       }
     
       var server = require('./lib/server.js');
+
+      // Bind to the port specified in the config/application.yaml or the default 3000
+      // ----------------------------------------------------------------------------------------------
+      server.listen((CONFIGS['application']['port'] || 3000), function(){
+        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port'];
+
+        console.log(msg);
+        log.info({object: 'server.js'}, msg);
+        
+        online = true
+      });
   
       // Terminate the default service
       server.on('close', function(){
         log.info({object: 'cedilla.js'}, 'Shutting down web server.');
         stopDefaultService();
+        online = false
       });
       
       // Capture any server errors and log it. Shut down the default service if its running
@@ -63,6 +81,8 @@ process.on('uncaughtException', function(err){
   helper.contactAllNotifiers(msg, function(resp){
     helper.contactAllNotifiers(err.stack, function(resp){});
   });
+  
+  isOnline = false
   
   process.exit(1);
 });

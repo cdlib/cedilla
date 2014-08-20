@@ -24,20 +24,20 @@
     "url": "https://github.com/cdlib/cedilla/issues"
   },
   "dependencies": {
-    "socket.io": "1.0.6",
-    "socket.io-client": "1.0.6",
-    "express": "4.8.5",
-    "body-parser": "1.6.5",
-    "ejs": "1.0.0",
-    "js-yaml": "3.1.0",
-    "node-html-encoder": "0.0.2",
-    "node-uuid": "1.4.1",
-    "underscore": "1.6.0",
-    "bunyan": "1.0.0",
-    "nodemailer": "1.2.0"
+    "socket.io": "latest",
+    "socket.io-client": "latest",
+    "express": "latest",
+    "body-parser": "latest",
+    "ejs": "latest",
+    "js-yaml": "latest",
+    "node-html-encoder": "latest",
+    "node-uuid": "latest",
+    "underscore": "latest",
+    "bunyan": "latest",
+    "nodemailer": "latest"
   },
   "devDependencies": {
-    "mocha": "1.21.4"
+    "mocha": "*"
   },
   "scripts": {
      "test": "node_modules/.bin/mocha ./test/ --recursive",
