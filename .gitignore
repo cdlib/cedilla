@@ -6,6 +6,8 @@ config/application.yaml
 config/services.yaml
 config/rules.yaml
 
+config/notifiers/*.yaml
+
 bin/**/*
 *.out
 *.log
