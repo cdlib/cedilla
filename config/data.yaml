@@ -141,6 +141,8 @@ objects:
     validation:          # One of these fields is required for the author to be valid
       - ['last_name', 'full_name', 'corporate_author']
 
+    send_to_client_idenpendently: false
+
     attributes:
       - corporate_author
       - full_name
@@ -159,6 +161,8 @@ objects:
       - 'source'
       - ['target', 'local_id']
   
+    send_to_client_idenpendently: true
+
     attributes:
       - source
       - location
@@ -180,6 +184,8 @@ objects:
   error:
     default:
       level: 'error'
+
+    send_to_client_idenpendently: true
 
     attributes:
       - level

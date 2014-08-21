@@ -5,26 +5,34 @@ var delayStartup = setInterval(function(){
   if(typeof helper != 'undefined'){
     clearInterval(delayStartup);
 
-    // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
-		var defaultService = undefined,
-        defaultServiceRunning = false;
+		try{
+	    // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
+			var defaultService = undefined,
+	        defaultServiceRunning = false;
 				
-    if(CONFIGS['application']['default_content_service'] && !defaultServiceRunning){
-      defaultService = require('./lib/utils/default_service');
+	    if(CONFIGS['application']['default_content_service'] && !defaultServiceRunning){
+	      defaultService = require('./lib/utils/default_service');
 
-      defaultService.startDefaultService(CONFIGS['application']['default_content_service_port']);
-      defaultServiceRunning = true;
-    }
-
-		var server = require('./lib/server.js');
+	      defaultService.startDefaultService(CONFIGS['application']['default_content_service_port']);
+	      defaultServiceRunning = true;
+	    }
 		
-		server.on('close', function(){
-		  // Stop the stub service if its running
-		  if(defaultServiceRunning){
-		    defaultService.close();
-		    defaultServiceRunning = false;
-		  }
-		});
+			var server = require('./lib/server.js');
+	
+			// Terminate the default service
+			server.on('close', function(){
+			  // Stop the stub service if its running
+			  if(defaultServiceRunning){
+			    defaultService.close();
+			    defaultServiceRunning = false;
+			  }
+			});
+		
+		}catch(e){
+			console.log('Attempting to restart server.');
+			LOGGER.log('Attempting to restart server.');
+			
+			startServer();
+		}
 	}
 });
-
