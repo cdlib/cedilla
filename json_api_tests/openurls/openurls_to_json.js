@@ -5,35 +5,47 @@ describe('openurl tests to validate translation of incoming openurl requests int
   this.timeout(10000);
   
   var _tests = {},
-      _results = {};
+      _results = {},
+			file = undefined,
+			log_debug_old = undefined, log_info_old = undefined, log_error_old = undefined, log_warn_old = undefined, log_fatal_old = undefined;
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
     // Wait for the config file and init.js have finished loading before starting up the server
     var delayStartup = setInterval(function(){
-      if(typeof Item != 'undefined'){
-        clearInterval(delayStartup);
+			
+			stream = fs.createWriteStream(process.cwd() + '/json_api_tests/openurls/results.log');
+			
+			// Once the init file resources have loaded
+      if(typeof Item != 'undefined' && typeof log != 'undefined'){
+				// Once the file stream is ready
+				stream.once('open', function(fd){
+	        clearInterval(delayStartup);
         
-				require('../../cedilla.js');
+					require('../../cedilla.js');
 				
-        _oldServiceCallMethod = Service.prototype.call;
+	        _oldServiceCallMethod = Service.prototype.call;
   
-        // ----------------------------------------
-        Service.prototype.call = function(item, headers){
-          var _unmapped = querystring.parse(this._requestorParams['unmapped']);
+	        // ----------------------------------------
+	        Service.prototype.call = function(item, headers){
+	          var _unmapped = querystring.parse(this._requestorParams['unmapped']);
 
-          if(_unmapped['testing_for'] == 'holdings'){
+	          if(_unmapped['testing_for'] == 'holdings'){
       
-            _results[_unmapped['testing_name']] = serializer.itemToJsonForService(_unmapped['testing_id'], item, this._requestorParams);;
-          }
+	            _results[_unmapped['testing_name']] = serializer.itemToJsonForService(_unmapped['testing_id'], item, this._requestorParams);;
+	          }
           
-          this.emit('response', [new Item(rootItemType, false, {})]);
-        };
+	          this.emit('response', [new Item(rootItemType, false, {})]);
+	        };
   
-        // Load the tests file
-        _tests = yaml.load(fs.readFileSync(process.cwd() + '/json_api_tests/openurls/openurls.yaml', 'utf8'));
-          
-        done();
+	        // Load the tests file
+	        _tests = yaml.load(fs.readFileSync(process.cwd() + '/json_api_tests/openurls/openurls.yaml', 'utf8'));
+       
+					// Stop the noise from the logger
+					log.level('error');
+					
+	        done();
+				});
       }
     }, 100);
   });
@@ -42,6 +54,8 @@ describe('openurl tests to validate translation of incoming openurl requests int
   after(function(done){
     // Return the Service object back to its original state
     Service.prototype.call = _oldServiceCallMethod;
+		
+		if(stream) stream.end();
     done();
   });
 
@@ -57,7 +71,8 @@ describe('openurl tests to validate translation of incoming openurl requests int
     if(_tests){
       var _io = require('socket.io-client'),
       		_options = {transports: ['websocket'],
-                     'force new connection': false};
+                     'force new connection': false},
+					_written = 0;
 
       _.forEach(_tests, function(tests, service){
         console.log('OPENURL TESTS FOR: ' + service);
@@ -70,20 +85,34 @@ describe('openurl tests to validate translation of incoming openurl requests int
             clearInterval(check);
           
             _.forEach(_results, function(json, name){
-              console.log(name);
-              console.log(json);
-              console.log('-----------------------------------');
+							if(stream){
+								stream.write(name + "\r\n" + json + "\r\n-----------------------------------\r\n", '', function(){
+									_written ++;
+								});
+								
+							}else{
+								console.log('*** The stream was closed! ***');
+							}
             });
           
-            done();
+						var waitForWrites = setInterval(function(){
+							if(_written >= _completed){
+								clearInterval(waitForWrites);
+								
+								console.log('*** Finished writing ' + _written + ' results of test to results.log ***');
+								done();
+							}
+						});
           }
         }, 100);
       
         _.forEach(tests, function(openurl, test){
 					var _client = _io.connect('http://localhost:' + CONFIGS['application']['port'] + '/', _options);
 					
+					openurl += '&cedilla:affiliation=UCB&testing_for=' + service + '&testing_id=' + i + '&testing_name=' + test;
+					
           _client.on('connect', function(){
-            _client.emit('openurl', unescape(openurl).replace(/&amp;/g, '&') + '&testing_for=' + service + '&testing_id=' + i + '&testing_name=' + test);
+            _client.emit('openurl', unescape(openurl).replace(/&amp;/g, '&'));
 
             _client.on('complete', function (data) {
               _completed++; 

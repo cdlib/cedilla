@@ -1,0 +1,10 @@
+# This service uses the nodemailer module. Please refer to it for information on setting up
+# your transport information 
+# Leave these blank if you will be sending mail directly from the server over port 25
+service: ''
+username: ''
+password: ''
+
+from: '[cedilla@your.org]'
+to: '[your.email@your.org]'
+subject: 'Cedilla has encountered a potentially fatal error!'

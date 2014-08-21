@@ -141,9 +141,9 @@ describe('broker.js', function(){
     
     console.log('BROKER: checking errors are thrown for bad socket/item.');
     
-    assert.throws(function(){ new Broker(undefined, undefined); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
-    assert.throws(function(){ new Broker(undefined, _request); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_socket']); return true; });
-    assert.throws(function(){ new Broker(_socket, undefined); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
+    assert.throws(function(){ new Broker(undefined, undefined, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
+    assert.throws(function(){ new Broker(undefined, _request, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_socket']); return true; });
+    assert.throws(function(){ new Broker(_socket, undefined, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
     
     done();
   });
@@ -158,9 +158,9 @@ describe('broker.js', function(){
         
     _request.addReferent(_invalidItem);
   
-    var _broker = new Broker(_socket, _request);
+    var _broker = new Broker(_socket, _request, log);
   
-    _broker.processRequest(_request.getReferents()[0]);
+    _broker.processRequest(_request.getReferents()[0], function(){});
   
     assert.equal(_.size(_request.getErrors()), 1);
     assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_bad_item_message']);
@@ -183,9 +183,9 @@ describe('broker.js', function(){
   
     _request.addReferent(fullItem);
     
-    var _broker = new Broker(_socket, _request);
+    var _broker = new Broker(_socket, _request, log);
   
-    _broker.processRequest(_request.getReferents()[0]);
+    _broker.processRequest(_request.getReferents()[0], function(){});
   
     assert.equal(1, _.size(_request.getErrors()));
     assert.equal(_request.getErrors()[0], CONFIGS['message']['broker_no_services_available']);
@@ -206,7 +206,7 @@ describe('broker.js', function(){
     
     _request.addReferent(fullItem);
 
-    var _broker = new Broker(_socket, _request);
+    var _broker = new Broker(_socket, _request, log);
     
     assert.equal(_.size(_broker._getAvailableServices(emptyItem)), 0);
     
@@ -261,7 +261,7 @@ describe('broker.js', function(){
     
     _request.addReferent(fullItem);
 
-    var _broker = new Broker(_socket, _request),
+    var _broker = new Broker(_socket, _request, log),
         _services = _broker._getAvailableServices(emptyItem);
     
     assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
@@ -284,7 +284,7 @@ describe('broker.js', function(){
     
     _request.addReferent(fullItem);
 
-    var _broker = new Broker(_socket, _request),
+    var _broker = new Broker(_socket, _request, log),
         _blocks = {},
         _item = new Item(bareMinimumItem.getType(), false, bareMinimumItem.getAttributes());
     
@@ -329,11 +329,11 @@ describe('broker.js', function(){
     
     _request.addReferent(fullItem);
     
-    var _broker = new Broker(_socket, _request),
+    var _broker = new Broker(_socket, _request, log),
         _services = [];
     
     _.forEach(allServices, function(name){
-      _services.push(new Service(name));
+      _services.push(new Service(name, log));
     });
     
     _broker._prepareTiers(_services, _request.getReferrers());
@@ -379,9 +379,9 @@ describe('broker.js', function(){
     
     _request.addReferent(bareMinimumItem);
   
-    var _broker = new Broker(_socket, _request);
+    var _broker = new Broker(_socket, _request, log);
     
-    _broker.processRequest(_request.getReferents()[0]);
+    _broker.processRequest(_request.getReferents()[0], function(){});
   });
   
   // ---------------------------------------------------------------------------------------------------
@@ -396,7 +396,7 @@ describe('broker.js', function(){
       if(_processed){//} >= _total){
         _.forEach(_results, function(result){
           var json = JSON.parse(result),
-              svc = new Service(serviceDisplayNameToName(json.service));
+              svc = new Service(serviceDisplayNameToName(json.service), log);
               
           _.forEach(CONFIGS['data']['objects'], function(def, type){
             if(json[type]){
@@ -414,7 +414,7 @@ describe('broker.js', function(){
     
     _request.addReferent(bareMinimumItem);
   
-    var _broker = new Broker(_socket, _request);
+    var _broker = new Broker(_socket, _request, log);
     var _item = new Item(fullItemWithChildren.getType(), false, fullItemWithChildren.getAttributes());
 
     var i = 0,
@@ -423,7 +423,7 @@ describe('broker.js', function(){
     _.forEach(tierServices, function(svcs){
       if(i == 0){
         _.forEach(svcs, function(svc){
-          services.push(new Service(svc));
+          services.push(new Service(svc, log));
         });
       }
       i++;

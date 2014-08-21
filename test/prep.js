@@ -97,8 +97,18 @@ var delayStartup = setInterval(function(){
       }
     });
     
+    // ------------------------------------------------------------------------------------------------
+    // MOCK ALL NOTIFIER CALLS!
+    // ------------------------------------------------------------------------------------------------
+    _.forEach(notifiers, function(notifier, name){
+      notifier.prototype.sendMessage = function(message, callback){
+        callback('ok');
+      }
+    });
+    
     
     // ------------------------------------------------------------------------------------------------
+    module.exports = log = log;
     module.exports = rootItemType = _rootItemType;
     module.exports = emptyItem = _emptyItem;
     module.exports = bareMinimumItem = _bareMinimumItem;

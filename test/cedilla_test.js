@@ -2,8 +2,8 @@ require('../init.js');
 require('./prep.js');
     
 describe('cedilla.js testing', function(){
-  this.timeout(10000);
-  
+  this.timeout(20000);
+
   // ----------------------------------------------------------------------------------------
   before(function(done){
     // Wait for the config file and init.js have finished loading before starting up the server
@@ -11,13 +11,17 @@ describe('cedilla.js testing', function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
     
-        require('../cedilla.js');
+        var cedilla = require('../cedilla.js');
         
-        setTimeout(function(){
-          console.log('.... pausing to wait for Cedilla startup.');
-          done();
-        }, 1000);
-    
+        // This is not the ideal way to wait for the system to come online
+        var waitTilOnline = setInterval(function(){
+          if(cedilla.isOnline()){
+            clearInterval(waitTilOnline);
+            
+            console.log('Cedilla is now online.');
+            done();
+          }
+        }, 500);
       }
     });
   });
@@ -52,11 +56,11 @@ var sendRequest = function(target, payload, callback){
                    port: target.port,
                    path: target.path,
                    method: 'POST',
-									 headers: {'Content-Type': 'text/json; charset="utf-8"', 
-									                               'Content-Length': Buffer.byteLength(payload),
-									                               'Accept': 'text/json',
-									                               'Accept-Charset': 'utf-8',
-									                               'Cache-Control': 'no-cache'}};
+                   headers: {'Content-Type': 'text/json; charset="utf-8"', 
+                                                 'Content-Length': Buffer.byteLength(payload),
+                                                 'Accept': 'text/json',
+                                                 'Accept-Charset': 'utf-8',
+                                                 'Cache-Control': 'no-cache'}};
   try{
     var _request = _http.request(_options, function(response){
       var _data = '';
@@ -71,7 +75,7 @@ var sendRequest = function(target, payload, callback){
       });
     });
     
-		_request.write(payload);
+    _request.write(payload);
     _request.end();
   
   }catch(Error){

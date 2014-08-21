@@ -2,7 +2,7 @@ require('../init.js');
 require("./prep.js");
     
 describe('router.js testing', function(){
-  this.timeout(10000);
+  this.timeout(20000);
   
   // ----------------------------------------------------------------------------------------
   before(function(done){
@@ -11,18 +11,22 @@ describe('router.js testing', function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
 		
-        require('../cedilla.js');
-        
-        setTimeout(function(){
-          console.log('.... pausing to wait for Cedilla startup.');
-					done();
-				}, 1000);
+	      var server = require('../lib/server.js');
+
+	      // Bind to the port specified in the config/application.yaml or the default 3000
+	      // ----------------------------------------------------------------------------------------------
+	      server.listen((CONFIGS['application']['port'] || 3000), function(){
+	        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port'];
+
+	        console.log(msg);
+	        done();
+	      });
 			}
 		}, 500);
 	});
 
 	// ----------------------------------------------------------------------------------------
-	it('should return the index.html', function(done){
+	it('should return the index.ejs', function(done){
 	  var target = 'http://localhost:' + CONFIGS['application']['port'] + '/';
   
 	  console.log('ROUTER: should return the index.ejs from ' + target);
@@ -94,6 +98,11 @@ var sendRequest = function(target, headers, callback){
       });
     });
     
+		_request.on('error', function(err){
+			console.log(err.message);
+			console.log(err.stack);
+		});
+		
     _request.end();
   
   }catch(Error){

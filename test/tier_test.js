@@ -87,7 +87,7 @@ describe('tier.js', function(){
             var mockServices = [];
       
             _.forEach(svcs, function(def, name){
-              var svc = new Service(name);
+              var svc = new Service(name, log);
               svc.setTarget('http://localhost:9000/success');
         
               mockServices.push(svc);
@@ -95,7 +95,7 @@ describe('tier.js', function(){
               displayNames[name] = svc.getDisplayName();
             });
       
-            var tier = new Tier(tier);
+            var tier = new Tier(tier, log);
             tier.emit('register', mockServices);
       
             tiers.push(tier);
@@ -183,7 +183,7 @@ describe('tier.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('should return the name and the service count!', function(){
-    var tier = new Tier('test');
+    var tier = new Tier('test', log);
     
     console.log('.. TIER: checking initialization');
     
@@ -193,17 +193,17 @@ describe('tier.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('should be able to register services!', function(){
-    var tier = new Tier('test');
+    var tier = new Tier('test', log);
     
     console.log('.. TIER: checking service registration.');
     
     assert.equal('test', tier.getName());
     assert.equal(0, tier.getServiceCount());
     
-    tier.emit('register', [new Service('test'), new Service('test2')]);
+    tier.emit('register', [new Service('test', log), new Service('test2', log)]);
     assert.equal(2, tier.getServiceCount());
     
-    tier.emit('register', [new Service('test3')]);
+    tier.emit('register', [new Service('test3', log)]);
     assert.equal(3, tier.getServiceCount());
   });
   

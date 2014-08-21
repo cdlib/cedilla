@@ -4,7 +4,8 @@ describe('server.js testing', function(){
   this.timeout(20000);
   
   var item = undefined,
-      oldServiceCallMethod = undefined;
+      oldServiceCallMethod = undefined,
+      os = require('os');
   
   // ----------------------------------------------------------------------------------------
   before(function(done){
@@ -25,11 +26,15 @@ describe('server.js testing', function(){
           }
         });
     
-        require('../cedilla.js');
-        
-        setTimeout(function(){
-          console.log('.... pausing to wait for Cedilla startup.');
-					
+        var server = require('../lib/server.js');
+
+        // Bind to the port specified in the config/application.yaml or the default 3000
+        // ----------------------------------------------------------------------------------------------
+        server.listen((CONFIGS['application']['port'] || 3000), function(){
+          var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port'];
+
+          console.log(msg);
+          
           // Capture the original Service.call so that we can set it back after its been overriden
           oldServiceCallMethod = Service.prototype.call;
     
@@ -53,62 +58,62 @@ describe('server.js testing', function(){
      
             this.emit('response', [helper.mapToItem(type, false, map)]);
           };
-					
-					done();
-				}, 1000);
-				
-			}
-		});
-	});
+          
+          done();
+        });
+        
+      }
+    });
+  });
 
-	// ----------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------
   after(function(){
     Service.prototype.call = oldServiceCallMethod;
   });
-	
-	// ----------------------------------------------------------------------------------------
-	it('should establish a socket.io connection', function(done){
-	  var io = require('socket.io-client'),
-	      options = {transports: ['websocket'], 'force new connection': true};
   
-	  console.log('SERVER: should establish a socket.io connection and return at least one item type (except error)');
+  // ----------------------------------------------------------------------------------------
+  it('should establish a socket.io connection', function(done){
+    var io = require('socket.io-client'),
+        options = {transports: ['websocket'], 'force new connection': true};
   
-	  // -----------------------------------
-	  var client = io.connect('http://localhost:' + CONFIGS['application']['port'] + '/', options),
-	      message = false, error = false;
+    console.log('SERVER: should establish a socket.io connection and return at least one item type (except error)');
+  
+    // -----------------------------------
+    var client = io.connect('http://' + os.hostname() + ':' + CONFIGS['application']['port'] + '/', options),
+        message = false, error = false;
 
-	  client.on('connect_error', function(err){ console.log('err: ' + err); });
-	  client.on('reconnect_error', function(err){ console.log('reconnect err: ' + err); });
-	  client.on('connect_timeout', function(err){ console.log('timed out!'); });
+    client.on('connect_error', function(err){ console.log('err: ' + err); });
+    client.on('reconnect_error', function(err){ console.log('reconnect err: ' + err); });
+    client.on('connect_timeout', function(err){ console.log('timed out!'); });
 
-	  client.on('connect', function(data){
-	    client.emit('openurl', 'rft.isbn=9780300177619&rft.genre=book');
+    client.on('connect', function(data){
+      client.emit('openurl', 'rft.isbn=9780300177619&rft.genre=book');
   
-	    client.on('citation', function (data) {
-	      message = true;
-	    });
-	    client.on('author', function (data) {
-	      message = true;
-	    });
-	    client.on('resource', function (data) {
-	      message = true;
-	    });
+      client.on('citation', function (data) {
+        message = true;
+      });
+      client.on('author', function (data) {
+        message = true;
+      });
+      client.on('resource', function (data) {
+        message = true;
+      });
     
-	    client.on('error', function (data) {
-	      error = true;
-	    });
+      client.on('error', function (data) {
+        error = true;
+      });
 
-	    client.on('complete', function (data) {
-	      assert(message);
-	      assert(!error);
+      client.on('complete', function (data) {
+        assert(message);
+        assert(!error);
 
-	      client.disconnect();
-	      done();
-	    });
-	  });
+        client.disconnect();
+        done();
+      });
+    });
  
-	});
-	
+  });
+  
 });
 
 // ----------------------------------------------------------------------------------------
