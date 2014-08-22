@@ -5,7 +5,7 @@ socket.on('citation', function (data) {
 });
 
 socket.on('resource', function (data) {
-  $("#resource #first").after(formatHash('', JSON.parse(data)));
+  $("#resource #first").after('<div class="record">' + formatHash('', JSON.parse(data)) + '</div>');
 });
 
 socket.on('error', function (data) {
@@ -41,7 +41,7 @@ $("#post-openurl").click(function(){
 
 // -----------------------------------------------------------------------
 function formatKeyValue(key, val){
-	return '<div class="data"><label>' + key + ':</label> ' + val + '</div>';
+	return '<div class="data"><label>' + key + ':</label> ' + $('<span/>').html(val).text() + '</div>';
 }
 // -----------------------------------------------------------------------
 function formatHash(label, hash){
