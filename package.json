@@ -35,7 +35,8 @@
     "node-uuid": "latest",
     "underscore": "latest",
     "bunyan": "latest",
-    "nodemailer": "latest"
+    "nodemailer": "latest",
+    "npid": "latest"
   },
   "devDependencies": {
     "mocha": "*"

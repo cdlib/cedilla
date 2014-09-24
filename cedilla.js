@@ -1,6 +1,16 @@
 require('./init.js');
 
-var online = false;
+var npid = require('npid'),
+    online = false;
+
+// Generate the pid file
+try{
+	var pid = npid.create(process.cwd() + '/cedilla.pid', true);
+  pid.removeOnExit();
+	
+}catch(err){
+  console.log('Unable to create the PID file, ./cedilla.pid! ' + err);
+}
 
 module.exports = {
 	isOnline: function(){ return online; }
