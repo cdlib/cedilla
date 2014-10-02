@@ -5,15 +5,15 @@ var npid = require('npid'),
 
 // Generate the pid file
 try{
-	var pid = npid.create(process.cwd() + '/cedilla.pid', true);
+  var pid = npid.create(process.cwd() + '/cedilla.pid', true);
   pid.removeOnExit();
-	
+  
 }catch(err){
   console.log('Unable to create the PID file, ./cedilla.pid! ' + err);
 }
 
 module.exports = {
-	isOnline: function(){ return online; }
+  isOnline: function(){ return online; }
 }
 
 // Wait for the config file and init.js have finished loading before starting up the server
@@ -37,10 +37,14 @@ var delayStartup = setInterval(function(){
     
       var server = require('./lib/server.js');
 
+      var port = process.env.NODE_PORT;
+
+      if(port == undefined || port == '') port = (CONFIGS['application']['port'] || 3000);
+
       // Bind to the port specified in the config/application.yaml or the default 3000
       // ----------------------------------------------------------------------------------------------
-      server.listen((CONFIGS['application']['port'] || 3000), function(){
-        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + CONFIGS['application']['port'];
+      server.listen(port, function(){
+        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + port;
 
         console.log(msg);
         log.info({object: 'server.js'}, msg);
