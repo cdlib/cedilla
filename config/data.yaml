@@ -179,6 +179,9 @@ objects:
       - rating
       - availability
       - status
+      - locEntry
+      - restriction
+      - genreType
 
   # ----------------------------------------------------------
   error:
