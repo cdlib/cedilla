@@ -54,7 +54,7 @@ When a request comes in from the client it must be in the OpenURL format (JSON, 
 
 Cedilla has no front end, and it does not include any service endpoints. This was done by design and we feel it makes the system more flexible. You can  install the components from the list below to add canned front ends and services to yoour implementation of Cedilla or you can write your own using the documentation of the standard JSON interfaces outlined in the Wiki.  
 
-* Simple Web Client - https://github.com/cdlib/cedilla_web A very basic web site meant to get you up and running and able to test quickly.
+* Web Client - https://github.com/cdlib/cedilla_ui - and AngularJS single-page web client.
 
 * Cedilla Service Suite (Ruby based) - https://github.com/cdlib/cedilla_services A collection of services in one project. Each of the services can be deployed and run independently on different ports or on different servers. Currently contains services for: Internet Archive, SFX, Oclc Xid, CoverThing, and Worldcat Discovery API (in alpha)
 
