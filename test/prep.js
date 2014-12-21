@@ -122,13 +122,17 @@ var delayStartup = setInterval(function(){
     exports.dispatchAlwaysServiceCount = dispatchAlwaysServiceCount = _.size(_dispatchAlways);
     exports.dispatchAlwaysServices = dispatchAlwaysServices = _dispatchAlways;
     
-    module.exports = getTierNameForService = function(serviceName){ 
+    exports.getTierNameForService = getTierNameForService = function(serviceName){ 
       var ret = '';
       _.forEach(_tierServices, function(services, tier){ if(_.contains(services, serviceName)){ ret = tier; } });
       return ret;
     };
     
-    module.exports = serviceNameToDisplayName = function(name){ return _serviceNameToDisplayName[name]; }
-    module.exports = serviceDisplayNameToName = function(name){ return _serviceDisplayNameToName[name]; }
+    exports.serviceNameToDisplayName
+       = serviceNameToDisplayName 
+       = function(name){ return _serviceNameToDisplayName[name]; }
+    exports.serviceDisplayNameToName 
+      = serviceDisplayNameToName 
+      = function(name){ return _serviceDisplayNameToName[name]; }
   }
 });
