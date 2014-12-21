@@ -108,19 +108,19 @@ var delayStartup = setInterval(function(){
     
     
     // ------------------------------------------------------------------------------------------------
-    module.exports = log = log;
-    module.exports = rootItemType = _rootItemType;
-    module.exports = emptyItem = _emptyItem;
-    module.exports = bareMinimumItem = _bareMinimumItem;
-    module.exports = fullItem = _fullItem;
-    module.exports = fullItemWithChildren = _fullItemWithChildren;
+    exports.log = log;
+    exports.rootItemType = rootItemType = _rootItemType;
+    exports.emptyItem = emptyItem = _emptyItem;
+    exports.bareMinimumItem = bareMinimumItem = _bareMinimumItem;
+    exports.fullItem = fullItem = _fullItem;
+    exports.fullItemWithChildren = fullItemWithChildren = _fullItemWithChildren;
     
-    module.exports = totalServiceCount = _.size(_definedServices);
-    module.exports = allServices = _definedServices;
-    module.exports = tierServiceCount = _.size(_tierServices);
-    module.exports = tierServices = _tierServices;
-    module.exports = dispatchAlwaysServiceCount = _.size(_dispatchAlways);
-    module.exports = dispatchAlwaysServices = _dispatchAlways;
+    exports.totalServiceCount = totalServiceCount = _.size(_definedServices);
+    exports.allServices = allServices = _definedServices;
+    exports.tierServiceCount = tierServiceCount = _.size(_tierServices);
+    exports.tierServices = tierServices = _tierServices;
+    exports.dispatchAlwaysServiceCount = dispatchAlwaysServiceCount = _.size(_dispatchAlways);
+    exports.dispatchAlwaysServices = dispatchAlwaysServices = _dispatchAlways;
     
     module.exports = getTierNameForService = function(serviceName){ 
       var ret = '';
