@@ -1,4 +1,4 @@
-require("../init.js");
+require("../lib");
 require("./prep.js");
 
 var events = require('events'),
@@ -18,7 +18,7 @@ describe('broker.js', function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

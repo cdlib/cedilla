@@ -1,4 +1,4 @@
-require('../init.js');
+require('../lib');
 
 var mockery = require('./mock_services.js');
 

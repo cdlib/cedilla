@@ -1,4 +1,4 @@
-require('./init.js');
+require('./lib');
 
 var npid = require('npid'),
     online = false;

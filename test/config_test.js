@@ -1,4 +1,4 @@
-require('../init.js');
+require('../lib');
 
 var assert = require("assert");
     
