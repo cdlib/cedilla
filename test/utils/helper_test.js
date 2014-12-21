@@ -1,4 +1,4 @@
-require('../../init.js');
+require('../../lib');
     
 describe("helper.js", function(){
   this.timeout(20000);
@@ -7,7 +7,7 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial moduleshave finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

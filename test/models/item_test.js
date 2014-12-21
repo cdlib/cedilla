@@ -1,4 +1,4 @@
-require('../../init.js');
+require('../../lib');
         
 describe('item.js', function(){
   var attributes = {},
@@ -6,7 +6,7 @@ describe('item.js', function(){
   
   // ------------------------------------------------------------------------------------------------------  
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial have finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

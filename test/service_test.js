@@ -15,7 +15,7 @@ describe('service.js', function(){
   before(function(done){
     var type = '';
     
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial moduleshave finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

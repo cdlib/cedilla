@@ -1,4 +1,4 @@
-require('../../init.js');
+require('../../lib');
     
 describe("consortial.js", function(){
   //this.timeout(120000);
@@ -9,7 +9,7 @@ describe("consortial.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial moduleshave finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Consortial != 'undefined'){
         clearInterval(delayStartup);
