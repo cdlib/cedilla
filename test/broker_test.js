@@ -265,7 +265,7 @@ describe('broker.js', function(){
         _services = _broker._getAvailableServices(emptyItem);
     
     assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
-    
+   
     done();
   });
   
@@ -286,6 +286,7 @@ describe('broker.js', function(){
 
     var _broker = new Broker(_socket, _request, log),
         _blocks = {},
+        _services = _broker._getAvailableServices(emptyItem),
         _item = new Item(bareMinimumItem.getType(), false, bareMinimumItem.getAttributes());
     
     _.forEach(tierServices, function(services, tier){
@@ -317,7 +318,6 @@ describe('broker.js', function(){
 
     
     assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
-    
     done();
   });
   
@@ -421,7 +421,7 @@ describe('broker.js', function(){
         services = [];
         
     _.forEach(tierServices, function(svcs){
-      if(i == 0){
+      if(i === 0){
         _.forEach(svcs, function(svc){
           services.push(new Service(svc, log));
         });
