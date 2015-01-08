@@ -1,11 +1,11 @@
-require('../../init.js');
+require('../../lib');
         
 describe('request.js', function(){
   var params = undefined;
   
   // ------------------------------------------------------------------------------------------------------  
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

@@ -9,6 +9,9 @@
 # break the YAML parser and will cause the Aggregator to shutdown!
 # ------------------------------------------------------------------------------
 
+# General
+bad_param: '? is missing or has an illegal value'
+
 # Controller
 generic_http_error: "? encountered an error!"
 

@@ -1,4 +1,4 @@
-require('../../init.js');
+require('../../lib');
     
 var uuid = require('node-uuid');
     
@@ -13,7 +13,7 @@ describe("serializer.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and initial moduleshave finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);

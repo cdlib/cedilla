@@ -1,102 +1,102 @@
-require('./init.js');
 
-var npid = require('npid'),
-    online = false;
+require('./lib');
 
-// Generate the pid file
-try{
+var npid = require('npid'), online = false;
+
+try {
   var pid = npid.create(process.cwd() + '/cedilla.pid', true);
   pid.removeOnExit();
-  
-}catch(err){
+} catch (err) {
   console.log('Unable to create the PID file, ./cedilla.pid! ' + err);
 }
 
-module.exports = {
-  isOnline: function(){ return online; }
-}
+module.exports = exports = {
+  isOnline: function() {
+    return online;
+  }
+};
 
-// Wait for the config file and init.js have finished loading before starting up the server
-var delayStartup = setInterval(function(){
-  if(typeof helper != 'undefined'){
+// Wait for the config file and other modules have finished loading before starting up the server
+var delayStartup = setInterval(function() {
+  if (typeof helper !== 'undefined') {
     clearInterval(delayStartup);
 
-    try{
+    try {
       // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
-      var defaultService = undefined,
-          defaultServiceRunning = false;
-        
-      if(CONFIGS['application']['default_content_service'] && !defaultServiceRunning){
+      var defaultService, defaultServiceRunning = false;
+
+      if (CONFIGS.application.default_content_service && !defaultServiceRunning) {
         log.info({object: 'cedilla.js'}, 'Starting default service.');
-        
+
         defaultService = require('./lib/utils/default_service');
 
-        defaultService.startDefaultService(CONFIGS['application']['default_content_service_port']);
+        defaultService.startDefaultService(CONFIGS.application.efault_content_service_port);
         defaultServiceRunning = true;
       }
-    
+
       var server = require('./lib/server.js');
 
       var port = process.env.NODE_PORT;
 
-      if(port == undefined || port == '') port = (CONFIGS['application']['port'] || 3000);
+      if (typeof port === 'undefined' || port === '') {
+        port = (CONFIGS.application.port || 3000);
+      }
 
       // Bind to the port specified in the config/application.yaml or the default 3000
-      // ----------------------------------------------------------------------------------------------
-      server.listen(port, function(){
-        var msg = CONFIGS['application']['application_name'] + ' is now monitoring port ' + port;
+      server.listen(port, function() {
+        var msg = CONFIGS.application.application_name + ' is now monitoring port ' + port;
 
         console.log(msg);
         log.info({object: 'server.js'}, msg);
-        
-        online = true
+
+        online = true;
       });
-  
+
       // Terminate the default service
-      server.on('close', function(){
+      server.on('close', function() {
         log.info({object: 'cedilla.js'}, 'Shutting down web server.');
         stopDefaultService();
-        online = false
+        online = false;
       });
-      
+
       // Capture any server errors and log it. Shut down the default service if its running
-      server.on('error', function(err){
-        log.error({object: 'cedilla.js'}, err);        
+      server.on('error', function(err) {
+        log.error({object: 'cedilla.js'}, err);
         stopDefaultService();
       });
-      
-      
-      var stopDefaultService = function(){
+
+
+      var stopDefaultService = function() {
         // Stop the stub service if its running
-        if(defaultServiceRunning){
+        if (defaultServiceRunning) {
           log.info({object: 'cedilla.js'}, 'Shutting down default service.');
-          
+
           defaultService.close();
           defaultServiceRunning = false;
         }
       };
-    
-    }catch(e){
+
+    } catch (e) {
       log.error({object: 'cedilla.js'}, e);
     }
   }
 });
 
 // -----------------------------------------------------------------------------------------
-process.on('uncaughtException', function(err){
+process.on('uncaughtException', function(err) {
   var msg = 'Node experienced an unhandled exception! Terminating the cedilla delivery aggregator: ' + err.message;
-  
-  // Write out to the console incase the issue lies with the logger itself.
+
+  // Write out to the console in case the issue lies with the logger itself.
   console.log(msg);
   console.log(err.stack);
-  
+
   log.error({object: 'cedilla.js'}, err);
-  
-  helper.contactAllNotifiers(msg, function(resp){
-    helper.contactAllNotifiers(err.stack, function(resp){});
+
+  helper.contactAllNotifiers(msg, function(resp) {
+    helper.contactAllNotifiers(err.stack, function(resp) {
+    });
   });
-  
-  isOnline = false
-  
+
+  isOnline = false;
   process.exit(1);
 });

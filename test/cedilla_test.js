@@ -1,4 +1,4 @@
-require('../init.js');
+require('../lib');
 require('./prep.js');
     
 describe('cedilla.js testing', function(){
@@ -6,7 +6,7 @@ describe('cedilla.js testing', function(){
 
   // ----------------------------------------------------------------------------------------
   before(function(done){
-    // Wait for the config file and init.js have finished loading before starting up the server
+    // Wait for the config file and all modules have finished loading before starting up the server
     var delayStartup = setInterval(function(){
       if(typeof Item != 'undefined'){
         clearInterval(delayStartup);
