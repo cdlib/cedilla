@@ -136,14 +136,15 @@ describe('broker.js', function(){
   });
   
   // ---------------------------------------------------------------------------------------------------
-  it("should throw an error if the request or socket is missing.", function(done){
+  it("should throw an error if any parameter is not defined.", function(done){
     var _socket = new Socket(function(){});
     
-    console.log('BROKER: checking errors are thrown for bad socket/item.');
+    console.log('BROKER: checking errors are thrown for bad socket/item/log.');
     
     assert.throws(function(){ new Broker(undefined, undefined, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
     assert.throws(function(){ new Broker(undefined, _request, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_socket']); return true; });
     assert.throws(function(){ new Broker(_socket, undefined, log); }, function(err){ assert.equal(err.message, CONFIGS['message']['broker_bad_request']); return true; });
+    assert.throws(function(){ new Broker(_socket, _request); }, function(err){ assert.equal(err.message, helper.buildMessage(CONFIGS['message']['bad_param'], ['log'])); return true; });
     
     done();
   });
