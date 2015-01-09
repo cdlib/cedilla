@@ -1,13 +1,12 @@
 require('../../lib');
 
 describe('translator.js', function(){
-  var attributes = {'foo':'bar', 'one':'fish', 'two':'fish', 'red':'fish', 'blue':'fish'};
     
     
   before(function(done){
     // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function(){
-      if(typeof Item != 'undefined'){
+      if(typeof Item !== 'undefined'){
         clearInterval(delayStartup);
         
         done();
@@ -69,7 +68,7 @@ describe('translator.js', function(){
     
     console.log('TRANSLATOR: checking correct translations of individual keys for openurl');
     
-    _.forEach(CONFIGS['openurl'], function(externalName, internalName){
+    _.forEach(CONFIGS.openurl, function(externalName, internalName){
     
       if(externalName instanceof Array){
         // Make sure the translator matches each external name to the same internal name
@@ -132,7 +131,7 @@ describe('translator.js', function(){
     // ------------------------------------------------------------------
     // External to Internal
     
-    _.forEach(CONFIGS['openurl'], function(external, internal){
+    _.forEach(CONFIGS.openurl, function(external, internal){
       // Set the external key = to the internal key names
       if(external instanceof Array){
         _.forEach(external, function(val){
@@ -155,7 +154,7 @@ describe('translator.js', function(){
     // Internal to External
     
     mapIn = {};
-    _.forEach(CONFIGS['openurl'], function(external, internal){
+    _.forEach(CONFIGS.openurl, function(external, internal){
       // Set the internal key = to the first external key name
       if(_.size(external) > 0){
         mapIn[internal] = _.first(external);
@@ -165,7 +164,7 @@ describe('translator.js', function(){
       
     });
     
-    var mapOut = translator.translateMap(mapIn, true);
+    mapOut = translator.translateMap(mapIn, true);
       
     _.forEach(mapOut, function(value, key){
       // Make sure the translated keys match the internal names

@@ -3,27 +3,26 @@ require('../../lib');
 describe("helper.js", function(){
   this.timeout(20000);
 
-  var getAttributeMap = undefined;
+  var getAttributeMap;
   
   // ---------------------------------------------------------------------------------------------------
   before(function(done){
     // Wait for the config file and initial moduleshave finished loading before starting up the server
     var delayStartup = setInterval(function(){
-      if(typeof Item != 'undefined'){
+      if(typeof Item !== 'undefined'){
         clearInterval(delayStartup);
         
         getAttributeMap = function(type){
-          var map = {},
-              self = this;
+          var map = {};
 
-          if(typeof CONFIGS['data']['objects'][type] != 'undefined'){
+          if(typeof CONFIGS.data.objects[type] !== 'undefined'){
         
-            _.forEach(CONFIGS['data']['objects'][type]['attributes'], function(attribute){
+            _.forEach(CONFIGS.data.objects[type].attributes, function(attribute){
               map[attribute] = 'foo-bar';
             });
     
-            if(typeof CONFIGS['data']['objects'][type]['children'] != 'undefined'){
-              _.forEach(CONFIGS['data']['objects'][type]['children'], function(child){
+            if(typeof CONFIGS.data.objects[type].children !== 'undefined'){
+              _.forEach(CONFIGS.data.objects[type].children, function(child){
                 map[child + 's'] = [getAttributeMap(child)];
               });
             }
@@ -69,7 +68,7 @@ describe("helper.js", function(){
     
     console.log('HELPER: checking buildMessage');
   
-    _.forEach(CONFIGS['message'], function(value, key){
+    _.forEach(CONFIGS.message, function(value){
       var tmp = value,
           vals = [];
       
@@ -127,11 +126,10 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing itemToMap()', function(){
-    var self = this;
     
     console.log('HELPER: checking item to map conversion');
     
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
+    _.forEach(CONFIGS.data.objects, function(def, type){
       var map = getAttributeMap(type);
       
       var item = new Item(type, false, map);
@@ -153,13 +151,12 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing mapToItem()', function(){
-    var self = this;
     
     console.log('HELPER: checking map to item conversion');
   
     assert.throws(function(){ helper.mapToItem('foo', false, {}); });
     
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
+    _.forEach(CONFIGS.data.objects, function(def, type){
     
       var map = getAttributeMap(type);
     
@@ -186,13 +183,13 @@ describe("helper.js", function(){
         
     var hash = {},
         hash2 = {},
-        obj = undefined,
-        obj2 = undefined;
+        obj,
+        obj2;
     
     console.log('HELPER: checking flattened map (e.g. openurl) to item conversion');
   
     // Loop through the object definitions and translate their attribute names 
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
+    _.forEach(CONFIGS.data.objects, function(def, type){
       var map = translator.translateMap(getAttributeMap(type), true);
       
       _.forEach(map, function(v,k){
@@ -205,7 +202,7 @@ describe("helper.js", function(){
       });
       
       // Build the objects for both the defined and undefined translators for comparisson
-      if(typeof def['root'] != 'undefined'){
+      if(typeof def.root !== 'undefined'){
         obj = helper.mapToItem(type, false, map);
         obj2 = helper.mapToItem(type, false, map2);      
       }
@@ -249,8 +246,8 @@ describe("helper.js", function(){
     
     console.log('HELPER: checking root item');
   
-    _.forEach(CONFIGS['data']['objects'], function(def, type){
-      if(typeof def['root'] != 'undefined'){
+    _.forEach(CONFIGS.data.objects, function(def, type){
+      if(typeof def.root !== 'undefined'){
         root = type;
       }
     });
@@ -260,13 +257,12 @@ describe("helper.js", function(){
   
   // ---------------------------------------------------------------------------------------------------
   it('testing getCrossReference()', function(){
-    var root = '';
     
     console.log('HELPER: checking X-Ref lookups');
     
-    assert (typeof CONFIGS['xref'] != 'undefined');
+    assert (typeof CONFIGS.xref !== 'undefined');
     
-    _.forEach(CONFIGS['xref'], function(attributes, type){
+    _.forEach(CONFIGS.xref, function(attributes, type){
       _.forEach(attributes, function(xrefs, attr){
         
         // Only do a sampling because language has too many entries

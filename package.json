@@ -1,51 +1,51 @@
 {
-  "name": "cedilla",
-  "version": "0.0.6",
-  "description": "A delivery aggregation system for libraries and academic institutions",
-  "author": "Brian Riley <brian.riley@ucop.edu>",
-  "contributors": [{
-    "name": "Brian Riley",
-    "email": "brian.riley@ucop.edu"
+    "name": "cedilla",
+    "version": "0.0.6",
+    "description": "A delivery aggregation system for libraries and academic institutions",
+    "author": "Brian Riley <brian.riley@ucop.edu>",
+    "contributors": [{
+            "name": "Brian Riley",
+            "email": "brian.riley@ucop.edu"
+        },
+        {
+            "name": "Stephanie Collett",
+            "email": "stephanie.collett@ucop.edu"
+        },
+        {
+            "name": "Joe Ferrie",
+            "email": "joe.ferrie@ucop.edu"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cdlib/cedilla"
     },
-    {
-    "name": "Stephanie Collett",
-    "email": "stephanie.collett@ucop.edu"
+    "bugs": {
+        "url": "https://github.com/cdlib/cedilla/issues"
     },
-    {
-    "name": "Joe Ferrie",
-    "email": "joe.ferrie@ucop.edu"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cdlib/cedilla"
-  },
-  "bugs": {
-    "url": "https://github.com/cdlib/cedilla/issues"
-  },
-  "dependencies": {
-    "socket.io": "1.2.1",
-    "socket.io-client": "1.2.1",
-    "express": "4.10.7",
-    "body-parser": "1.10.1",
-    "method-override": "2.3.1",
-    "ejs": "1.0.0",
-    "js-yaml": "3.2.5",
-    "node-html-encoder": "0.0.2",
-    "node-uuid": "1.4.1",
-    "underscore": "1.7.0",
-    "bunyan": "1.2.3",
-    "nodemailer": "1.3.0",
-    "npid": "0.4.0"
-  },
-  "devDependencies": {
-    "mocha": "1.21.5"
-  },
-  "scripts": {
-     "test": "node_modules/.bin/mocha ./test/ --recursive",
-     "json_api_test": "node_modules/.bin/mocha ./json_api_tests/ --recursive"
-   },
-  "preferGlobal": true,
-  "private": true,
-  "license": "BSD-3-Clause"
+    "dependencies": {
+        "socket.io": "~1.2.1",
+        "socket.io-client": "~1.2.1",
+        "express": "~4.10.7",
+        "body-parser": "~1.10.1",
+        "method-override": "~2.3.1",
+        "ejs": "~1.0.0",
+        "js-yaml": "~3.2.5",
+        "node-html-encoder": "~0.0.2",
+        "node-uuid": "~1.4.1",
+        "underscore": "~1.7.0",
+        "bunyan": "~1.2.3",
+        "nodemailer": "~1.3.0",
+        "npid": "~0.4.0"
+    },
+    "devDependencies": {
+        "mocha": "~1.21.5"
+    },
+    "scripts": {
+        "test": "node_modules/.bin/mocha ./test/ --recursive",
+        "json_api_test": "node_modules/.bin/mocha ./json_api_tests/ --recursive"
+    },
+    "preferGlobal": true,
+    "private": true,
+    "license": "BSD-3-Clause"
 }
