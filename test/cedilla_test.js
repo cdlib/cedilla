@@ -8,7 +8,7 @@ describe('cedilla.js testing', function(){
   before(function(done){
     // Wait for the config file and all modules have finished loading before starting up the server
     var delayStartup = setInterval(function(){
-      if(typeof Item != 'undefined'){
+      if(typeof Item !== 'undefined'){
         clearInterval(delayStartup);
     
         var cedilla = require('../cedilla.js');
@@ -31,10 +31,10 @@ describe('cedilla.js testing', function(){
     
     console.log('CEDILLA: verifying that default_content_service starts up if its enabled in config/application.yaml');
     
-    if(CONFIGS['application']['default_content_service']){
-      var defaultService = url.parse('http://localhost:' + CONFIGS['application']['default_content_service_port'] + '/default');
+    if(CONFIGS.application.default_content_service){
+      var defaultService = url.parse('http://localhost:' + CONFIGS.application.default_content_service_port + '/default');
     
-      sendRequest(defaultService, serializer.itemToJsonForService('ABCD123', fullItem, false), function(status, headers, body){
+      sendRequest(defaultService, serializer.itemToJsonForService('ABCD123', fullItem, false), function(status){
         assert.equal(status, 200);
         
         done();
@@ -51,7 +51,6 @@ describe('cedilla.js testing', function(){
 // ----------------------------------------------------------------------------------------
 var sendRequest = function(target, payload, callback){
   var _http = require('http'),
-      _response = {},
       _options = {hostname: target.hostname,
                    port: target.port,
                    path: target.path,

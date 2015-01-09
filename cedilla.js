@@ -93,7 +93,9 @@ process.on('uncaughtException', function(err) {
   log.error({object: 'cedilla.js'}, err);
 
   helper.contactAllNotifiers(msg, function(resp) {
+    console.log('Contacting all notifiers with ' + JSON.stringify(resp));
     helper.contactAllNotifiers(err.stack, function(resp) {
+    console.log('Contacting all notifiers with ' + JSON.stringify(resp));
     });
   });
 
