@@ -8,12 +8,6 @@ describe('service.js', function() {
 
   var item, returnField, returnValue = 'foo-bar', mockServer;
 
-  var realGetMaxAttempts;
-  var realSetMaxAttempts;
-  var realGetTimeout;
-  var realSetTimeout;
-
-
   // ---------------------------------------------------------------------------------------------------
   before(function(done) {
     var type = '';
@@ -22,18 +16,6 @@ describe('service.js', function() {
     var delayStartup = setInterval(function() {
       if (typeof Item !== 'undefined') {
         clearInterval(delayStartup);
-
-        // save these so we can put them back after mocking them
-        realGetMaxAttempts = Service.prototype.getMaxAttempts;
-        realSetMaxAttempts = Service.prototype.setMaxAttempts;
-        realGetTimeout = Service.prototype.getTimeout;
-        realGetTranslator = Service.prototype.getTranslator;
-        realSetTranslator = Service.prototype.setTranslator;
-        realGetTarget = Service.prototype.getTarget;
-        realSetTarget = Service.prototype.setTarget;
-        realSetReferrerBlock = Service.prototype.setReferrerBlock;
-        realSetItemTypes = Service.prototype.setItemTypes;
-        realRunTest = Service.prototype.runTest;
 
         // ---------------------------------------------------------------------------------------------------
         // Mock some methods onto the Service object so we can manipulate and view all attributes
@@ -118,17 +100,17 @@ describe('service.js', function() {
     mockServer.close();
 
     // Remove monkey patches and return Service to its original state
-    Service.prototype.getMaxAttempts = realGetMaxAttempts;
-    Service.prototype.setMaxAttempts = realSetMaxAttempts;
-    Service.prototype.getTimeout = realGetTimeout;
-    Service.prototype.setTimeout = realSetTimeout;
-    Service.prototype.getTranslator = realGetTranslator;
-    Service.prototype.setTranslator = realSetTranslator;
-    Service.prototype.getTarget = realGetTarget;
-    Service.prototype.setTarget = realSetTarget;
-    Service.prototype.setReferrerBlock = realSetReferrerBlock;
-    Service.prototype.setItemTypes = realSetItemTypes;
-    Service.prototype.runTest = realRunTest;
+    Service.prototype.getMaxAttempts = undefined;
+    Service.prototype.setMaxAttempts = undefined;
+    Service.prototype.getTimeout = undefined;
+    Service.prototype.setTimeout = undefined;
+    Service.prototype.getTranslator = undefined;
+    Service.prototype.setTranslator = undefined;
+    Service.prototype.getTarget = undefined;
+    Service.prototype.setTarget = undefined;
+    Service.prototype.setReferrerBlock = undefined;
+    Service.prototype.setItemTypes = undefined;
+    Service.prototype.runTest = undefined;
 
     console.log('shutdown mock server.');
     done();
