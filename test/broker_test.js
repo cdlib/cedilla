@@ -1,7 +1,8 @@
 require("../lib");
 require("./prep.js");
 
-var events = require('events'), util = require('util');
+var events = require('events');
+util = require('util');
 
 // ---------------------------------------------------------------------------------------------------
 describe('broker.js', function() {
