@@ -1,7 +1,27 @@
 
-require('./lib');
+"use strict";
 
-var npid = require('npid'), online = false;
+require("./lib");
+
+var CONFIGS = require("./lib/config.js");
+var npid = require('npid');
+var online = false;
+
+// Setup a timer to wait for the CONFIGS to get loaded before loading
+// modules that depend on CONFIGS
+// fs operations in config may be causing this problem?
+var i = 0;
+var log;
+var helper;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    log = require('./lib/logger.js');
+    helper = require("./lib/utils/helper.js");
+  }
+  i++;
+}, 200);
 
 try {
   var pid = npid.create(process.cwd() + '/cedilla.pid', true);
@@ -95,10 +115,10 @@ process.on('uncaughtException', function(err) {
   helper.contactAllNotifiers(msg, function(resp) {
     console.log('Contacting all notifiers with ' + JSON.stringify(resp));
     helper.contactAllNotifiers(err.stack, function(resp) {
-    console.log('Contacting all notifiers with ' + JSON.stringify(resp));
+      console.log('Contacting all notifiers with ' + JSON.stringify(resp));
     });
   });
 
-  isOnline = false;
+  online = false;
   process.exit(1);
 });
