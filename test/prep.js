@@ -1,3 +1,5 @@
+"use strict";
+
 var _rootItemType = '',
         _emptyItem,
         _bareMinimumItem,
@@ -9,6 +11,30 @@ var _rootItemType = '',
         _dispatchAlways = [],
         _definedServices = [],
         _tierServices = {};
+
+var _ = require('underscore');
+
+var CONFIGS = require("../lib/config.js");
+
+
+
+// Setup a timer to wait for the CONFIGS to get loaded before loading
+// modules that depend on CONFIGS
+// fs operations in config may be causing this problem?
+var i = 0;
+var log;
+var helper;
+var Item;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    Item = require("../lib/models/item.js");
+    helper = require("../lib/utils/helper.js");
+    log = require('../lib/logger.js');
+  }
+  i++;
+}, 200);
 
 // Wait for the config file and all modules have finished loading before starting up the server
 var delayStartup = setInterval(function() {
@@ -102,7 +128,7 @@ var delayStartup = setInterval(function() {
     // ------------------------------------------------------------------------------------------------
     // MOCK ALL NOTIFIER CALLS!
     // ------------------------------------------------------------------------------------------------
-    _.forEach(notifiers, function(notifier) {
+    _.forEach(helper.getNotifiers(), function(notifier) {
       notifier.prototype.sendMessage = function(message, callback) {
         callback('ok');
       };
@@ -111,20 +137,22 @@ var delayStartup = setInterval(function() {
 
     // ------------------------------------------------------------------------------------------------
     exports.log = log;
-    exports.rootItemType = rootItemType = _rootItemType;
-    exports.emptyItem = emptyItem = _emptyItem;
-    exports.bareMinimumItem = bareMinimumItem = _bareMinimumItem;
-    exports.fullItem = fullItem = _fullItem;
-    exports.fullItemWithChildren = fullItemWithChildren = _fullItemWithChildren;
+    
+    // TODO: remove global assigments
+    exports.rootItemType = global.rootItemType = _rootItemType;
+    exports.emptyItem = global.emptyItem = _emptyItem;
+    exports.bareMinimumItem = global.bareMinimumItem = _bareMinimumItem;
+    exports.fullItem = global.fullItem = _fullItem;
+    exports.fullItemWithChildren = global.fullItemWithChildren = _fullItemWithChildren;
 
-    exports.totalServiceCount = totalServiceCount = _.size(_definedServices);
-    exports.allServices = allServices = _definedServices;
-    exports.tierServiceCount = tierServiceCount = _.size(_tierServices);
-    exports.tierServices = tierServices = _tierServices;
-    exports.dispatchAlwaysServiceCount = dispatchAlwaysServiceCount = _.size(_dispatchAlways);
-    exports.dispatchAlwaysServices = dispatchAlwaysServices = _dispatchAlways;
+    exports.totalServiceCount = global.totalServiceCount = _.size(_definedServices);
+    exports.allServices = global.allServices = _definedServices;
+    exports.tierServiceCount = global.tierServiceCount = _.size(_tierServices);
+    exports.tierServices = global.tierServices = _tierServices;
+    exports.dispatchAlwaysServiceCount = global.dispatchAlwaysServiceCount = _.size(_dispatchAlways);
+    exports.dispatchAlwaysServices = global.dispatchAlwaysServices = _dispatchAlways;
 
-    exports.getTierNameForService = getTierNameForService = function(serviceName) {
+    exports.getTierNameForService = global.getTierNameForService = function(serviceName) {
       var ret = '';
       _.forEach(_tierServices, function(services, tier) {
         if (_.contains(services, serviceName)) {
@@ -134,10 +162,10 @@ var delayStartup = setInterval(function() {
       return ret;
     };
 
-    exports.serviceNameToDisplayName = serviceNameToDisplayName = function(name) {
+    exports.serviceNameToDisplayName = global.serviceNameToDisplayName = function(name) {
       return _serviceNameToDisplayName[name];
     };
-    exports.serviceDisplayNameToName = serviceDisplayNameToName = function(name) {
+    exports.serviceDisplayNameToName = global.serviceDisplayNameToName = function(name) {
       return _serviceDisplayNameToName[name];
     };
   }

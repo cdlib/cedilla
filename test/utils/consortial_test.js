@@ -1,4 +1,9 @@
-require('../../lib');
+"use strict";
+
+var assert = require('assert');
+
+var CONFIGS = require("../../lib/config.js");
+var Consortial = require("../../lib/utils/consortial.js");
 
 describe("consortial.js", function() {
 

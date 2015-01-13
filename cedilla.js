@@ -1,8 +1,6 @@
 
 "use strict";
 
-require("./lib");
-
 var CONFIGS = require("./lib/config.js");
 var npid = require('npid');
 var online = false;

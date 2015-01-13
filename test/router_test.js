@@ -1,5 +1,24 @@
-require('../lib');
-require("./prep.js");
+"use strict";
+
+var assert = require('assert');
+var _ = require('underscore');
+var url = require('url');
+
+var CONFIGS = require("../lib/config.js");
+
+var helper;
+var TEST;
+var i = 0;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    helper = require("../lib/utils/helper.js");
+    TEST = require("./prep.js");
+  }
+  i++;
+}, 200);
+
 
 describe('router.js testing', function() {
   this.timeout(20000);
@@ -42,7 +61,7 @@ describe('router.js testing', function() {
   // ----------------------------------------------------------------------------------------
   it('should call the citation echo service', function(done) {
     // This one gets a decent test of the OpenURL conversion as well
-    var qs = helper.mapToQueryString(helper.itemToMap(fullItem)),
+    var qs = helper.mapToQueryString(helper.itemToMap(TEST.fullItem)),
             target = 'http://localhost:' + CONFIGS.application.port + '/citation?' + qs;
 
     console.log('ROUTER: should properly echo back the openURL as a citation item (as JSON)');
@@ -54,7 +73,7 @@ describe('router.js testing', function() {
       assert.equal('application/json', headers['content-type']);
 
       var json = JSON.parse(body),
-              config = CONFIGS.data.objects[fullItem.getType()].attributes;
+              config = CONFIGS.data.objects[TEST.fullItem.getType()].attributes;
 
       _.forEach(config, function(attribute) {
         if (attribute === 'original_citation') {

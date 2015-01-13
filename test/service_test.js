@@ -1,6 +1,33 @@
-require('../lib');
+"use strict";
 
-var mockery = require('./mock_services.js');
+var _ = require('underscore');
+var assert = require('assert');
+
+var CONFIGS = require("../lib/config.js");
+
+// Setup a timer to wait for the CONFIGS to get loaded before loading
+// modules that depend on CONFIGS
+// fs operations in config may be causing this problem?
+var i = 0;
+var mockery;
+var Service;
+var log;
+var helper;
+var Item;
+var Translator;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    mockery = require('./mock_services.js');
+    Service = require("../lib/service.js");
+    log = require('../lib/logger.js');
+    helper = require("../lib/utils/helper.js");
+    Item = require("../lib/models/item.js");
+    Translator = require("../lib/utils/translator.js");
+  }
+  i++;
+}, 200);
 
 // ---------------------------------------------------------------------------------------------------
 describe('service.js', function() {

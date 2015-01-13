@@ -1,6 +1,10 @@
-require('../lib');
+"use strict";
 
-var assert = require("assert");
+var assert = require('assert');
+var _ = require('underscore');
+var fs = require('fs');
+
+var CONFIGS = require("../lib/config.js");
 
 describe('config.js testing', function() {
   this.timeout(10000);
@@ -11,7 +15,7 @@ describe('config.js testing', function() {
   before(function(done) {
 
     // Scan file for config references
-    _scanFile = function(file) {
+    var _scanFile = function(file) {
       fs.readFile(file, function(err, data) {
         if (err) {
           throw err;

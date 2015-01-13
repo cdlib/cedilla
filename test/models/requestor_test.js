@@ -1,4 +1,9 @@
-require('../../lib');
+"use strict";
+
+var _ = require('underscore');
+var assert = require('assert');
+
+var Requestor = require("../../lib/models/requestor.js");
 
 describe('request.js', function() {
   var params;

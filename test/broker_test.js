@@ -1,8 +1,42 @@
-require("../lib");
-require("./prep.js");
+"use strict";
 
 var events = require('events');
-util = require('util');
+var util = require('util');
+var _ = require('underscore');
+var assert = require('assert');
+
+var CONFIGS = require("../lib/config.js");
+
+
+// Setup a timer to wait for the CONFIGS to get loaded before loading
+// modules that depend on CONFIGS
+// fs operations in config may be causing this problem?
+var i = 0;
+var log;
+var helper;
+var Broker;
+var Item;
+var Tier;
+var Service;
+var Request;
+var serializer;
+var TEST;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    TEST = require("./prep.js");
+    log = require('../lib/logger.js');
+    helper = require("../lib/utils/helper.js");
+    Broker = require("../lib/broker.js");
+    Item = require("../lib/models/item.js");
+    Tier = require("../lib/tier.js");
+    Service = require("../lib/service.js");
+    Request = require("../lib/models/request.js");
+    serializer = require("../lib/utils/serializer.js");
+  }
+  i++;
+}, 200);
 
 // ---------------------------------------------------------------------------------------------------
 describe('broker.js', function() {
@@ -34,10 +68,10 @@ describe('broker.js', function() {
 
           _.forEach(_self._queue, function(service) {
             if (item.getAttribute('title') === 'full_stack') {
-              console.log(fullItemWithChildren.getAttribute('authors'));
-              _items = [helper.mapToItem(rootItemType, true, fullItemWithChildren)];
+              console.log(TEST.fullItemWithChildren.getAttribute('authors'));
+              _items = [helper.mapToItem(TEST.rootItemType, true, TEST.fullItemWithChildren)];
             } else {
-              _items = [helper.mapToItem(rootItemType, true, fullItem)];
+              _items = [helper.mapToItem(TEST.rootItemType, true, TEST.fullItem)];
             }
 
             if (service instanceof Service) {
@@ -179,7 +213,7 @@ describe('broker.js', function() {
     var _socket = new Socket(function() {
     });
 
-    var _invalidItem = new Item(rootItemType, false, {'foo': 'bar'});
+    var _invalidItem = new Item(TEST.rootItemType, false, {'foo': 'bar'});
 
     _request.addReferent(_invalidItem);
 
@@ -214,7 +248,7 @@ describe('broker.js', function() {
       return [];
     };
 
-    _request.addReferent(fullItem);
+    _request.addReferent(TEST.fullItem);
 
     var _broker = new Broker(_socket, _request, log);
 
@@ -239,17 +273,17 @@ describe('broker.js', function() {
 
     console.log('BROKER: testing available service construction for specified rules.');
 
-    _request.addReferent(fullItem);
+    _request.addReferent(TEST.fullItem);
 
     var _broker = new Broker(_socket, _request, log);
 
-    assert.equal(_.size(_broker._getAvailableServices(emptyItem)), 0);
+    assert.equal(_.size(_broker._getAvailableServices(TEST.emptyItem)), 0);
 
     var _options = {},
             _service = '';
 
     // Get a set of valid attribute values from rules.yaml
-    _.forEach(CONFIGS.rules.objects[bareMinimumItem.getType()], function(rules, attribute) {
+    _.forEach(CONFIGS.rules.objects[TEST.bareMinimumItem.getType()], function(rules, attribute) {
       // This is the first attribute so grab its last value and services 
       if (_service === '') {
         _.forEach(rules, function(services, value) {
@@ -266,7 +300,7 @@ describe('broker.js', function() {
             // Remove any of the other services if they aren't a match for this attribute's value OR its not one
             // of the defined services (e.g. its not enabled in the config)
             _.forEach(_service, function(svc) {
-              if (!_.contains(services, svc) || !_.contains(allServices, svc)) {
+              if (!_.contains(services, svc) || !_.contains(TEST.allServices, svc)) {
                 _service.splice(_service.indexOf(svc), 1);
               }
             });
@@ -275,8 +309,8 @@ describe('broker.js', function() {
       }
     });
 
-    var _params = bareMinimumItem.getAttributes(),
-            _item = new Item(bareMinimumItem.getType(), false, _params);
+    var _params = TEST.bareMinimumItem.getAttributes(),
+            _item = new Item(TEST.bareMinimumItem.getType(), false, _params);
 
 
     _.forEach(_options, function(value, attribute) {
@@ -295,12 +329,12 @@ describe('broker.js', function() {
 
     console.log('BROKER: testing allocation of dispatch_always designated services.');
 
-    _request.addReferent(fullItem);
+    _request.addReferent(TEST.fullItem);
 
     var _broker = new Broker(_socket, _request, log),
-            _services = _broker._getAvailableServices(emptyItem);
+            _services = _broker._getAvailableServices(TEST.emptyItem);
 
-    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
+    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), TEST.dispatchAlwaysServiceCount);
 
     done();
   });
@@ -319,14 +353,14 @@ describe('broker.js', function() {
 
     console.log('BROKER: testing removal of services that call back out to the referer.');
 
-    _request.addReferent(fullItem);
+    _request.addReferent(TEST.fullItem);
 
     var _broker = new Broker(_socket, _request, log),
             _blocks = {},
-            _services = _broker._getAvailableServices(emptyItem),
-            _item = new Item(bareMinimumItem.getType(), false, bareMinimumItem.getAttributes());
+            _services = _broker._getAvailableServices(TEST.emptyItem),
+            _item = new Item(TEST.bareMinimumItem.getType(), false, TEST.bareMinimumItem.getAttributes());
 
-    _.forEach(tierServices, function(services, tier) {
+    _.forEach(TEST.tierServices, function(services, tier) {
       _.forEach(services, function(service) {
         if (CONFIGS.services.tiers[tier][service].do_not_call_if_referrer_from) {
           _blocks[service] = CONFIGS.services.tiers[tier][service].do_not_call_if_referrer_from;
@@ -336,8 +370,8 @@ describe('broker.js', function() {
 
     // Get a set of valid attribute values for the service!
     _.forEach(_blocks, function(domains, service) {
-      if (!_.contains(dispatchAlwaysServices, service)) {
-        _.forEach(CONFIGS.rules.objects[bareMinimumItem.getType()], function(rules, attribute) {
+      if (!_.contains(TEST.dispatchAlwaysServices, service)) {
+        _.forEach(CONFIGS.rules.objects[TEST.bareMinimumItem.getType()], function(rules, attribute) {
           _.forEach(rules, function(services, value) {
             if (_.contains(services, service)) {
               _item.addAttribute(attribute, value);
@@ -347,14 +381,14 @@ describe('broker.js', function() {
       }
 
       _.forEach(domains, function(domain) {
-        assert(_broker._removeServiceForReferer(getTierNameForService(service), service, [domain]));
-        assert(!_broker._removeServiceForReferer(getTierNameForService(service), service, ['blah.edu']));
+        assert(_broker._removeServiceForReferer(TEST.getTierNameForService(service), service, [domain]));
+        assert(!_broker._removeServiceForReferer(TEST.getTierNameForService(service), service, ['blah.edu']));
       });
     });
 
 
 
-    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), dispatchAlwaysServiceCount);
+    assert.equal(_.size(_broker._addAlwaysRunServices(_services)), TEST.dispatchAlwaysServiceCount);
     done();
   });
 
@@ -365,12 +399,12 @@ describe('broker.js', function() {
 
     console.log('BROKER: testing assignment of services to their appropriate tier.');
 
-    _request.addReferent(fullItem);
+    _request.addReferent(TEST.fullItem);
 
     var _broker = new Broker(_socket, _request, log),
             _services = [];
 
-    _.forEach(allServices, function(name) {
+    _.forEach(TEST.allServices, function(name) {
       _services.push(new Service(name, log));
     });
 
@@ -378,7 +412,7 @@ describe('broker.js', function() {
 
     _.forEach(_broker._tiers, function(tier) {
       _.forEach(tier._queue, function(service) {
-        assert(_.contains(tierServices[tier.getName()], service.getName()));
+        assert(_.contains(TEST.tierServices[tier.getName()], service.getName()));
       });
     });
 
@@ -389,7 +423,7 @@ describe('broker.js', function() {
   it("checking processing of responses from tiers", function(done) {
     console.log('BROKER: testing handling of tier responses.');
 
-    _processed = false;
+    var _processed = false;
 
     var interval = setInterval(function() {
       // Make sure each tier completes
@@ -409,13 +443,13 @@ describe('broker.js', function() {
           assert(result.indexOf('"time":') >= 0);
           assert(result.indexOf('"api_ver":') >= 0);
           assert(result.indexOf('"service":') >= 0);
-          assert(result.indexOf('"' + rootItemType + '":') >= 0);
+          assert(result.indexOf('"' + TEST.rootItemType + '":') >= 0);
         }
       });
       _processed = true;
     });
 
-    _request.addReferent(bareMinimumItem);
+    _request.addReferent(TEST.bareMinimumItem);
 
     var _broker = new Broker(_socket, _request, log);
 
@@ -434,7 +468,7 @@ describe('broker.js', function() {
       if (_processed) {//} >= _total){
         _.forEach(_results, function(result) {
           var json = JSON.parse(result),
-                  svc = new Service(serviceDisplayNameToName(json.service), log);
+                  svc = new Service(TEST.serviceDisplayNameToName(json.service), log);
 
           _.forEach(CONFIGS.data.objects, function(def, type) {
             if (json[type]) {
@@ -451,15 +485,15 @@ describe('broker.js', function() {
     var _socket = new Socket(function() {
     });
 
-    _request.addReferent(bareMinimumItem);
+    _request.addReferent(TEST.bareMinimumItem);
 
     var _broker = new Broker(_socket, _request, log);
-    var _item = new Item(fullItemWithChildren.getType(), false, fullItemWithChildren.getAttributes());
+    var _item = new Item(TEST.fullItemWithChildren.getType(), false, TEST.fullItemWithChildren.getAttributes());
 
     var i = 0,
             services = [];
 
-    _.forEach(tierServices, function(svcs) {
+    _.forEach(TEST.tierServices, function(svcs) {
       if (i === 0) {
         _.forEach(svcs, function(svc) {
           services.push(new Service(svc, log));
