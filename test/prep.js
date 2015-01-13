@@ -1,5 +1,7 @@
 "use strict";
 
+require("../lib");
+
 var _rootItemType = '',
         _emptyItem,
         _bareMinimumItem,
