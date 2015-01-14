@@ -15,7 +15,7 @@ var log;
 var helper;
 
 var waitForConfigs = setInterval(function() {
-  if (typeof global.CONFIGS.application !== 'undefined' || i >= 2000) {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     log = require('./lib/logger.js');
     helper = require("./lib/utils/helper.js");
