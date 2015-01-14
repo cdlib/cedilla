@@ -8,12 +8,14 @@ var CONFIGS = require("../lib/config.js");
 
 var helper;
 var TEST;
+var Item;
 var i = 0;
 
 var waitForConfigs = setInterval(function() {
   if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     helper = require("../lib/utils/helper.js");
+    Item = "../lib/models/item.js";
     TEST = require("./prep.js");
   }
   i++;

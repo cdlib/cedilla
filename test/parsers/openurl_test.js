@@ -11,6 +11,7 @@ var CONFIGS = require("../../lib/config.js");
 var i = 0;
 var OpenUrlParser;
 var Request;
+var Item;
 
 
 var waitForConfigs = setInterval(function() {
@@ -18,6 +19,7 @@ var waitForConfigs = setInterval(function() {
     clearInterval(waitForConfigs);
     OpenUrlParser = require("../../lib/parsers/openurl.js");
     Request = require("../../lib/models/request.js");
+    Item = require("../../lib/models/item.js");
   }
   i++;
 }, 200);

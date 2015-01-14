@@ -10,12 +10,14 @@ var CONFIGS = require("../../lib/config.js");
 // fs operations in config may be causing this problem?
 var i = 0;
 var Translator;
+var Item;
 
 
 var waitForConfigs = setInterval(function() {
   if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     Translator = require("../../lib/utils/translator.js");
+    Item = require("../../lib/models/item.js");;
   }
   i++;
 }, 200);

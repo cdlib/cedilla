@@ -12,7 +12,8 @@ describe('request.js', function() {
   before(function(done) {
     // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function() {
-      if (typeof Item !== 'undefined') {
+      // global avoids problem with log loading
+      if (typeof global.Item !== 'undefined') {
         clearInterval(delayStartup);
 
         params = {"affiliation": "CAMPUS-A",
