@@ -1,6 +1,8 @@
 
 "use strict";
 
+require('./lib/init_globals.js');
+
 var CONFIGS = require("./lib/config.js");
 var npid = require('npid');
 var online = false;
@@ -13,7 +15,7 @@ var log;
 var helper;
 
 var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+  if (typeof global.CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     log = require('./lib/logger.js');
     helper = require("./lib/utils/helper.js");
