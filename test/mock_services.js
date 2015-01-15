@@ -1,12 +1,16 @@
-var net = require('http'),
-        url = require('url');
+"use strict";
+
+var net = require('http');
+var url = require('url');
+
+var CONFIGS = require("../lib/config.js");
 
 module.exports = {
   // ----------------------------------------------------------------------------------------------
   // Mock external service for testing
   // ----------------------------------------------------------------------------------------------
   spinUpServer: function(returnField, returnValue) {
-    mockService = net.createServer(function(request, response) {
+    var mockService = net.createServer(function(request, response) {
       var now = new Date(), body = '';
 
       // Do routing 
@@ -18,7 +22,7 @@ module.exports = {
       var timeout = (route === '/timeout' ? 1 : 20000);
 
       request.setTimeout(timeout, function() {
-        console.log('timeout while trying to connect to ' + self._name);
+        console.log('timeout while trying to connect to ' + this._name);
       });
 
       // Chunk up the data coming through in the request - kill it if it its too much
