@@ -1,6 +1,31 @@
-require("../lib");
+"use strict";
 
 var mockery = require('./mock_services.js');
+var _ = require('underscore');
+var assert = require('assert');
+
+var CONFIGS = require("../lib/config.js");
+
+var i = 0;
+var Service;
+var Item;
+var Tier;
+var log;
+var helper;
+var configHelper;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    Item = require("../lib/models/item.js");
+    Tier = require("../lib/tier.js");
+    Service = require("../lib/service.js");
+    log = require('../lib/logger.js');
+    helper = require("../lib/utils/helper.js");
+    configHelper = require("../lib/utils/config_helper.js");
+  }
+  i++;
+}, 200);
 
 // ---------------------------------------------------------------------------------------------------
 describe('tier.js', function() {
@@ -430,7 +455,7 @@ describe('tier.js', function() {
 
         // The number of passed tests should match the number of services tested.
         assert(_passed);
-        assert.equal(helper.buildMessage(CONFIGS.message.tier_timeout, [tier.getName()]), _message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.tier_timeout, [tier.getName()]), _message);
 
         clearInterval(tierTimeoutHB);
 

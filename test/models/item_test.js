@@ -1,4 +1,23 @@
-require('../../lib');
+"use strict";
+
+var assert = require('assert');
+var _ = require('underscore');
+
+var CONFIGS = require("../../lib/config.js");
+
+// Setup a timer to wait for the CONFIGS to get loaded before loading
+// modules that depend on CONFIGS
+// fs operations in config may be causing this problem?
+var i = 0;
+var Item;
+
+var waitForConfigs = setInterval(function() {
+  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
+    clearInterval(waitForConfigs);
+    Item = require("../../lib/models/item.js");
+  }
+  i++;
+}, 200);
 
 describe('item.js', function() {
   var attributes = {},
