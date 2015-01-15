@@ -13,7 +13,7 @@ describe('request.js', function() {
     // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function() {
       // global avoids problem with log loading
-      if (typeof global.Item !== 'undefined') {
+      if (typeof global.cdla.Item !== 'undefined') {
         clearInterval(delayStartup);
 
         params = {"referrers": ["www.domain.org"],
