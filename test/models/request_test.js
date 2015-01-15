@@ -12,7 +12,8 @@ describe('request.js', function() {
   before(function(done) {
     // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function() {
-      // global avoids problem with log loading
+      
+      // global avoids obscure problem with log loading
       if (typeof global.cdla.Item !== 'undefined') {
         clearInterval(delayStartup);
 
