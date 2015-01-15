@@ -10,6 +10,7 @@ var CONFIGS = require("../../lib/config.js");
 // fs operations in config may be causing this problem?
 var i = 0;
 var helper;
+var configHelper;
 var Item;
 var Translator;
 
@@ -17,6 +18,7 @@ var waitForConfigs = setInterval(function() {
   if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     helper = require("../../lib/utils/helper.js");
+    configHelper = require("../../lib/utils/config_helper.js");
     Item = require("../../lib/models/item.js");
     Translator = require("../../lib/utils/translator.js");
   }
@@ -100,7 +102,7 @@ describe("helper.js", function() {
         vals.push("foo_" + _.size(vals));
       }
 
-      assert.equal(tmp, helper.buildMessage(value, vals));
+      assert.equal(tmp, configHelper.buildMessage(value, vals));
     });
   });
 
@@ -277,7 +279,7 @@ describe("helper.js", function() {
       }
     });
 
-    assert.equal(root, helper.getRootItemType());
+    assert.equal(root, configHelper.getRootItemType());
   });
 
   // ---------------------------------------------------------------------------------------------------
@@ -295,19 +297,19 @@ describe("helper.js", function() {
 
         _.forEach(keys, function(correctVal) {
           _.forEach(xrefs[correctVal], function(val) {
-            assert.equal(helper.getCrossReference(type, attr, val), correctVal);
+            assert.equal(configHelper.getCrossReference(type, attr, val), correctVal);
           });
         });
 
         // Assert that no matching value returns the value passed in
-        assert.equal(helper.getCrossReference(type, attr, 'foo'), 'foo');
+        assert.equal(configHelper.getCrossReference(type, attr, 'foo'), 'foo');
       });
 
       // Assert an unknown attribute returns the value passed in
-      assert.equal(helper.getCrossReference(type, 'bar', 'foo'), 'foo');
+      assert.equal(configHelper.getCrossReference(type, 'bar', 'foo'), 'foo');
     });
 
     // Assert that an unknown item type or attribute return the value passed in
-    assert.equal(helper.getCrossReference('foo', 'bar', 'blah'), 'blah');
+    assert.equal(configHelper.getCrossReference('foo', 'bar', 'blah'), 'blah');
   });
 });

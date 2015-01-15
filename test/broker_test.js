@@ -21,6 +21,7 @@ var Service;
 var Request;
 var serializer;
 var TEST;
+var configHelper;
 
 var waitForConfigs = setInterval(function() {
   if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
@@ -28,6 +29,7 @@ var waitForConfigs = setInterval(function() {
     TEST = require("./prep.js");
     log = require('../lib/logger.js');
     helper = require("../lib/utils/helper.js");
+    configHelper = require("../lib/utils/config_helper.js");
     Broker = require("../lib/broker.js");
     Item = require("../lib/models/item.js");
     Tier = require("../lib/tier.js");
@@ -199,7 +201,7 @@ describe('broker.js', function() {
     assert.throws(function() {
       new Broker(_socket, _request);
     }, function(err) {
-      assert.equal(err.message, helper.buildMessage(CONFIGS.message.bad_param, ['log']));
+      assert.equal(err.message, configHelper.buildMessage(CONFIGS.message.bad_param, ['log']));
       return true;
     });
 

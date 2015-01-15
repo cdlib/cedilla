@@ -16,8 +16,6 @@ var _ = require('underscore');
 
 var CONFIGS = require("../lib/config.js");
 
-
-
 // Setup a timer to wait for the CONFIGS to get loaded before loading
 // modules that depend on CONFIGS
 // fs operations in config may be causing this problem?

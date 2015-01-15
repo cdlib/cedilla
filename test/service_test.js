@@ -12,7 +12,7 @@ var i = 0;
 var mockery;
 var Service;
 var log;
-var helper;
+var configHelper;
 var Item;
 var Translator;
 
@@ -22,7 +22,7 @@ var waitForConfigs = setInterval(function() {
     mockery = require('./mock_services.js');
     Service = require("../lib/service.js");
     log = require('../lib/logger.js');
-    helper = require("../lib/utils/helper.js");
+    configHelper = require("../lib/utils/config_helper.js");
     Item = require("../lib/models/item.js");
     Translator = require("../lib/utils/translator.js");
   }
@@ -235,7 +235,7 @@ describe('service.js', function() {
         assert.equal(true, _params.isItem);
         assert.equal(0, _params.attributeCount);
         assert.equal('fatal', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_no_target_defined, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_no_target_defined, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -318,7 +318,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('error', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_bad_request, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_bad_request, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -426,7 +426,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('error', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_wrong_response, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_wrong_response, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -453,7 +453,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('warning', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_timeout, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_timeout, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -480,7 +480,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('error', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_unknown_item, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_unknown_item, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -507,7 +507,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('fatal', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_bad_json, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_bad_json, [svc.getDisplayName()]), _params.message);
 
         done();
       }
@@ -534,7 +534,7 @@ describe('service.js', function() {
         assert.equal(false, _params.success);
         assert.equal(true, _params.isItem);
         assert.equal('fatal', _params.level);
-        assert.equal(helper.buildMessage(CONFIGS.message.service_buffer_overflow, [svc.getDisplayName()]), _params.message);
+        assert.equal(configHelper.buildMessage(CONFIGS.message.service_buffer_overflow, [svc.getDisplayName()]), _params.message);
 
         done();
       }
