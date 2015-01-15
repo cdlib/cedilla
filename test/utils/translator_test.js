@@ -17,7 +17,7 @@ var waitForConfigs = setInterval(function() {
   if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
     clearInterval(waitForConfigs);
     Translator = require("../../lib/utils/translator.js");
-    Item = require("../../lib/models/item.js");;
+    Item = require("../../lib/models/item.js");
   }
   i++;
 }, 200);
