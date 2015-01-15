@@ -1,7 +1,5 @@
 "use strict";
 
-require("../lib/init_globals.js");
-
 var _rootItemType = '',
         _emptyItem,
         _bareMinimumItem,

@@ -4,6 +4,7 @@ var assert = require('assert');
 var _ = require('underscore');
 
 var Request = require("../../lib/models/request.js");
+var Item = require("../../lib/models/item.js");
 
 describe('request.js', function() {
   var params;
@@ -14,7 +15,7 @@ describe('request.js', function() {
     var delayStartup = setInterval(function() {
       
       // global avoids obscure problem with log loading
-      if (typeof global.cdla.Item !== 'undefined') {
+      if (typeof Item !== 'undefined') {
         clearInterval(delayStartup);
 
         params = {"referrers": ["www.domain.org"],

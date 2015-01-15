@@ -4,6 +4,7 @@ var _ = require('underscore');
 var assert = require('assert');
 
 var Requestor = require("../../lib/models/requestor.js");
+var Item = require("../../lib/models/item.js");
 
 describe('request.js', function() {
   var params;
@@ -13,7 +14,7 @@ describe('request.js', function() {
     // Wait for the config file and initial modules have finished loading before starting up the server
     var delayStartup = setInterval(function() {
       // global avoids problem with log loading
-      if (typeof global.cdla.Item !== 'undefined') {
+      if (typeof Item !== 'undefined') {
         clearInterval(delayStartup);
 
         params = {"affiliation": "CAMPUS-A",
