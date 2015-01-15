@@ -24,7 +24,7 @@ var waitForConfigs = setInterval(function() {
 }, 200);
 
 describe('server.js testing', function() {
-  this.timeout(20000);
+  this.timeout(40000);
 
   var item,
           oldServiceCallMethod,
