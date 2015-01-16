@@ -14,77 +14,70 @@ try {
   console.log('Unable to create the PID file, ./cedilla.pid! ' + err);
 }
 
+try {
+  // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
+  var defaultService, defaultServiceRunning = false;
+
+  if (CONFIGS.application.default_content_service && !defaultServiceRunning) {
+    log.info({object: 'cedilla.js'}, 'Starting default service.');
+
+    defaultService = require('./lib/utils/default_service');
+
+    defaultService.startDefaultService(CONFIGS.application.efault_content_service_port);
+    defaultServiceRunning = true;
+  }
+
+  var server = require('./lib/server.js');
+
+  var port = process.env.NODE_PORT;
+
+  if (typeof port === 'undefined' || port === '') {
+    port = (CONFIGS.application.port || 3000);
+  }
+
+  // Bind to the port specified in the config/application.yaml or the default 3000
+  server.listen(port, function() {
+    var msg = CONFIGS.application.application_name + ' is now monitoring port ' + port;
+
+    console.log(msg);
+    log.info({object: 'server.js'}, msg);
+
+    online = true;
+  });
+
+  // Terminate the default service
+  server.on('close', function() {
+    log.info({object: 'cedilla.js'}, 'Shutting down web server.');
+    stopDefaultService();
+    online = false;
+  });
+
+  // Capture any server errors and log it. Shut down the default service if its running
+  server.on('error', function(err) {
+    log.error({object: 'cedilla.js'}, err);
+    stopDefaultService();
+  });
+
+
+  var stopDefaultService = function() {
+    // Stop the stub service if its running
+    if (defaultServiceRunning) {
+      log.info({object: 'cedilla.js'}, 'Shutting down default service.');
+
+      defaultService.close();
+      defaultServiceRunning = false;
+    }
+  };
+
+} catch (e) {
+  log.error({object: 'cedilla.js'}, e);
+}
+
 module.exports = exports = {
   isOnline: function() {
     return online;
   }
 };
-
-// Wait for the config file and other modules have finished loading before starting up the server
-var delayStartup = setInterval(function() {
-  if (typeof helper !== 'undefined') {
-    clearInterval(delayStartup);
-
-    try {
-      // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
-      var defaultService, defaultServiceRunning = false;
-
-      if (CONFIGS.application.default_content_service && !defaultServiceRunning) {
-        log.info({object: 'cedilla.js'}, 'Starting default service.');
-
-        defaultService = require('./lib/utils/default_service');
-
-        defaultService.startDefaultService(CONFIGS.application.efault_content_service_port);
-        defaultServiceRunning = true;
-      }
-
-      var server = require('./lib/server.js');
-
-      var port = process.env.NODE_PORT;
-
-      if (typeof port === 'undefined' || port === '') {
-        port = (CONFIGS.application.port || 3000);
-      }
-
-      // Bind to the port specified in the config/application.yaml or the default 3000
-      server.listen(port, function() {
-        var msg = CONFIGS.application.application_name + ' is now monitoring port ' + port;
-
-        console.log(msg);
-        log.info({object: 'server.js'}, msg);
-
-        online = true;
-      });
-
-      // Terminate the default service
-      server.on('close', function() {
-        log.info({object: 'cedilla.js'}, 'Shutting down web server.');
-        stopDefaultService();
-        online = false;
-      });
-
-      // Capture any server errors and log it. Shut down the default service if its running
-      server.on('error', function(err) {
-        log.error({object: 'cedilla.js'}, err);
-        stopDefaultService();
-      });
-
-
-      var stopDefaultService = function() {
-        // Stop the stub service if its running
-        if (defaultServiceRunning) {
-          log.info({object: 'cedilla.js'}, 'Shutting down default service.');
-
-          defaultService.close();
-          defaultServiceRunning = false;
-        }
-      };
-
-    } catch (e) {
-      log.error({object: 'cedilla.js'}, e);
-    }
-  }
-});
 
 // -----------------------------------------------------------------------------------------
 process.on('uncaughtException', function(err) {
