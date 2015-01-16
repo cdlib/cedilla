@@ -5,22 +5,9 @@ var _ = require('underscore');
 var url = require('url');
 
 var CONFIGS = require("../lib/config.js");
-
-var helper;
-var TEST;
-var Item;
-var i = 0;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    helper = require("../lib/utils/helper.js");
-    Item = "../lib/models/item.js";
-    TEST = require("./prep.js");
-  }
-  i++;
-}, 200);
-
+var TEST = require("./prep.js");
+var helper = require("../lib/utils/helper.js");
+var Item = "../lib/models/item.js";
 
 describe('router.js testing', function() {
   this.timeout(20000);

@@ -8,7 +8,6 @@ config/rules.yaml
 
 config/notifiers/*.yaml
 
-bin/**/*
 *.out
 *.log
 *.pid

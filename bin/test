@@ -1,0 +1,30 @@
+#!/bin/bash
+
+BASE_DIR='/apps/cdla/cedilla'
+error_files=0
+
+jshint $BASE_DIR/*.js
+
+if [ $? -ne 0 ]; then
+  (( error_files++ ))
+fi
+
+jshint $BASE_DIR/lib/*
+
+if [ $? -ne 0 ]; then
+  (( error_files++ ))
+fi
+
+jshint $BASE_DIR/test/* 
+
+if [ $? -ne 0 ]; then
+  ((error_files++))
+fi
+
+if [ $error_files -gt 0 ]; then
+  echo "jshint errors found"
+  exit 1
+fi
+
+cd $BASE_DIR
+npm test

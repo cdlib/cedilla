@@ -3,23 +3,9 @@
 
 var CONFIGS = require("./lib/config.js");
 var npid = require('npid');
+var log = require('./lib/logger.js');
+var helper = require("./lib/utils/helper.js");
 var online = false;
-
-// Setup a timer to wait for the CONFIGS to get loaded before loading
-// modules that depend on CONFIGS
-// fs operations in config may be causing this problem?
-var i = 0;
-var log;
-var helper;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    log = require('./lib/logger.js');
-    helper = require("./lib/utils/helper.js");
-  }
-  i++;
-}, 200);
 
 try {
   var pid = npid.create(process.cwd() + '/cedilla.pid', true);

@@ -5,26 +5,10 @@ var assert = require('assert');
 var uuid = require('node-uuid');
 
 var CONFIGS = require("../../lib/config.js");
-
-// Setup a timer to wait for the CONFIGS to get loaded before loading
-// modules that depend on CONFIGS
-// fs operations in config may be causing this problem?
-var i = 0;
-var Request;
-var Requestor;
-var serializer;
-var Item;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    Request = require("../../lib/models/request.js");
-    Requestor = require("../../lib/models/requestor.js");
-    serializer = require("../../lib/utils/serializer.js");
-    Item = require("../../lib/models/item.js");
-  }
-  i++;
-}, 200);
+var Request = require("../../lib/models/request.js");
+var Requestor = require("../../lib/models/requestor.js");
+var serializer = require("../../lib/utils/serializer.js");
+var Item = require("../../lib/models/item.js");
 
 describe("serializer.js", function() {
 

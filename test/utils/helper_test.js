@@ -4,26 +4,10 @@ var _ = require('underscore');
 var assert = require('assert');
 
 var CONFIGS = require("../../lib/config.js");
-
-// Setup a timer to wait for the CONFIGS to get loaded before loading
-// modules that depend on CONFIGS
-// fs operations in config may be causing this problem?
-var i = 0;
-var helper;
-var configHelper;
-var Item;
-var Translator;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    helper = require("../../lib/utils/helper.js");
-    configHelper = require("../../lib/utils/config_helper.js");
-    Item = require("../../lib/models/item.js");
-    Translator = require("../../lib/utils/translator.js");
-  }
-  i++;
-}, 200);
+var helper = require("../../lib/utils/helper.js");
+var configHelper = require("../../lib/utils/config_helper.js");
+var Item = require("../../lib/models/item.js");
+var Translator = require("../../lib/utils/translator.js");
 
 describe("helper.js", function() {
   this.timeout(20000);

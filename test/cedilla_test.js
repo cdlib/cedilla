@@ -4,36 +4,9 @@ var assert = require('assert');
 var url = require('url');
 
 var CONFIGS = require("../lib/config.js");
-
-// Setup a timer to wait for the CONFIGS to get loaded before loading
-// modules that depend on CONFIGS
-// fs operations in config may be causing this problem?
-var i = 0;
-var log;
-var helper;
-var Broker;
-var Item;
-var Tier;
-var Service;
-var Request;
-var serializer;
-var TEST;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    TEST = require("./prep.js");
-    log = require('../lib/logger.js');
-    helper = require("../lib/utils/helper.js");
-    Broker = require("../lib/broker.js");
-    Item = require("../lib/models/item.js");
-    Tier = require("../lib/tier.js");
-    Service = require("../lib/service.js");
-    Request = require("../lib/models/request.js");
-    serializer = require("../lib/utils/serializer.js");
-  }
-  i++;
-}, 200);
+var TEST = require("./prep.js");
+var Item = require("../lib/models/item.js");
+var serializer = require("../lib/utils/serializer.js");
     
 describe('cedilla.js testing', function(){
   this.timeout(20000);

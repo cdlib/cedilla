@@ -5,27 +5,12 @@ var _ = require('underscore');
 var assert = require('assert');
 
 var CONFIGS = require("../lib/config.js");
-
-var i = 0;
-var Service;
-var Item;
-var Tier;
-var log;
-var helper;
-var configHelper;
-
-var waitForConfigs = setInterval(function() {
-  if (typeof CONFIGS.application !== 'undefined' || i >= 2000) {
-    clearInterval(waitForConfigs);
-    Item = require("../lib/models/item.js");
-    Tier = require("../lib/tier.js");
-    Service = require("../lib/service.js");
-    log = require('../lib/logger.js');
-    helper = require("../lib/utils/helper.js");
-    configHelper = require("../lib/utils/config_helper.js");
-  }
-  i++;
-}, 200);
+var Item = require("../lib/models/item.js");
+var Tier = require("../lib/tier.js");
+var Service = require("../lib/service.js");
+var log = require('../lib/logger.js');
+var helper = require("../lib/utils/helper.js");
+var configHelper = require("../lib/utils/config_helper.js");
 
 // ---------------------------------------------------------------------------------------------------
 describe('tier.js', function() {
