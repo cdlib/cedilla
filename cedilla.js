@@ -16,6 +16,7 @@ try {
 
 try {
   // Stub service implementation only available when the application.yaml contains the serve_default_content parameter
+  // this is needed when running without any real services, such as when testing
   var defaultService, defaultServiceRunning = false;
 
   if (CONFIGS.application.default_content_service && !defaultServiceRunning) {
@@ -23,12 +24,11 @@ try {
 
     defaultService = require('./lib/utils/default_service');
 
-    defaultService.startDefaultService(CONFIGS.application.efault_content_service_port);
+    defaultService.startDefaultService(CONFIGS.application.default_content_service_port);
     defaultServiceRunning = true;
   }
 
   var server = require('./lib/server.js');
-
   var port = process.env.NODE_PORT;
 
   if (typeof port === 'undefined' || port === '') {
