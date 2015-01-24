@@ -3,6 +3,8 @@
 BASE_DIR='/apps/cdla/cedilla'
 error_files=0
 
+echo "Running jshint checks"
+
 jshint $BASE_DIR/*.js
 
 if [ $? -ne 0 ]; then
@@ -18,7 +20,7 @@ fi
 jshint $BASE_DIR/test/* 
 
 if [ $? -ne 0 ]; then
-  ((error_files++))
+  (( error_files++ ))
 fi
 
 if [ $error_files -gt 0 ]; then
@@ -26,5 +28,6 @@ if [ $error_files -gt 0 ]; then
   exit 1
 fi
 
+echo "Running unit tests"
 cd $BASE_DIR
 npm test
