@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PID_FILE="${CDLA_HOME}/apps/cedilla/cedilla.pid"
+if [ -f "${PID_FILE}" ]; then
+  echo "Cedilla appears to already be running, based on the presence of ${PID_FILE}."
+  exit 1
+fi
+cd ${CDLA_HOME}/apps/cedilla
+touch log/output.log
+${CDLA_HOME}/local/bin/node cedilla.js > log/output.log &
+if [ $? -ne 0 ]; then
+  echo "Cedilla start failed."
+  exit 1
+fi
+exit 0

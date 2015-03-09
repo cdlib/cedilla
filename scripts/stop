@@ -1,0 +1,14 @@
+#! /bin/bash
+
+PID_FILE="${CDLA_HOME}/apps/cedilla/cedilla.pid"
+if [ ! -f "${PID_FILE}" ]; then
+  echo "pid file not found"
+  exit 1
+fi
+kill -2 $(<"${PID_FILE}")
+if [ $? -ne 0 ]; then
+  echo "Process still up killing with signal 9"
+  kill -9 $(<"${PID_FILE}")
+fi
+rm ${PID_FILE}
+exit 0
