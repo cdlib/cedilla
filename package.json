@@ -42,7 +42,8 @@
         "mocha": "~1.21.5"
     },
     "scripts": {
-        "test": "bin/cedilla test",
+        "test": "node_modules/.bin/mocha ./test/ --recursive",
+        "test_all": "bin/cedilla test",
         "jshint": "bin/cedilla jshint",
         "unit_test": "node_modules/.bin/mocha ./test/ --recursive",
         "json_api_test": "node_modules/.bin/mocha ./json_api_tests/ --recursive",
