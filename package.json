@@ -42,8 +42,12 @@
         "mocha": "~1.21.5"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha ./test/ --recursive",
-        "json_api_test": "node_modules/.bin/mocha ./json_api_tests/ --recursive"
+        "test": "bin/cedilla test",
+        "jshint": "bin/cedilla jshint",
+        "unit_test": "node_modules/.bin/mocha ./test/ --recursive",
+        "json_api_test": "node_modules/.bin/mocha ./json_api_tests/ --recursive",
+        "start": "bin/cedilla start",
+        "stop": "bin/cedilla stop"
     },
     "preferGlobal": true,
     "private": true,

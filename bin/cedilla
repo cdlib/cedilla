@@ -1,0 +1,68 @@
+#!/bin/bash
+# cedilla admin script
+# jff 03/13/2015
+ 
+OP=$1
+if [ ! -d "$CDLA_HOME" ]; then
+  echo "CDLA_HOME environment variable not set or not a directory."
+  exit 1
+fi
+HOME="${CDLA_HOME}/apps/cedilla"
+CEDILLA_PID="${CDLA_HOME}/apps/cedilla/cedilla.pid"
+APPS=( $(ls ${CDLA_HOME}/apps) )
+
+function cedilla_start {
+  if [ -f "${CEDILLA_PID}" ]; then
+    echo "Cedilla appears to already be running, based on the presence of ${CEDILLA_PID}."
+    return 1
+  fi
+  cd ${CDLA_HOME}/apps/cedilla
+  touch log/output.log
+  ${INSTALL_ROOT}/bin/node cedilla.js > log/output.log &
+  if [ $? -ne 0 ]; then
+    echo "Cedilla start failed."
+    return 1
+  fi
+}
+
+function cedilla_stop {
+  if [ ! -f "${CEDILLA_PID}" ]; then
+    echo "pid file not found; assuming process is already stopped"
+    exit 0
+  fi
+  kill -2 $(<"${CEDILLA_PID}")
+  if [ $? -ne 0 ]; then
+    echo "Process still up killing with signal 9"
+    kill -9 $(<"${CEDILLA_PID}")
+  fi
+  rm ${CEDILLA_PID}
+}
+
+function cedilla_jshint {
+  error_files=0
+  jshint $HOME/*.js
+  if [ $? -ne 0 ]; then
+    (( error_files++ ))
+  fi
+  jshint $HOME/lib/*
+  if [ $? -ne 0 ]; then
+    (( error_files++ ))
+  fi
+  jshint $HOME/test/*
+  if [ $? -ne 0 ]; then
+    (( error_files++ ))
+  fi
+  if [ $error_files -gt 0 ]; then
+    echo "jshint errors found"
+    exit 1
+  fi
+}
+
+function cedilla_test {
+  cedilla_jshint
+  cd $HOME
+  npm run-script unit_test
+}
+
+cedilla_${OP}
+
