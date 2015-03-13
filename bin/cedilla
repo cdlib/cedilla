@@ -16,6 +16,7 @@ function cedilla_start {
     echo "Cedilla appears to already be running, based on the presence of ${CEDILLA_PID}."
     return 1
   fi
+  echo "starting cedilla"
   cd ${CDLA_HOME}/apps/cedilla
   touch log/output.log
   ${INSTALL_ROOT}/bin/node cedilla.js > log/output.log &
@@ -23,9 +24,11 @@ function cedilla_start {
     echo "Cedilla start failed."
     return 1
   fi
+  echo "cedilla started"
 }
 
 function cedilla_stop {
+  echo "stopping cedilla"
   if [ ! -f "${CEDILLA_PID}" ]; then
     echo "pid file not found; assuming process is already stopped"
     exit 0
@@ -36,6 +39,7 @@ function cedilla_stop {
     kill -9 $(<"${CEDILLA_PID}")
   fi
   rm ${CEDILLA_PID}
+  echo "cedilla stopped"
 }
 
 function cedilla_jshint {
