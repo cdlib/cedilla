@@ -62,6 +62,12 @@ function cedilla_jshint {
   fi
 }
 
+function cedilla_deploy {
+  echo "cedilla_deploy is just a restart for now"
+  cedilla_stop
+  cedilla_start
+}
+
 function cedilla_test {
   cedilla_jshint
   cd $HOME
