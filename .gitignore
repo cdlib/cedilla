@@ -11,4 +11,4 @@ config/notifiers/*.yaml
 *.out
 *.log
 *.pid
-
+*.old
