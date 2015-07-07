@@ -1,0 +1,8 @@
+Concurrency,Average response time,workers
+1,1606,0
+2,1863,0
+4,3114,0
+6,4115,0
+8,5621,0
+10,5121,0
+20,13122,1
