@@ -1,0 +1,9 @@
+This folder contains code for performance tests of the Cedilla socket.io API using the websocket-bench tool.
+
+The tests are executed using the run.sh script, which takes a single parameter, the desired concurrency of the test. The shell script does not know when the test has comple
+ted, so use ctrl-c to exit once the expected number of complete events (= concurrency) appear in the output.
+
+The other websocket-bench parameters are set to default values, specified in the run.sh script. To change these it is necessary to modify the script.
+
+The results of the test are placed in a directory called results, and appended to a file called result.csv. When you have finished running a series of tests, move the resul
+t.csv file into the results directory and rename the directory.
