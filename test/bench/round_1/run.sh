@@ -11,8 +11,14 @@ case ${concurrency} in
     exit 1
   ;;
 esac
-total=$concurrency
-workers=1
+
+if [ $# -eq "2" ]; then
+  total=$2
+else
+  total=$concurrency
+fi
+
+workers=$(($concurrency/10))
 
 if [ ! -f "result.csv" ]; then
   echo "Concurrency,Average response time,workers" > result.csv

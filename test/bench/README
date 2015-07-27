@@ -1,0 +1,5 @@
+This directory houses Cedilla performance and scalability tests.
+The round_1 directory has experimental-phase test results that have been archived.
+The performance directory includes comparison tests between Cedilla and direct requests to the SFX API.
+The scalability directory includes Cedilla concurrency tests.
+The log_analysis includes log analysis code and artifacts used to determine Cedilla scalability requirements based on analysis of the SFX logs.
