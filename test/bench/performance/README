@@ -1,0 +1,1 @@
+This directory contains a test for comparing plain http requests to the SFX API to requests made through Cedilla to determine average overhead.
