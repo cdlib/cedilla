@@ -4,9 +4,8 @@
 # providing for Mac environment
 # Outputs a file with lines in reverse order
 
-fname = ARGV[0]
-f = File.open(fname, 'r')
 lines = []
+f = ARGF
 f.each { |l| lines << l }
 lines.reverse!
 lines.each { |l| puts l }

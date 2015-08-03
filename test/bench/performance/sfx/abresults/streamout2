@@ -13,19 +13,19 @@ Document Path:          /?sfx.response_type=multi_obj_detailed_xml&sfx.show_avai
 Document Length:        3363 bytes
 
 Concurrency Level:      1
-Time taken for tests:   0.055 seconds
+Time taken for tests:   0.054 seconds
 Complete requests:      1
 Failed requests:        0
 Write errors:           0
 Total transferred:      3580 bytes
 HTML transferred:       3363 bytes
-Requests per second:    18.07 [#/sec] (mean)
-Time per request:       55.343 [ms] (mean)
-Time per request:       55.343 [ms] (mean, across all concurrent requests)
-Transfer rate:          63.17 [Kbytes/sec] received
+Requests per second:    18.51 [#/sec] (mean)
+Time per request:       54.016 [ms] (mean)
+Time per request:       54.016 [ms] (mean, across all concurrent requests)
+Transfer rate:          64.72 [Kbytes/sec] received
 
 Connection Times (ms)
               min   avg   max
 Connect:       26    26   26
-Processing:    29    29   29
-Total:         55    55   55
+Processing:    28    28   28
+Total:         54    54   54

@@ -28,3 +28,6 @@ do
     echo $name > $outfile
     wb 
 done < "$filename"
+
+sleep 2
+./summarize.rb
