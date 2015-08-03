@@ -1,1 +1,4 @@
-This directory contains a test for comparing plain http requests to the SFX API to requests made through Cedilla to determine average overhead.
+This directory contains tests for comparing plain http requests to the SFX API to requests made through Cedilla to determine average overhead.
+The sfx directory contains the SFX test.
+The cedilla directory contains the cedilla test.
+The file urls contains the test queries; the file slru contains the same queries in reverse order; the tests run the queries in reverse order to avoid possible effects of caching. (This is probably not strictly necessary as no performance differences have been observed in sequential SFX requests using the same query.)

@@ -1,0 +1,6 @@
+This is a test of SFX performance using the ab tool.
+Use the query data file in the parent directory as input.
+
+Usage: ./ab_test.rb <file> <limit>
+Where <file> is a file with a list of queries
+and limit is the maximum number of rows to process.
