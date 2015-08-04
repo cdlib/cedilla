@@ -1,8 +1,8 @@
 # !/usr/local/bin/python
 #
-#  dependencies : install pip
-#                  pip install numpy
-#
+#  dependencies : pip install numpy, pip install plotly
+#  Note: Issue with multiple version of python in mac. Used virtual env wrapper to isolate env. 
+#  Follow this link for installation https://virtualenvwrapper.readthedocs.org/en/latest/
 #
 # #
 __author__ = "Priyank Doshi"
@@ -19,12 +19,13 @@ import time
 import sys
 import getopt
 import numpy
+import math
 #import plotly.plotly as py
 #py.sign_in('doshipriyank', 'nulnzeszbb')
 #from plotly.graph_objs import *
 
 # initialize variables
-avgResponseTime = 1.5  # assumption if the time difference between 2 requests is less than 1.5 second then consider it as concurrent requests
+avgResponseTime = 5  # assumption if the time difference between 2 requests is less than 1.5 second then consider it as concurrent requests
 startTimeLabel = "startTime"
 endTimeLabel = "endTime"
 EXIT_ERROR = 2
@@ -66,12 +67,13 @@ def parseLog(line):
         addToDictionary(date, startTime, startTimeLabel)
 
         responseTime = searchGetRequest.group(2)  # get response time
-        responseTimeInSeconds = float(responseTime) / 1000000  # convert microseconds to seconds
+        responseTimeInSeconds = float(responseTime[:len(responseTime)-1]) / 1000000  # convert microseconds to seconds
         endTime = startTime + responseTimeInSeconds  # calculate endtime = starttime + responsetimeinseconds
+       # endTime = startTime + avgResponseTime  # calculate endtime = starttime + responsetimeinseconds
         addToDictionary(date, endTime, endTimeLabel)
 
     else:
-        print  "Error: cannot parse log line no - " + str(rowcount)
+       print  "Error: cannot parse log line no - " + str(rowcount)
     return
 
 
@@ -110,37 +112,39 @@ def getConcurrency(l1, l2):
     """update concurrency count based on the requests."""
 
     global totalConcurrSet
-    localSet = set()
+    sessionList = []
 
     concurrencyCounter = 0
     indexes = [i[0] for i in sorted(enumerate(l1), key=lambda x: x[1])]
+    #print "Time stamps "+str(l1)	
 
     for t in indexes:
         if l2[t] == startTimeLabel:
             concurrencyCounter += 1
             totalConcurrSet.add(concurrencyCounter)
-            localSet.add(concurrencyCounter)
+            sessionList.append(concurrencyCounter)
+	    #print"increment - "+ str(localSet)
         else:
             concurrencyCounter -= 1
             totalConcurrSet.add(concurrencyCounter)
-            localSet.add(concurrencyCounter)
+            sessionList.append(concurrencyCounter)
+	    #print"decrement - "+ str(localSet)	
 
-    mean = numpy.mean(list(localSet))
-    max = numpy.max(list(localSet))
-
+    mean = math.ceil(numpy.mean(sessionList))
+    max = math.ceil(numpy.max(sessionList))
+    #print totalConcurrSet	
+      
     return (mean, max)
 
 
-def plotGraph(x, y):
+def plotGraph(_x, _y):
     """plot the graph """
     import plotly.plotly as py
     py.sign_in('doshipriyank', 'nulnzeszbb')
     from plotly.graph_objs import Bar, Data, Layout, Figure
 
-    y_mean = [i[0] for i in y_axis]
-    y_max = [i[1] for i in y_axis]
-
-    _x=list(x_axis)
+    y_mean = [i[0] for i in _y]
+    y_max = [i[1] for i in _y]
 
     trace1 = Bar(
         x=_x,
@@ -154,19 +158,6 @@ def plotGraph(x, y):
         name='max concurrency'
     )
 
-
-    # trace1 = Bar(
-    #     x=['giraffes', 'orangutans', 'monkeys'],
-    #     y=[20, 14, 23],
-    #     name='SF Zoo'
-    # )
-    #
-    # trace2 = Bar(
-    #     x=['giraffes', 'orangutans', 'monkeys'],
-    #     y=[12, 18, 29],
-    #     name='LA Zoo'
-    # )
-    #
     data = Data([trace1, trace2])
     layout = Layout(
         barmode='group'
@@ -189,18 +180,20 @@ def run():
     with open(inputfile, 'r') as file:
         global rowcount
         for line in file:
-            parseLog(line)
-            rowcount += 1
+           rowcount+=1
+	   parseLog(line)
+            
+    #sort x_axis 
+    local_x_axis = sorted(list(x_axis))	
 
-   # global y_axis
-    for date in x_axis:
+    for date in local_x_axis:
         listOfLists = timeDict[date]
         flattened = [val for sublist in listOfLists for val in sublist]
         l1 = [i[0] for i in flattened]
         l2 = [i[1] for i in flattened]
         y_axis.append(getConcurrency(l1, l2))
 
-    plotGraph(x_axis, y_axis)
+    plotGraph(local_x_axis, y_axis)
 
     userconcurr = list(totalConcurrSet)
     print "Running log analysis on file"
@@ -237,7 +230,7 @@ def main(argv):
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
-            print 'process file  -  ', inputfile
+            print 'input file  -  ', inputfile
             run()
         else:
             print "invalid option. usage: parser.py -i <inputfile>"
@@ -253,26 +246,3 @@ if __name__ == "__main__":
     else:
         main(sys.argv[1:])
 
-
-
-
-    # trace1 = Bar(
-    #     x_axis,
-    #     y_mean,
-    #     name="sfx_logs"
-    # )
-    #
-    # trace2 = Bar(
-    #     x_axis,
-    #     y_max
-    # )
-    #
-    # data = plotly.graph_objs.Data([trace1, trace2])
-    #
-    # layout = plotly.graph_objs.Layout(
-    #     barmode='group'
-    # )
-    #
-    # fig = plotly.graph_objs.Figure(data=data, layout=layout)
-    #
-    # unique_url = py.plot(fig, filename='grouped-bar')
