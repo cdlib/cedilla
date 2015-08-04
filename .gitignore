@@ -12,3 +12,5 @@ config/notifiers/*.yaml
 *.log
 *.pid
 *.old
+
+.DS_Store

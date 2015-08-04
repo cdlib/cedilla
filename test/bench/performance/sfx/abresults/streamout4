@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking cdla-dev.cdlib.org (be patient).....done
+
+
+Server Software:        nginx/1.8.0
+Server Hostname:        cdla-dev.cdlib.org
+Server Port:            3005
+
+Document Path:          /?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&genre=article&sid=ProQ:ProQ%3Apsycinfo&atitle=The+causal+effect+of+campus+residency+on+college+student+retention.&title=Review+of+Higher+Education%3A+Journal+of+the+Association+for+the+Study+of+Higher+Education&issn=01625748&date=2011-07-01&volume=34&issue=4&spage=581&au=Schudde%2C+Lauren+T.&isbn=&jtitle=Review+of+Higher+Education%3A+Journal+of+the+Association+for+the+Study+of+Higher+Education&btitle=&rft_id=info:eric/&rft_id=info:doi/10.1353%2Frhe.2011.0023
+Document Length:        3363 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.052 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      3580 bytes
+HTML transferred:       3363 bytes
+Requests per second:    19.20 [#/sec] (mean)
+Time per request:       52.092 [ms] (mean)
+Time per request:       52.092 [ms] (mean, across all concurrent requests)
+Transfer rate:          67.11 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       25    25   25
+Processing:    27    27   27
+Total:         52    52   52

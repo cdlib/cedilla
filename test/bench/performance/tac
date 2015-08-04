@@ -1,0 +1,11 @@
+#! /usr/bin/ruby
+# tac utility (reverse of cat)
+# This is available on Linux, 
+# providing for Mac environment
+# Outputs a file with lines in reverse order
+
+lines = []
+f = ARGF
+f.each { |l| lines << l }
+lines.reverse!
+lines.each { |l| puts l }

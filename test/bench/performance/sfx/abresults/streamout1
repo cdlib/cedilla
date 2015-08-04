@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking cdla-dev.cdlib.org (be patient).....done
+
+
+Server Software:        nginx/1.8.0
+Server Hostname:        cdla-dev.cdlib.org
+Server Port:            3005
+
+Document Path:          /?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucsb.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E5574536243%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F5574536243&rft_id=urn%3AISSN%3A0002-7863&rft.aulast=Banquy&rft.aufirst=X&rft.atitle=Bioinspired+bottle-brush+polymer+exhibits+low+friction+and+Amontons-like+behavior.&rft.jtitle=Journal+of+the+American+Chemical+Society&rft.date=2014&rft.volume=136&rft.issue=17&rft.spage=6199&rft.epage=202&rft.issn=0002-7863&rft.genre=article&rft.sici=0002-7863%2820140430%29136%3A17%3C6199%3ABBPELF%3E2.0.TX%3B2-W&rft_id=info%3Adoi%2Fhttp%3A%2F%2Fdx.doi.org%2F10.1021%2Fja501770y&req_id=info:rfa/oclc/institutions/211&req_dat=%3Cip%3E128.111.121.42%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F211
+Document Length:        3363 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.054 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      3580 bytes
+HTML transferred:       3363 bytes
+Requests per second:    18.44 [#/sec] (mean)
+Time per request:       54.237 [ms] (mean)
+Time per request:       54.237 [ms] (mean, across all concurrent requests)
+Transfer rate:          64.46 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       26    26   26
+Processing:    28    28   28
+Total:         54    54   54

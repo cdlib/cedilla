@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking cdla-dev.cdlib.org (be patient).....done
+
+
+Server Software:        nginx/1.8.0
+Server Hostname:        cdla-dev.cdlib.org
+Server Port:            3005
+
+Document Path:          /?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Notch3-mediated%20regulation%20of%20MKP-1%20levels%20promotes%20survival%20of%20T%20acute%20lymphoblastic%20leukemia%20cells&rft.auinit=M&rft.aulast=Masiero&rft.date=2011&rft.epage=98&rft.issn=1476-5551%20%28Electronic%29%0A0887-6924%20%28Linking%29&rft.issue=4&rfr_id=info%3Asid%2Fwww%2Eisinet%2Ecom%3ARS%3AEndNoteWeb&rft.spage=588&rft.title=Leukemia&rft.volume=25&rft.au=Minuzzo%2C%20S%2E&rft.au=Pusceddu%2C%20I%2E&rft.au=Moserle%2C%20L%2E&rft.au=Persano%2C%20L%2E&rft.au=Agnusdei%2C%20V%2E&rft.genre=unknown&rft_id=info:doi/10%2E1038%2Fleu%2E2010%2E323
+Document Length:        3363 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.054 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      3580 bytes
+HTML transferred:       3363 bytes
+Requests per second:    18.51 [#/sec] (mean)
+Time per request:       54.016 [ms] (mean)
+Time per request:       54.016 [ms] (mean, across all concurrent requests)
+Transfer rate:          64.72 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       26    26   26
+Processing:    28    28   28
+Total:         54    54   54
