@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucsb.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E438874217%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F438874217&rft_id=urn%3AISSN%3A0891-2416&rft.aulast=Jenks&rft.aufirst=Elaine&rft.atitle=Explaining+Disability&rft.jtitle=Journal+of+Contemporary+Ethnography&rft.date=2005&rft.volume=34&rft.issue=2&rft.spage=143&rft.epage=169&rft.issn=0891-2416&rft.genre=article&rft.sici=0891-2416%2820050401%2934%3A2%3C143%3AED%3E2.0.TX%3B2-K&req_id=info:rfa/oclc/institutions/211&req_dat=%3Cip%3E128.111.121.42%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F211
+Document Length:        19061 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.427 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      19183 bytes
+HTML transferred:       19061 bytes
+Requests per second:    0.70 [#/sec] (mean)
+Time per request:       1426.860 [ms] (mean)
+Time per request:       1426.860 [ms] (mean, across all concurrent requests)
+Transfer rate:          13.13 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      116   116  116
+Processing:  1311  1311 1311
+Total:       1427  1427 1427

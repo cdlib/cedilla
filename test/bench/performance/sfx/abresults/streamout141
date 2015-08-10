@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucdavis.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E425096893%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F425096893&rft_id=urn%3AISSN%3A1361-3324&rft.aulast=Lee&rft.aufirst=Stacey&rft.auinitm=J&rft.atitle=Additional+Complexities%3A+Social+Class%2C+Ethnicity%2C+Generation%2C+and+Gender+in+Asian+American+Student+Experiences&rft.jtitle=Race%2C+Ethnicity+%26+Education&rft.date=2006&rft.volume=9&rft.issue=1&rft.spage=17&rft.epage=28&rft.issn=1361-3324&rft.genre=article&rft.sici=1361-3324%28200603%299%3A1%3C17%3AACSCEG%3E2.0.TX%3B2-G&req_id=info:rfa/oclc/institutions/5697&req_dat=%3Cip%3E128.120.194.195%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F5697
+Document Length:        21385 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.318 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      21507 bytes
+HTML transferred:       21385 bytes
+Requests per second:    0.76 [#/sec] (mean)
+Time per request:       1317.999 [ms] (mean)
+Time per request:       1317.999 [ms] (mean, across all concurrent requests)
+Transfer rate:          15.94 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      119   119  119
+Processing:  1199  1199 1199
+Total:       1318  1318 1318

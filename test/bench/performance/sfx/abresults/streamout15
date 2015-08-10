@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Food%20habits%20of%20the%20Bengal%20tiger%20%28Panthera%20tigris%20tigris%29%20in%20the%20Sundarbans%2E&rft.aufirst=A%2E%20H%2E%20M%2E%20A%2E&rft.aulast=Reza&rft.date=2001&rft.epage=179&rft.genre=article&rft.issn=0304-9027&rft.issue=2&rft.jtitle=Bangladesh%20Journal%20of%20Zoology&rft.pages=173-179&rft.spage=173&rft.volume=29&rfr_id=info:sid/www.isinet.com:WoK:BIOSIS&rft.au=Feeroz%2C%20M%2E%20M%2E&rft.au=Islam%2C%20M%2E%20A%2E
+Document Length:        17948 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.211 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      18070 bytes
+HTML transferred:       17948 bytes
+Requests per second:    0.83 [#/sec] (mean)
+Time per request:       1210.695 [ms] (mean)
+Time per request:       1210.695 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.58 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      115   115  115
+Processing:  1096  1096 1096
+Total:       1211  1211 1211

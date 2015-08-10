@@ -1,0 +1,32 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info:ofi/enc:UTF-8&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft.object_id=3440000000000133&sfx.request_id=75367022&sfx.ctx_obj_item=7
+Document Length:        356 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.288 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Non-2xx responses:      1
+Total transferred:      532 bytes
+HTML transferred:       356 bytes
+Requests per second:    3.47 [#/sec] (mean)
+Time per request:       288.078 [ms] (mean)
+Time per request:       288.078 [ms] (mean, across all concurrent requests)
+Transfer rate:          1.80 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      116   116  116
+Processing:   172   172  172
+Total:        288   288  288

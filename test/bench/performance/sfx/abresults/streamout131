@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucdavis.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&rft.genre=unknown&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E858659208%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F858659208&rft.aulast=Rahpymay-Rad&rft.aufirst=Kamran&rft.title=The+effects+of+acute+creatine+supplementation+on+volume+of+work+and+anaerobic+performance+in+vegetarians&rft.date=2007&rft.aucorp=University+of+Victoria+%28B.C.%29.%3BUniversity+of+Victoria+%28B.C.%29.&rft.genre=unknown&req_id=info:rfa/oclc/institutions/5697&req_dat=%3Cip%3E128.120.194.195%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F5697
+Document Length:        16755 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.177 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      16877 bytes
+HTML transferred:       16755 bytes
+Requests per second:    0.85 [#/sec] (mean)
+Time per request:       1176.820 [ms] (mean)
+Time per request:       1176.820 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.01 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      116   116  116
+Processing:  1061  1061 1061
+Total:       1177  1177 1177

@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucmerced.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E674009394%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F674009394&rft_id=urn%3AISSN%3A0036-8075&rft.atitle=THE+TRAINING+OF+TEACHERS.&rft.jtitle=Science+%28New+York%2C+N.Y.%29&rft.date=1887&rft.volume=9&rft.issue=207S&rft.spage=71&rft.epage=2&rft.issn=0036-8075&rft.genre=article&rft.sici=0036-8075%2818870121%299%3A207%3C71%3ATTOT%3E2.0.TX%3B2-A&req_id=info:rfa/oclc/institutions/4691&req_dat=%3Cip%3E169.236.95.196%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F4691
+Document Length:        18061 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.237 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      18183 bytes
+HTML transferred:       18061 bytes
+Requests per second:    0.81 [#/sec] (mean)
+Time per request:       1237.371 [ms] (mean)
+Time per request:       1237.371 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.35 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      117   117  117
+Processing:  1120  1120 1120
+Total:       1237  1237 1237

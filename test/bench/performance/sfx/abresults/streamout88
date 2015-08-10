@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.atitle=Association%20of%20Housing%20First%20Implementation%20and%20Key%20Outcomes%20Among%20Homeless%20Persons%20With%20Problematic%20Substance%20Use&rft.aufirst=Clare&rft.aulast=Davidson&rft.date=2014&rft.epage=1324&rft.genre=article&rft.issn=1075-2730&rft.issue=11&rft.jtitle=PSYCHIATRIC%20SERVICES&rft.pages=1318-1324&rft.spage=1318&rft.stitle=PSYCHIAT%20SERV&rft.volume=65&rfr_id=info%3Asid%2Fwww.isinet.com%3AWoK%3AUA&rft.au=Neighbors%2C%20Charles&rft.au=Hall%2C%20Gerod&rft.au=Hogue%2C%20Aaron&rft.au=Cho%2C%20Richard;openurl=http%3A%2F%2Fucelinks.cdlib.org%3A8888%2Fsfx_local%3Furl_ver%3DZ39.88-2004%26url_ctx_fmt%3Dinfo%253Aofi%252Ffmt%253Akev%253Amtx%253Actx%26rft_val_fmt%3Dinfo%253Aofi%252Ffmt%253Akev%253Amtx%253Ajournal%26rft.atitle%3DAssociation%2520of%2520Housing%2520First%2520Implementation%2520and%2520Key%2520Outcomes%2520Among%2520Homeless%2520Persons%2520With%2520Problematic%2520Substance%2520Use%26rft.aufirst%3DClare%26rft.aulast%3DDavidson%26rft.date%3D2014%26rft.epage%3D1324%26rft.genre%3Darticle%26rft.issn%3D1075-2730%26rft.issue%3D11%26rft.jtitle%3DPSYCHIATRIC%2520SERVICES%26rft.pages%3D1318-1324%26rft.spage%3D1318%26rft.stitle%3DPSYCHIAT%2520SERV%26rft.volume%3D65%26rfr_id%3Dinfo%253Asid%252Fwww.isinet.com%253AWoK%253AUA%26rft.au%3DNeighbors%252C%2520Charles%26rft.au%3DHall%252C%2520Gerod%26rft.au%3DHogue%252C%2520Aaron%26rft.au%3DCho%252C%2520Richard&disable_directlink=true&sfx.directlink=off
+Document Length:        22937 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.390 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      23059 bytes
+HTML transferred:       22937 bytes
+Requests per second:    0.72 [#/sec] (mean)
+Time per request:       1390.199 [ms] (mean)
+Time per request:       1390.199 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.20 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      116   116  116
+Processing:  1274  1274 1274
+Total:       1390  1390 1390

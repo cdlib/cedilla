@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucsb.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E89373359%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F89373359&rft_id=urn%3AISSN%3A0030-7270&rft.atitle=Brazil%27s+biodiversity+legislation&rft.jtitle=Outlook+on+agriculture.&rft.date=1998&rft.volume=27&rft.issue=2&rft.spage=69&rft.issn=0030-7270&rft.genre=article&rft.sici=0030-7270%281998%2927%3A2%3C69%3ABBL%3E2.0.TX%3B2-0&req_id=info:rfa/oclc/institutions/211&req_dat=%3Cip%3E128.111.97.161%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F211
+Document Length:        16979 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.134 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      17101 bytes
+HTML transferred:       16979 bytes
+Requests per second:    0.88 [#/sec] (mean)
+Time per request:       1133.625 [ms] (mean)
+Time per request:       1133.625 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.73 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      118   118  118
+Processing:  1016  1016 1016
+Total:       1134  1134 1134

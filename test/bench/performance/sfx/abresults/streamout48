@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Electronic%20Band%20Structure%20of%20GaNxPyAs1-x-y%20Highly%20Mismatched%20Alloys%3A%20Suitability%20for%20Intermediate-Band%20Solar%20Cells&rft.aufirst=R%2E&rft.aulast=Kudrawiec&rft.date=2014&rft.epage=4007&rft.genre=article&rft.issn=2331-7019&rft.issue=3&rft.jtitle=PHYSICAL%20REVIEW%20APPLIED&rft.pages=4007-4007&rft.spage=4007&rft.stitle=PHYS%20REV%20APPL&rft.volume=1&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Luce%2C%20A%2E%20V%2E&rft.au=Gladysiewicz%2C%20M%2E&rft.au=Ting%2C%20M%2E&rft.au=Kuang%2C%20Y%2E%20J%2E
+Document Length:        17835 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.234 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      17957 bytes
+HTML transferred:       17835 bytes
+Requests per second:    0.81 [#/sec] (mean)
+Time per request:       1233.600 [ms] (mean)
+Time per request:       1233.600 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.22 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      117   117  117
+Processing:  1117  1117 1117
+Total:       1234  1234 1234

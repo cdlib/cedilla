@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucsc.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E5543866860%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F5543866860&rft_id=urn%3AISSN%3A0700-3862&rft.aulast=Manley&rft.aufirst=John&rft.atitle=Moscow+Rules%3F+%27Red%27+Unionism+and+%27Class+against+Class%27+in+Britain%2C+Canada%2C+and+the+United+States%2C+1928-1935&rft.jtitle=Labour+++Le+Travail&rft.date=2005&rft.volume=56&rft.spage=9&rft.epage=49&rft.issn=0700-3862&rft.genre=article&req_id=info:rfa/oclc/institutions/4688&req_dat=%3Cip%3E169.233.217.123%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F4688
+Document Length:        21729 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.436 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      21851 bytes
+HTML transferred:       21729 bytes
+Requests per second:    0.70 [#/sec] (mean)
+Time per request:       1435.873 [ms] (mean)
+Time per request:       1435.873 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.86 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      116   116  116
+Processing:  1320  1320 1320
+Total:       1436  1436 1436

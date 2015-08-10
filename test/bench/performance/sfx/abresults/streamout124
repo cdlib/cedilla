@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucmerced.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E4592132855%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F4592132855&rft_id=urn%3AISSN%3A0277-4232&rft.aulast=Greifner&rft.aufirst=Laura&rft.atitle=TEACHER+TRAINING.&rft.jtitle=Education+Week&rft.date=2007&rft.volume=26&rft.issue=38&rft.spage=11&rft.issn=0277-4232&rft.genre=article&req_id=info:rfa/oclc/institutions/4691&req_dat=%3Cip%3E169.236.95.196%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F4691
+Document Length:        24739 bytes
+
+Concurrency Level:      1
+Time taken for tests:   3.001 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      24861 bytes
+HTML transferred:       24739 bytes
+Requests per second:    0.33 [#/sec] (mean)
+Time per request:       3001.172 [ms] (mean)
+Time per request:       3001.172 [ms] (mean, across all concurrent requests)
+Transfer rate:          8.09 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      119   119  119
+Processing:  2882  2882 2882
+Total:       3001  3001 3001

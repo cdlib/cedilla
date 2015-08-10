@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Movements%20and%20swimming%20behavior%20of%20three%20species%20of%20sharks%20in%20La%20Jolla%20Canyon%2C%20California&rft.aufirst=AP&rft.aulast=Klimley&rft.date=2002&rft.epage=135&rft.genre=article&rft.issn=0378-1909&rft.issue=2&rft.jtitle=ENVIRONMENTAL%20BIOLOGY%20OF%20FISHES&rft.pages=117-135&rft.spage=117&rft.stitle=ENVIRON%20BIOL%20FISH&rft.volume=63&rfr_id=info:sid/www.isinet.com:WoK:WOS&rft.au=Beavers%2C%20SC&rft.au=Curtis%2C%20TH&rft.au=Jorgensen%2C%20SJ
+Document Length:        19746 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.128 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      19868 bytes
+HTML transferred:       19746 bytes
+Requests per second:    0.89 [#/sec] (mean)
+Time per request:       1127.566 [ms] (mean)
+Time per request:       1127.566 [ms] (mean, across all concurrent requests)
+Transfer rate:          17.21 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      115   115  115
+Processing:  1013  1013 1013
+Total:       1128  1128 1128
