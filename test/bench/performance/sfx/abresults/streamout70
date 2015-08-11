@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucla.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=journal&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E874432677%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F874432677&rft_id=urn%3AISSN%3A0338-2338&rft.jtitle=Perspectives+me%CC%81die%CC%81vales&rft.issn=0338-2338&rft.eissn=2262-5534&rft.aucorp=Socie%CC%81te%CC%81+de+langue+et+de+litte%CC%81rature+me%CC%81die%CC%81vales+d%27oc+et+d%27oi%CC%88l+%28France%29&rft.place=Paris&rft.pub=Socie%CC%81te%CC%81+de+langue+et+de+litte%CC%81rature+me%CC%81die%CC%81vales+d%27oc+et+d%27oi%CC%88l&rft.genre=journal&req_id=info:rfa/oclc/institutions/207&req_dat=%3Cip%3E128.97.27.21%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F207
+Document Length:        14860 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.754 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      14982 bytes
+HTML transferred:       14860 bytes
+Requests per second:    1.33 [#/sec] (mean)
+Time per request:       753.865 [ms] (mean)
+Time per request:       753.865 [ms] (mean, across all concurrent requests)
+Transfer rate:          19.41 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       77    77   77
+Processing:   677   677  677
+Total:        754   754  754

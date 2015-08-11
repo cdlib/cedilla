@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fberkeley.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E680579611%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F680579611&rft_id=urn%3AISSN%3A0374-0463&rft.aulast=Bundgaard&rft.aufirst=Peer&rft.auinitm=F&rft.atitle=Means+of+meaning+making+in+literary+art%3A+Focalization%2C+mode+of+narration%2C+and+granularity&rft.jtitle=Acta+linguistica+hafniensia&rft.date=2010&rft.volume=42&rft.issue=1&rft.spage=64&rft.issn=0374-0463&rft.genre=article&rft.sici=0374-0463%282010%2942%3A1%3C64%3AMOMMIL%3E2.0.TX%3B2-L&req_id=info:rfa/oclc/institutions/5689&req_dat=%3Cip%3E136.152.142.5%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F5689
+Document Length:        16843 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.141 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      16965 bytes
+HTML transferred:       16843 bytes
+Requests per second:    0.88 [#/sec] (mean)
+Time per request:       1140.687 [ms] (mean)
+Time per request:       1140.687 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.52 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       79    79   79
+Processing:  1062  1062 1062
+Total:       1141  1141 1141

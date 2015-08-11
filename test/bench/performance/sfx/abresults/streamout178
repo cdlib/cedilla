@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucdavis.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E5679131507%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F5679131507&rft_id=urn%3AISSN%3A1386-2820&rft.aulast=Stone&rft.aufirst=Alison&rft.atitle=Alienation+from+Nature+and+Early+German+Romanticism&rft.jtitle=Ethical+Theory+and+Moral+Practice+%3A+An+International+Forum&rft.date=2014&rft.volume=17&rft.issue=1&rft.spage=41&rft.epage=54&rft.issn=1386-2820&rft.genre=article&req_id=info:rfa/oclc/institutions/5697&req_dat=%3Cip%3E128.120.194.195%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F5697
+Document Length:        18168 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.943 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      18290 bytes
+HTML transferred:       18168 bytes
+Requests per second:    1.06 [#/sec] (mean)
+Time per request:       943.403 [ms] (mean)
+Time per request:       943.403 [ms] (mean, across all concurrent requests)
+Transfer rate:          18.93 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       79    79   79
+Processing:   864   864  864
+Total:        943   943  943

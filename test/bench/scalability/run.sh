@@ -18,7 +18,8 @@ else
   total=$concurrency
 fi
 
-workers=$(($concurrency/10))
+#workers=$(($concurrency/10))
+workers=1
 
 if [ ! -f "result.csv" ]; then
   echo "Concurrency,Average response time,workers" > result.csv

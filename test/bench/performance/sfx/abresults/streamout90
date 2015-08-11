@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Analysis%20of%20major%20metallic%20elements%20in%20Chilean%20wines%20by%20atomic%20absorption%20spectroscopy&rft.aufirst=V%2E&rft.aulast=Felipe%20Laurie&rft.date=2010&rft.epage=85&rft.genre=article&rft.issn=0718-1620&rft.issue=2&rft.jtitle=CIENCIA%20E%20INVESTIGACION%20AGRARIA&rft.pages=77-85&rft.spage=77&rft.stitle=CIENC%20INVESTIG%20AGRAR&rft.volume=37&rfr_id=info:sid/www.isinet.com:WoK:WOS&rft.au=Villagra%2C%20Evelyn&rft.au=Tapia%2C%20Jaime&rft.au=Sarkis%2C%20Jorge%20E%2E%20S%2E&rft.au=Hortellani%2C%20Marcos%20A%2E
+Document Length:        17828 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.575 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      17950 bytes
+HTML transferred:       17828 bytes
+Requests per second:    0.63 [#/sec] (mean)
+Time per request:       1575.211 [ms] (mean)
+Time per request:       1575.211 [ms] (mean, across all concurrent requests)
+Transfer rate:          11.13 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:  1497  1497 1497
+Total:       1575  1575 1575

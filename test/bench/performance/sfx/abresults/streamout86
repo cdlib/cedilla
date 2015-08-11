@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Association%20of%20Housing%20First%20Implementation%20and%20Key%20Outcomes%20Among%20Homeless%20Persons%20With%20Problematic%20Substance%20Use&rft.aufirst=Clare&rft.aulast=Davidson&rft.date=2014&rft.epage=1324&rft.genre=article&rft.issn=1075-2730&rft.issue=11&rft.jtitle=PSYCHIATRIC%20SERVICES&rft.pages=1318-1324&rft.spage=1318&rft.stitle=PSYCHIAT%20SERV&rft.volume=65&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Neighbors%2C%20Charles&rft.au=Hall%2C%20Gerod&rft.au=Hogue%2C%20Aaron&rft.au=Cho%2C%20Richard
+Document Length:        16894 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.986 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      17016 bytes
+HTML transferred:       16894 bytes
+Requests per second:    1.01 [#/sec] (mean)
+Time per request:       986.022 [ms] (mean)
+Time per request:       986.022 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.85 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:   908   908  908
+Total:        986   986  986

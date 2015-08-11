@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=TERATOGENIC%20EFFECTS%20OF%20CANNABIS-INDICA%20IN%20CHICK%20EMBRYOS%20A%20PRELIMINARY%20STUDY&rft.aufirst=M&rft.aulast=SUBHADRA&rft.date=1975&rft.genre=article&rft.issn=0003-2778&rft.issue=1&rft.jtitle=Journal%20of%20the%20Anatomical%20Society%20of%20India&rft.pages=29&rft.spage=29&rft.volume=24&rfr_id=info:sid/www.isinet.com:WoK:BIOSIS&rft.au=SINGH%20S
+Document Length:        15740 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.085 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      15862 bytes
+HTML transferred:       15740 bytes
+Requests per second:    0.92 [#/sec] (mean)
+Time per request:       1085.015 [ms] (mean)
+Time per request:       1085.015 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:      165   165  165
+Processing:   920   920  920
+Total:       1085  1085 1085

@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Method%20to%20produce%20PHBV%20by%20recombinant%20Escherichia%20coli&rft.aufirst=Chih-Ching&rft.aulast=Chien&rft.date=2014&rft.genre=article&rft.issn=0098-1133&rft.jtitle=Official%20Gazette%20of%20the%20United%20States%20Patent%20and%20Trademark%20Office%20Patents&rfr_id=info:sid/www.isinet.com:WoK:UA&rft.au=Soo%2C%20Po-Chi&rft.au=Horng%2C%20Yu-Tze&rft.au=Chen%2C%20Shan-Yu&rft.au=Li%2C%20Hsiu-Hsiung
+Document Length:        15583 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.841 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      15705 bytes
+HTML transferred:       15583 bytes
+Requests per second:    1.19 [#/sec] (mean)
+Time per request:       840.689 [ms] (mean)
+Time per request:       840.689 [ms] (mean, across all concurrent requests)
+Transfer rate:          18.24 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       79    79   79
+Processing:   762   762  762
+Total:        841   841  841

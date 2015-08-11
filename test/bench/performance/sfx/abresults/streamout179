@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Fucdavis.worldcat.org%3Aworldcat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&req_dat=%3Csessionid%3E&rfe_dat=%3Caccessionnumber%3E567832160%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F567832160&rft_id=urn%3AISSN%3A0361-6274&rft.aulast=Hsieh&rft.aufirst=HM&rft.atitle=Impacts+of+market+and+organizational+characteristics+on+hospital+efficiency+and+uncompensated+care.&rft.jtitle=Health+care+management+review&rft.date=2010&rft.volume=35&rft.issue=1&rft.spage=77&rft.epage=87&rft.issn=0361-6274&rft.genre=article&rft.sici=0361-6274%28201001%2F03%2935%3A1%3C77%3AIOMAOC%3E2.0.TX%3B2-F&req_id=info:rfa/oclc/institutions/5697&req_dat=%3Cip%3E128.120.194.195%3C%2Fip%3E&req_id=info%3Arfa%2Foclc%2FInstitutions%2F5697
+Document Length:        18961 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.102 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      19083 bytes
+HTML transferred:       18961 bytes
+Requests per second:    0.91 [#/sec] (mean)
+Time per request:       1102.366 [ms] (mean)
+Time per request:       1102.366 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.91 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       79    79   79
+Processing:  1023  1023 1023
+Total:       1102  1102 1102

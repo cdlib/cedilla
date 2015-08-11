@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Massacre%2C%20frontier%20conflict%20and%20Australian%20archaeology&rft.aufirst=Bryce&rft.aulast=Barker&rft.date=2007&rft.epage=14&rft.genre=article&rft.issn=0312-2417&rft.issue=64&rft.jtitle=AUSTRALIAN%20ARCHAEOLOGY&rft.pages=9-14&rft.spage=9&rft.stitle=AUSTRAL%20ARCHAEOL&rfr_id=info:sid/www.isinet.com:WoK:WOS
+Document Length:        15554 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.923 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      15676 bytes
+HTML transferred:       15554 bytes
+Requests per second:    1.08 [#/sec] (mean)
+Time per request:       923.025 [ms] (mean)
+Time per request:       923.025 [ms] (mean, across all concurrent requests)
+Transfer rate:          16.59 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:   845   845  845
+Total:        923   923  923

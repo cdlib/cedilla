@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Polar%20and%20brown%20bear%20genomes%20reveal%20ancient%20admixture%20and%20demographic%20footprints%20of%20past%20climate%20change&rft.auinit=Webb&rft.aulast=Miller&rft.date=2012&rft.epage=E2390&rft.issn=0027-8424&rft.issue=36&rfr_id=info%3Asid%2Fwww%2Eisinet%2Ecom%3ARS%3AEndNoteWeb&rft.spage=E2382&rft.title=Proceedings%20of%20the%20National%20Academy%20of%20Sciences%20of%20the%20United%20States%20of%20America&rft.volume=109&rft.au=Schuster%2C%20Stephan%20C%2E&rft.au=Welch%2C%20Andreanna%20J%2E&rft.au=Ratan%2C%20Aakrosh&rft.au=Bedoya-Reina%2C%20Oscar%20C%2E&rft.au=Zhao%2C%20Fangqing&rft.genre=unknown
+Document Length:        19225 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.265 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      19347 bytes
+HTML transferred:       19225 bytes
+Requests per second:    0.79 [#/sec] (mean)
+Time per request:       1265.350 [ms] (mean)
+Time per request:       1265.350 [ms] (mean, across all concurrent requests)
+Transfer rate:          14.93 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:  1187  1187 1187
+Total:       1265  1265 1265

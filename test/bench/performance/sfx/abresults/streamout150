@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Piracy%20and%20music%20sales%3A%20The%20effects%20of%20an%20anti-piracy%20law&rft.aufirst=Adrian&rft.aulast=Adermon&rft.date=2014&rft.epage=106&rft.genre=article&rft.issn=0167-2681&rft.jtitle=JOURNAL%20OF%20ECONOMIC%20BEHAVIOR%20%26%20ORGANIZATION&rft.pages=90-106&rft.spage=90&rft.stitle=J%20ECON%20BEHAV%20ORGAN&rft.volume=105&rfr_id=info:sid/www.isinet.com:WoK:CCC&rft.au=Liang%2C%20Che-Yuan
+Document Length:        17428 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.290 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      17550 bytes
+HTML transferred:       17428 bytes
+Requests per second:    0.78 [#/sec] (mean)
+Time per request:       1290.140 [ms] (mean)
+Time per request:       1290.140 [ms] (mean, across all concurrent requests)
+Transfer rate:          13.28 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:  1212  1212 1212
+Total:       1290  1290 1290

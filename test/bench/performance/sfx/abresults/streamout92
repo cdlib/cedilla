@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=Analysis%20of%20heavy%20metals%20in%20California%20wines%20via%20flame%20atomic%20absorption%20spectroscopy&rft.aufirst=Jose%20A%2E&rft.aulast=Cabrera&rft.date=2010&rft.genre=proceeding&rft.issn=0065-7727&rft.jtitle=ABSTRACTS%20OF%20PAPERS%20OF%20THE%20AMERICAN%20CHEMICAL%20SOCIETY&rft.stitle=ABSTR%20PAP%20AM%20CHEM%20S&rft.volume=239&rfr_id=info:sid/www.isinet.com:WoK:WOS&rft.au=Song%2C%20John&rft.au=Melendez%2C%20Laura&rft.au=Cervantes%2C%20Luisanna&rft.au=Padilla%2C%20Jesica
+Document Length:        15971 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.020 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      16093 bytes
+HTML transferred:       15971 bytes
+Requests per second:    0.98 [#/sec] (mean)
+Time per request:       1020.364 [ms] (mean)
+Time per request:       1020.364 [ms] (mean, across all concurrent requests)
+Transfer rate:          15.40 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       78    78   78
+Processing:   942   942  942
+Total:       1020  1020 1020

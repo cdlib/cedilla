@@ -1,0 +1,31 @@
+This is ApacheBench, Version 2.3 <$Revision: 655654 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking ucelinks.cdlib.org (be patient).....done
+
+
+Server Software:        Apache
+Server Hostname:        ucelinks.cdlib.org
+Server Port:            8888
+
+Document Path:          /sfx_test?sfx.response_type=multi_obj_detailed_xml&sfx.show_availability=1&url_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.atitle=THE%20ARCHAEOLOGY%20OF%20WARFARE%20Local%20Chiefdoms%20and%20Settlement%20Systems%20in%20the%20Jenin%20Region%20during%20the%20Ottoman%20Period%20of%20Palestine&rft.aufirst=Hamed&rft.aulast=Salem&rft.date=2008&rft.epage=220&rft.genre=article&rft.issn=1094-2076&rft.issue=4&rft.jtitle=NEAR%20EASTERN%20ARCHAEOLOGY&rft.pages=214-220&rft.spage=214&rft.stitle=NEAR%20EAST%20ARCHAEOL&rft.volume=71&rfr_id=info:sid/www.isinet.com:WoK:WOS
+Document Length:        19693 bytes
+
+Concurrency Level:      1
+Time taken for tests:   1.051 seconds
+Complete requests:      1
+Failed requests:        0
+Write errors:           0
+Total transferred:      19815 bytes
+HTML transferred:       19693 bytes
+Requests per second:    0.95 [#/sec] (mean)
+Time per request:       1051.205 [ms] (mean)
+Time per request:       1051.205 [ms] (mean, across all concurrent requests)
+Transfer rate:          18.41 [Kbytes/sec] received
+
+Connection Times (ms)
+              min   avg   max
+Connect:       79    79   79
+Processing:   972   972  972
+Total:       1051  1051 1051
